@@ -1,6 +1,9 @@
 package com.leandromendes.audioequalizer;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +11,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
+
+    private ListView profileList;
+    private List<EqualizerProfile> equalizerProfiles = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +29,28 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        profileList = findViewById(R.id.profileList);
+
+        EqualizerProfile eq_profile = new EqualizerProfile();
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+        equalizerProfiles.add(eq_profile);
+
+        ProfileList adapter = new ProfileList(this, equalizerProfiles);
+        profileList.setAdapter(adapter);
+
     }
+
 }
