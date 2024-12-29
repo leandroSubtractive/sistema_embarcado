@@ -1,0 +1,12 @@
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 2b1cd4202e75..f3fddb55e661 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -377,6 +377,7 @@ static void early_init_intel(struct cpuinfo_x86 *c)
+ 			pr_info("Disabled fast string operations\n");
+ 			setup_clear_cpu_cap(X86_FEATURE_REP_GOOD);
+ 			setup_clear_cpu_cap(X86_FEATURE_ERMS);
++			setup_clear_cpu_cap(X86_FEATURE_FSRM);
+ 		}
+ 	}
+ 

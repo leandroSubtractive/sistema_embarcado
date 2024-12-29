@@ -1,0 +1,25 @@
+{
+    "markdownlint.config": {
+      "MD033": {
+        "allowed_elements": [
+          "nobr", 
+          "sup", 
+          "a", 
+          "p", 
+          "figcaption",
+          "strong"
+        ]
+      }
+    },
+    "markdown-pdf.outputDirectory": "docs/reports/",
+    "markdown-pdf.margin.top": "1.5cm",
+    "markdown-pdf.margin.bottom": "1cm",
+    "markdown-pdf.margin.right": "1cm",
+    "markdown-pdf.margin.left": "1cm",
+    "markdown-pdf.displayHeaderFooter": true,
+    "markdown-pdf.emoji": true,
+    "markdown-pdf.footerTemplate": "<div style=\"font-size: 9px; margin: 0 auto;\"> <span class='pageNumber'></span> / <span class='totalPages'></span></div>",
+    "markdown-pdf.format": "A4",
+    "markdown-pdf.headerTemplate": " ",
+    "markdown-pdf.convertOnSave": false,
+}
