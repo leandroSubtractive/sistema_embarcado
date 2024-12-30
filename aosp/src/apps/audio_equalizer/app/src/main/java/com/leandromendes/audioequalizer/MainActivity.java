@@ -3,15 +3,11 @@ package com.leandromendes.audioequalizer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultCallerLauncher;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,8 +55,17 @@ public class MainActivity extends AppCompatActivity {
                     if(result.getResultCode() == Activity.RESULT_OK){
                         Intent intentRet = result.getData();
                         EqualizerProfile currentProfile = intentRet.getParcelableExtra("profile");
-                        int index = intentRet.getIntExtra("position",-1);;
-                        equalizerProfiles.add(currentProfile);
+                        int index = intentRet.getIntExtra("position",-1);
+
+                        // If the index received is -1, it means that it is a new configuration,
+                        // so it saves a new profile
+                        if(index > 0)
+                        {
+                            equalizerProfiles.set(index, currentProfile);
+                        }
+                        else {
+                            equalizerProfiles.add(currentProfile);
+                        }
                         // Update the ListView adapter
                         adapter.notifyDataSetChanged();
                         Toast.makeText(this, "Saved successfully!", Toast.LENGTH_SHORT).show();
@@ -77,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, EqualizerActivity.class);
             intent.putExtra("profile", profileSelected);
             intent.putExtra("position", position);
+            intent.putExtra("size", equalizerProfiles.size());
 
-            //startActivity(intent);
             eqActivity.launch(intent);
         });
 
@@ -101,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-
-
 
     }
 
