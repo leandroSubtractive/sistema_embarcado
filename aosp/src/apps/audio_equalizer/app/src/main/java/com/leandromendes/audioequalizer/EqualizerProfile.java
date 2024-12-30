@@ -1,19 +1,28 @@
 package com.leandromendes.audioequalizer;
 
-public class EqualizerProfile {
-    private String name;
-    private float bass_eq_value;
-    private float mid_eq_value;
-    private float hi_eq_value;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-     public EqualizerProfile()
-     {
-          // Constructor set to default values
-          this.name = "Default";
-          this.bass_eq_value = 0;
-          this.mid_eq_value = 0;
-          this.hi_eq_value = 0;
-     }
+public class EqualizerProfile implements Parcelable {
+
+    private String name;
+    private int bassEqValue;
+    private int midEqValue;
+    private int hiEqValue;
+
+    public EqualizerProfile() {
+        this.name = "Default";
+        this.bassEqValue = 0;
+        this.midEqValue = 0;
+        this.hiEqValue = 0;
+    }
+
+    public EqualizerProfile(String name, int bassEqValue, int midEqValue, int hiEqValue) {
+        this.name = name;
+        this.bassEqValue = bassEqValue;
+        this.midEqValue = midEqValue;
+        this.hiEqValue = hiEqValue;
+    }
 
     public String getName() {
         return name;
@@ -23,27 +32,56 @@ public class EqualizerProfile {
         this.name = name;
     }
 
-    public float getBass_eq_value() {
-        return bass_eq_value;
+    public int getBassEqValue() {
+        return bassEqValue;
     }
 
-    public void setBass_eq_value(float bass_eq_value) {
-        this.bass_eq_value = bass_eq_value;
+    public void setBassEqValue(int bassEqValue) {
+        this.bassEqValue = bassEqValue;
     }
 
-    public float getMid_eq_value() {
-        return mid_eq_value;
+    public int getMidEqValue() {
+        return midEqValue;
     }
 
-    public void setMid_eq_value(float mid_eq_value) {
-        this.mid_eq_value = mid_eq_value;
+    public void setMidEqValue(int midEqValue) {
+        this.midEqValue = midEqValue;
     }
 
-    public float getHi_eq_value() {
-        return hi_eq_value;
+    public int getHiEqValue() {
+        return hiEqValue;
     }
 
-    public void setHi_eq_value(float hi_eq_value) {
-        this.hi_eq_value = hi_eq_value;
+    public void setHiEqValue(int hiEqValue) {
+        this.hiEqValue = hiEqValue;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeInt(this.bassEqValue);
+        dest.writeInt(this.midEqValue);
+        dest.writeInt(this.hiEqValue);
+    }
+
+    public static final Creator<EqualizerProfile> CREATOR = new Creator<EqualizerProfile>() {
+        @Override
+        public EqualizerProfile createFromParcel(Parcel source) {
+            String name = source.readString();
+            int bassEqValue = source.readInt();
+            int midEqValue = source.readInt();
+            int hiEqValue = source.readInt();
+            return new EqualizerProfile(name, bassEqValue, midEqValue, hiEqValue);
+        }
+
+        @Override
+        public EqualizerProfile[] newArray(int size) {
+            return new EqualizerProfile[size];
+        }
+    };
 }
