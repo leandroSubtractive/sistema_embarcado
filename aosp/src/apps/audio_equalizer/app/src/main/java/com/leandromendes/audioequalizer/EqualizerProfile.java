@@ -9,19 +9,42 @@ public class EqualizerProfile implements Parcelable {
     private int bassEqValue;
     private int midEqValue;
     private int hiEqValue;
+    private int balanceEqValue;
+    private int masterVolValue;
 
     public EqualizerProfile() {
         this.name = "Default";
         this.bassEqValue = 0;
         this.midEqValue = 0;
         this.hiEqValue = 0;
+        this.balanceEqValue = 5;
+        this.masterVolValue = 6;
     }
 
-    public EqualizerProfile(String name, int bassEqValue, int midEqValue, int hiEqValue) {
+    public EqualizerProfile(String name, int bassEqValue, int midEqValue, int hiEqValue,
+                            int panEqValue, int maVolValue) {
         this.name = name;
         this.bassEqValue = bassEqValue;
         this.midEqValue = midEqValue;
         this.hiEqValue = hiEqValue;
+        this.balanceEqValue = panEqValue;
+        this.masterVolValue = maVolValue;
+    }
+
+    public int getBalanceEqValue() {
+        return balanceEqValue;
+    }
+
+    public void setBalanceEqValue(int balanceEqValue) {
+        this.balanceEqValue = balanceEqValue;
+    }
+
+    public int getMasterVolValue() {
+        return masterVolValue;
+    }
+
+    public void setMasterVolValue(int masterVolValue) {
+        this.masterVolValue = masterVolValue;
     }
 
     public String getName() {
@@ -67,6 +90,8 @@ public class EqualizerProfile implements Parcelable {
         dest.writeInt(this.bassEqValue);
         dest.writeInt(this.midEqValue);
         dest.writeInt(this.hiEqValue);
+        dest.writeInt(this.balanceEqValue);
+        dest.writeInt(this.masterVolValue);
     }
 
     public static final Creator<EqualizerProfile> CREATOR = new Creator<EqualizerProfile>() {
@@ -76,7 +101,14 @@ public class EqualizerProfile implements Parcelable {
             int bassEqValue = source.readInt();
             int midEqValue = source.readInt();
             int hiEqValue = source.readInt();
-            return new EqualizerProfile(name, bassEqValue, midEqValue, hiEqValue);
+            int panEqValue = source.readInt();
+            int maVolValue = source.readInt();
+            return new EqualizerProfile(name,
+                        bassEqValue,
+                        midEqValue,
+                        hiEqValue,
+                        panEqValue,
+                        maVolValue);
         }
 
         @Override

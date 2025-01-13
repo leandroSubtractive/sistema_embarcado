@@ -21,24 +21,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/profileSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    </LinearLayout>
+        android:text="TextView"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarTreble"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <SeekBar
         android:id="@+id/seekBarTreble"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="296dp"
+        android:layout_marginTop="244dp"
         android:layout_marginEnd="20dp"
         android:max="15"
         android:min="-15"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -109,16 +113,46 @@
         app:layout_constraintTop_toBottomOf="@+id/seekBarMid"
         app:layout_constraintVertical_bias="1.0" />
 
-    <TextView
-        android:id="@+id/profileSelected"
-        android:layout_width="wrap_content"
+    <SeekBar
+        android:id="@+id/seekBarBalance"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarTreble"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
+        android:max="10"
+        android:min="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarBass" />
+
+    <TextView
+        android:id="@+id/textViewBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="C"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarBalance"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/seekBarBass"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textViewVolume"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginTop="12dp"
+        android:text="0 db"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/seekBarVolume"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarBalance"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/save"
@@ -132,7 +166,7 @@
         app:layout_constraintHorizontal_bias="0.078"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBarBass"
-        app:layout_constraintVertical_bias="0.513" />
+        app:layout_constraintVertical_bias="0.881" />
 
     <Button
         android:id="@+id/newProfileb"
@@ -144,9 +178,23 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.863"
+        app:layout_constraintHorizontal_bias="0.921"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBarBass"
-        app:layout_constraintVertical_bias="0.513" />
+        app:layout_constraintVertical_bias="0.881" />
+
+    <SeekBar
+        android:id="@+id/seekBarVolume"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
+        android:max="10"
+        android:progress="7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarBalance" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
