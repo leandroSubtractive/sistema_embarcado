@@ -57,6 +57,7 @@ public class EqualizerActivity extends AppCompatActivity {
 
         // Get button layout
         Button newProfileButton = findViewById(R.id.newProfileb);
+        Button resetAllSettings = findViewById(R.id.reset);
         saveButton = findViewById(R.id.save);
 
         // Sets the name of the current profile on the screen
@@ -109,6 +110,7 @@ public class EqualizerActivity extends AppCompatActivity {
                 DrawTextOnTheBars(textViewBass, "Bass", bassValue);
                 // Only enable the save button if data has changed.
                 saveButton.setEnabled(true);
+                resetAllSettings.setEnabled(true);
             }
 
             @Override
@@ -130,6 +132,7 @@ public class EqualizerActivity extends AppCompatActivity {
                 DrawTextOnTheBars(textViewMid, "Mid", midValue);
                 // Only enable the save button if data has changed.
                 saveButton.setEnabled(true);
+                resetAllSettings.setEnabled(true);
             }
 
             @Override
@@ -151,6 +154,7 @@ public class EqualizerActivity extends AppCompatActivity {
                 DrawTextOnTheBars(textViewTreble, "Treble", highValue);
                 // Only enable the save button if data has changed.
                 saveButton.setEnabled(true);
+                resetAllSettings.setEnabled(true);
             }
 
             @Override
@@ -171,6 +175,7 @@ public class EqualizerActivity extends AppCompatActivity {
                 DrawTextOnThePanBar(textViewBalance, balanceValue);
                 // Only enable the save button if data has changed.
                 saveButton.setEnabled(true);
+                resetAllSettings.setEnabled(true);
             }
 
             @Override
@@ -191,6 +196,7 @@ public class EqualizerActivity extends AppCompatActivity {
                 DrawTextOnTheVolBar(textViewMasterVol, masterVolValue);
                 // Only enable the save button if data has changed.
                 saveButton.setEnabled(true);
+                resetAllSettings.setEnabled(true);
             }
 
             @Override
@@ -216,6 +222,35 @@ public class EqualizerActivity extends AppCompatActivity {
             } else {
                 saveChangeProfile(currentProfile);
             }
+        });
+
+        // Reset all settings
+        resetAllSettings.setOnClickListener(v -> {
+
+            bassValue = currentProfile.getBassEqValue();
+            DrawTextOnTheBars(textViewBass, "Bass", bassValue);
+            seekBarBass.setProgress(bassValue, true);
+
+            midValue = currentProfile.getMidEqValue();
+            DrawTextOnTheBars(textViewMid, "Mid", midValue);
+            seekBarMid.setProgress(midValue, true);
+
+            highValue = currentProfile.getHiEqValue();
+            DrawTextOnTheBars(textViewTreble, "Treble", highValue);
+            seekBarTreble.setProgress(highValue, true);
+
+            balanceValue = currentProfile.getBalanceEqValue();
+            DrawTextOnThePanBar(textViewBalance, balanceValue);
+            seekBarBalance.setProgress(balanceValue, true);
+
+            masterVolValue = currentProfile.getMasterVolValue();
+            DrawTextOnTheVolBar(textViewMasterVol, masterVolValue);
+            seekBarMasterVol.setProgress(masterVolValue, true);
+
+            // Disable button
+            resetAllSettings.setEnabled(false);
+            saveButton.setEnabled(false);
+
         });
     }
 
