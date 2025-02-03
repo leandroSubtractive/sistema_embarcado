@@ -1,3 +1,45 @@
 <resources>
     <string name="app_name">Audio Equalizer</string>
+
+    <!-- Button names -->
+    <string name="reset_button">Reset</string>
+    <string name="save_button">Save</string>
+    <string name="new_profile_button">New Profile</string>
+    <string name="agree_button_name">OK</string>
+    <string name="cancel_button_name">Cancel</string>
+    <string name="positive_button_name">Yes</string>
+    <string name="negative_button_name">No</string>
+
+    <!-- Default values for graphical interface parameters -->
+    <string name="default_db_value">0db</string>
+    <string name="default_pan_value">Center</string>
+    <string name="default_volume_value">0L</string>
+    <string name="default_profile">Default</string>
+
+    <!-- Name of the seekBar equalizer components -->
+    <string name="bar_treble_name">Treble</string>
+    <string name="bar_mid_name">Middle</string>
+    <string name="bar_bass_name">Bass</string>
+    <string name="balance_left">Left</string>
+    <string name="balance_Right">Right</string>
+    <string name="volume_name">Volume</string>
+
+    <!-- String from the new profile dialog box -->
+    <string name="dialogue_title">Profile Name</string>
+    <string name="default_name_new_profile">New Profile</string>
+
+    <!-- Units of measurement for audio signals -->
+    <string name="decibel">db</string>
+    <string name="spl">L</string>
+
+    <!-- String toolBar -->
+    <string name="toolbar_name">Profiles</string>
+
+    <!-- Informative messages -->
+    <string name="saved">Saved successfully!</string>
+    <string name="exclusion">Confirm exclusion</string>
+    <string name="confirmation_question_delete">Do you want to delete profile %s?</string>
+    <string name="profile_cannot_deleted">Cannot delete %s profile.</string>
+    <string name="current_profile">Profile %s selected</string>
+
 </resources>

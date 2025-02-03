@@ -1,5 +1,7 @@
 package com.leandromendes.audioequalizer;
 
+import static java.lang.String.*;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,11 +20,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView profileList;
-    private List<EqualizerProfile> equalizerProfiles = new ArrayList<>();
+    private final List<EqualizerProfile> equalizerProfiles = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +41,14 @@ public class MainActivity extends AppCompatActivity {
         // Define the title of the list of profile names
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(" Profiles");
+        Objects.requireNonNull(getSupportActionBar()).setTitle(
+                format(Locale.getDefault(), getString(R.string.toolbar_name)));
 
         // Initializes default profile
-        EqualizerProfile defaultEqProfile = new EqualizerProfile();
+        EqualizerProfile defaultEqProfile = new EqualizerProfile(this.getApplicationContext());
         equalizerProfiles.add(defaultEqProfile);
 
-        profileList = findViewById(R.id.profileList);
+        ListView profileList = findViewById(R.id.profileList);
         // Initialize adapter for profile list
         ProfileList adapter = new ProfileList(this, equalizerProfiles);
         profileList.setAdapter(adapter);
@@ -54,8 +58,10 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
                     if(result.getResultCode() == Activity.RESULT_OK){
                         Intent intentRet = result.getData();
-                        EqualizerProfile currentProfile = intentRet.getParcelableExtra("profile");
-                        int index = intentRet.getIntExtra("position",-1);
+                        EqualizerProfile currentProfile = Objects.requireNonNull(intentRet)
+                                .getParcelableExtra(Constants.define.INTENT_PARCELABLE_NAME);
+                        int index = intentRet.getIntExtra(Constants.define.INTENT_INT_POSITION,
+                                Constants.define.INTENT_INT_POSITION_DEFAULT);
 
                         // If the index received is -1, it means that it is a new configuration,
                         // so it saves a new profile
@@ -68,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         // Update the ListView adapter
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(this, "Saved successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, format(Locale.getDefault(), "%s",
+                                getString(R.string.saved)), Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -77,12 +84,13 @@ public class MainActivity extends AppCompatActivity {
         // Defines an action for a quick click in the listview
         profileList.setOnItemClickListener((parent, view, position, id) -> {
             EqualizerProfile profileSelected = equalizerProfiles.get(position);
-            Toast.makeText(this, "Profile " + profileSelected.getName() + " selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, format(Locale.getDefault(),getString(R.string.current_profile),
+                    profileSelected.getName()), Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(this, EqualizerActivity.class);
-            intent.putExtra("profile", profileSelected);
-            intent.putExtra("position", position);
-            intent.putExtra("size", equalizerProfiles.size());
+            intent.putExtra(Constants.define.INTENT_PARCELABLE_NAME, profileSelected);
+            intent.putExtra(Constants.define.INTENT_INT_POSITION, position);
+            intent.putExtra(Constants.define.INTENT_INT_SIZE, equalizerProfiles.size());
 
             eqActivity.launch(intent);
         });
@@ -93,16 +101,20 @@ public class MainActivity extends AppCompatActivity {
             // If the selected item is different from the default profile, delete the profile from the list
             if(!profileSelected.equals(defaultEqProfile.getName())) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Confirm exclusion");
-                builder.setMessage("Do you want to delete profile " + equalizerProfiles.get(position).getName() + "?");
-                builder.setPositiveButton("Yes", (dialog, which) -> {
+                builder.setTitle(format(Locale.getDefault(), getString(R.string.exclusion)));
+                builder.setMessage(format(Locale.getDefault(),getString(R.string.confirmation_question_delete),
+                        equalizerProfiles.get(position).getName()));
+                builder.setPositiveButton(
+                        format(Locale.getDefault(), getString(R.string.positive_button_name)), (dialog, which) -> {
                     equalizerProfiles.remove(position);
                     adapter.notifyDataSetChanged();
                 });
-                builder.setNegativeButton("No", null);
+                builder.setNegativeButton(
+                        format(Locale.getDefault(), getString(R.string.negative_button_name)), null);
                 builder.show();
             } else {
-                Toast.makeText(this, "Cannot delete " + profileSelected + " profile.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, format(Locale.getDefault(),
+                        getString(R.string.profile_cannot_deleted), profileSelected), Toast.LENGTH_SHORT).show();
             }
             return true;
         });

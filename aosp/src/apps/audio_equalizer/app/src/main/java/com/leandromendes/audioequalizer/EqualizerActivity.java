@@ -1,5 +1,8 @@
 package com.leandromendes.audioequalizer;
 
+
+import static java.lang.String.*;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +22,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.Locale;
+
 public class EqualizerActivity extends AppCompatActivity {
     private TextView textViewBass;
     private TextView textViewMid;
@@ -35,7 +40,6 @@ public class EqualizerActivity extends AppCompatActivity {
     private int idPosition;
     private int countName;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,12 +55,14 @@ public class EqualizerActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         // Gets all the parameters from the previous activity
-        currentProfile = intent.getParcelableExtra("profile");
-        idPosition = intent.getIntExtra("position", -1);
-        countName = intent.getIntExtra("size", 0);
+        currentProfile = intent.getParcelableExtra(Constants.define.INTENT_PARCELABLE_NAME);
+        idPosition = intent.getIntExtra(Constants.define.INTENT_INT_POSITION,
+                Constants.define.INTENT_INT_POSITION_DEFAULT);
+        countName = intent.getIntExtra(Constants.define.INTENT_INT_SIZE,
+                Constants.define.INTENT_INT_SIZE_DEFAULT);
 
         // Get button layout
-        Button newProfileButton = findViewById(R.id.newProfileb);
+        Button newProfileButton = findViewById(R.id.newProfile);
         Button resetAllSettings = findViewById(R.id.reset);
         saveButton = findViewById(R.id.save);
 
@@ -70,21 +76,21 @@ public class EqualizerActivity extends AppCompatActivity {
         // Bass frequency
         bassValue = currentProfile.getBassEqValue();
         textViewBass = findViewById(R.id.textViewBass);
-        DrawTextOnTheBars(textViewBass, "Bass ", bassValue);
+        DrawTextOnTheBars(textViewBass, bassValue);
         SeekBar seekBarBass = findViewById(R.id.seekBarBass);
         seekBarBass.setProgress(bassValue);
 
         // Mid frequency
         midValue = currentProfile.getMidEqValue();
         textViewMid = findViewById(R.id.textViewMid);
-        DrawTextOnTheBars(textViewMid, "Mid", midValue);
+        DrawTextOnTheBars(textViewMid, midValue);
         SeekBar seekBarMid = findViewById(R.id.seekBarMid);
         seekBarMid.setProgress(midValue);
 
         // High frequency
         highValue = currentProfile.getHiEqValue();
         textViewTreble = findViewById(R.id.textViewTreble);
-        DrawTextOnTheBars(textViewTreble, "Treble", highValue);
+        DrawTextOnTheBars(textViewTreble, highValue);
         SeekBar seekBarTreble = findViewById(R.id.seekBarTreble);
         seekBarTreble.setProgress(highValue);
 
@@ -102,12 +108,13 @@ public class EqualizerActivity extends AppCompatActivity {
         SeekBar seekBarMasterVol = findViewById(R.id.seekBarVolume);
         seekBarMasterVol.setProgress(masterVolValue);
 
+
         // Treatment for bass bar movement
         seekBarBass.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 bassValue = progress;
-                DrawTextOnTheBars(textViewBass, "Bass", bassValue);
+                DrawTextOnTheBars(textViewBass, bassValue);
                 // Only enable the save button if data has changed.
                 saveButton.setEnabled(true);
                 resetAllSettings.setEnabled(true);
@@ -129,7 +136,7 @@ public class EqualizerActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 midValue = progress;
-                DrawTextOnTheBars(textViewMid, "Mid", midValue);
+                DrawTextOnTheBars(textViewMid, midValue);
                 // Only enable the save button if data has changed.
                 saveButton.setEnabled(true);
                 resetAllSettings.setEnabled(true);
@@ -151,7 +158,7 @@ public class EqualizerActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 highValue = progress;
-                DrawTextOnTheBars(textViewTreble, "Treble", highValue);
+                DrawTextOnTheBars(textViewTreble, highValue);
                 // Only enable the save button if data has changed.
                 saveButton.setEnabled(true);
                 resetAllSettings.setEnabled(true);
@@ -217,7 +224,7 @@ public class EqualizerActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> {
             // The Default profile cannot be overwritten, if you press on the default profile,
             // it creates a new one.
-            if (profileName.equals("Default")) {
+            if (profileName.equals(getString(R.string.default_profile))) {
                 saveNewChangeProfile(currentProfile);
             } else {
                 saveChangeProfile(currentProfile);
@@ -228,15 +235,15 @@ public class EqualizerActivity extends AppCompatActivity {
         resetAllSettings.setOnClickListener(v -> {
 
             bassValue = currentProfile.getBassEqValue();
-            DrawTextOnTheBars(textViewBass, "Bass", bassValue);
+            DrawTextOnTheBars(textViewBass, bassValue);
             seekBarBass.setProgress(bassValue, true);
 
             midValue = currentProfile.getMidEqValue();
-            DrawTextOnTheBars(textViewMid, "Mid", midValue);
+            DrawTextOnTheBars(textViewMid, midValue);
             seekBarMid.setProgress(midValue, true);
 
             highValue = currentProfile.getHiEqValue();
-            DrawTextOnTheBars(textViewTreble, "Treble", highValue);
+            DrawTextOnTheBars(textViewTreble, highValue);
             seekBarTreble.setProgress(highValue, true);
 
             balanceValue = currentProfile.getBalanceEqValue();
@@ -255,25 +262,25 @@ public class EqualizerActivity extends AppCompatActivity {
     }
 
     private void saveNewChangeProfile(EqualizerProfile profile) {
-        profileName = "New Profile" + (countName);
+        profileName = format(Locale.getDefault(),"%s%d", getString(R.string.new_profile_button), countName);
         AlertDialog.Builder builder = new AlertDialog.Builder(EqualizerActivity.this);
-        builder.setTitle("Profile Name");
+        builder.setTitle(getString(R.string.dialogue_title));
 
         View view = LayoutInflater.from(EqualizerActivity.this).inflate(R.layout.dialog_text_input, null);
         final EditText input = view.findViewById(R.id.edit_text);
         input.setHint(profileName);
         builder.setView(view);
 
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        builder.setPositiveButton(getString(R.string.agree_button_name), (dialog, which) -> {
             String text = input.getText().toString();
             if (!text.isEmpty()) {
                 profileName = text;
             }
-            idPosition = -1;
+            idPosition = Constants.define.INTENT_INT_POSITION_DEFAULT;
             saveChangeProfile(profile);
         });
 
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(getString(R.string.cancel_button_name), (dialog, which) -> dialog.cancel());
         builder.show();
 
     }
@@ -286,30 +293,29 @@ public class EqualizerActivity extends AppCompatActivity {
         profile.setBalanceEqValue(balanceValue);
         profile.setMasterVolValue(masterVolValue);
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("profile", profile);
-        resultIntent.putExtra("position", idPosition);
+        resultIntent.putExtra(Constants.define.INTENT_PARCELABLE_NAME, profile);
+        resultIntent.putExtra(Constants.define.INTENT_INT_POSITION, idPosition);
         setResult(RESULT_OK, resultIntent);
         finish();
     }
 
     @SuppressLint("SetTextI18n")
-    private void DrawTextOnTheBars(@NonNull TextView textView, String title, int value) {
-        textView.setText(String.format("%s %sdb", title,
-                (value > 0) ? ("+" + value) : value));
+    private void DrawTextOnTheBars(@NonNull TextView textView, int value) {
+        textView.setText(format(Locale.getDefault(),"%s%s",
+                ((value > 0) ? ("+" + value) : value), getString(R.string.decibel)));
     }
 
     @SuppressLint("SetTextI18n")
     private void DrawTextOnThePanBar(@NonNull TextView textView, int value) {
         int offset = 5;
         int balance = (offset - value);
-        textView.setText(String.format("Pan %s",
-                (balance > 0) ? balance + " Left" :
-                (balance < 0) ? -balance + " Right" :
-                                balance + " Center"));
+        textView.setText(format(Locale.getDefault(),"%s",
+                (balance > 0) ? "+" + balance:
+                (balance < 0) ? "+" + (-balance) : getString(R.string.default_pan_value)));
     }
 
     private void DrawTextOnTheVolBar(@NonNull TextView textView, int value){
-        textView.setText(String.format("Volume %s", value));
+        textView.setText(format(Locale.getDefault(),"%s%s", value, getString(R.string.spl)));
     }
 
 }

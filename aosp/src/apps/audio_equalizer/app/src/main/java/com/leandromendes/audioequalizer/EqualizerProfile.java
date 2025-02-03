@@ -1,5 +1,6 @@
 package com.leandromendes.audioequalizer;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,14 +13,15 @@ public class EqualizerProfile implements Parcelable {
     private int balanceEqValue;
     private int masterVolValue;
 
-    public EqualizerProfile() {
-        this.name = "Default";
-        this.bassEqValue = 0;
-        this.midEqValue = 0;
-        this.hiEqValue = 0;
-        this.balanceEqValue = 5;
-        this.masterVolValue = 6;
+    public EqualizerProfile(Context context) {
+        this.name = context.getResources().getString(R.string.default_profile);
+        this.bassEqValue = Constants.define.BASS_VALUE_DEFAULT;
+        this.midEqValue = Constants.define.MIDDLE_VALUE_DEFAULT;
+        this.hiEqValue = Constants.define.TREBLE_VALUE_DEFAULT;
+        this.balanceEqValue = Constants.define.PAN_VALUE_DEFAULT;
+        this.masterVolValue = Constants.define.VOLUME_VALUE_DEFAULT;
     }
+
 
     public EqualizerProfile(String name, int bassEqValue, int midEqValue, int hiEqValue,
                             int panEqValue, int maVolValue) {
