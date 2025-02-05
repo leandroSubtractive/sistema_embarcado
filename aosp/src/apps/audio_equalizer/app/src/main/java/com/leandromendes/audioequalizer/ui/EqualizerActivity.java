@@ -1,4 +1,4 @@
-package com.leandromendes.audioequalizer;
+package com.leandromendes.audioequalizer.ui;
 
 
 import static java.lang.String.*;
@@ -22,6 +22,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.leandromendes.audioequalizer.data.model.EqualizerProfile;
+import com.leandromendes.audioequalizer.R;
+import com.leandromendes.audioequalizer.util.Constants;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class EqualizerActivity extends AppCompatActivity {
@@ -38,7 +44,6 @@ public class EqualizerActivity extends AppCompatActivity {
     private EqualizerProfile currentProfile;
     private Button saveButton;
     private int idPosition;
-    private int countName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +63,6 @@ public class EqualizerActivity extends AppCompatActivity {
         currentProfile = intent.getParcelableExtra(Constants.define.INTENT_PARCELABLE_NAME);
         idPosition = intent.getIntExtra(Constants.define.INTENT_INT_POSITION,
                 Constants.define.INTENT_INT_POSITION_DEFAULT);
-        countName = intent.getIntExtra(Constants.define.INTENT_INT_SIZE,
-                Constants.define.INTENT_INT_SIZE_DEFAULT);
 
         // Get button layout
         Button newProfileButton = findViewById(R.id.newProfile);
@@ -262,7 +265,12 @@ public class EqualizerActivity extends AppCompatActivity {
     }
 
     private void saveNewChangeProfile(EqualizerProfile profile) {
-        profileName = format(Locale.getDefault(),"%s%d", getString(R.string.new_profile_button), countName);
+
+        Date currentDate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat(Constants.define.DATETIME_FORMAT, Locale.getDefault());
+        String dateTime = format.format(currentDate);
+
+        profileName = format(Locale.getDefault(),"%s %s", getString(R.string.new_profile_button), dateTime);
         AlertDialog.Builder builder = new AlertDialog.Builder(EqualizerActivity.this);
         builder.setTitle(getString(R.string.dialogue_title));
 

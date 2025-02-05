@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:foregroundTint="#0A0A0C"
-    tools:context=".EqualizerActivity">
+    tools:context=".ui.EqualizerActivity">
 
     <TextView
         android:id="@+id/textView"

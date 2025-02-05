@@ -17,15 +17,20 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.leandromendes.audioequalizer.data.model.EqualizerProfile;
+import com.leandromendes.audioequalizer.ui.EqualizerActivity;
+import com.leandromendes.audioequalizer.util.Constants;
+import com.leandromendes.audioequalizer.util.ProfileListUtils;
+import com.leandromendes.audioequalizer.ui.MainViewModel;
+
 import java.util.Locale;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final List<EqualizerProfile> equalizerProfiles = new ArrayList<>();
+    MainViewModel mainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,87 +43,96 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
         // Define the title of the list of profile names
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(
                 format(Locale.getDefault(), getString(R.string.toolbar_name)));
 
-        // Initializes default profile
-        EqualizerProfile defaultEqProfile = new EqualizerProfile(this.getApplicationContext());
-        equalizerProfiles.add(defaultEqProfile);
-
-        ListView profileList = findViewById(R.id.profileList);
         // Initialize adapter for profile list
-        ProfileList adapter = new ProfileList(this, equalizerProfiles);
+        ListView profileList = findViewById(R.id.profileList);
+        ProfileListUtils adapter = new ProfileListUtils(this, mainViewModel.GetAllEqualizerProfiles());
         profileList.setAdapter(adapter);
+
+        mainViewModel.getToastText().observe(this, this::ToastShow);
 
         ActivityResultLauncher<Intent> eqActivity = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if(result.getResultCode() == Activity.RESULT_OK){
                         Intent intentRet = result.getData();
-                        EqualizerProfile currentProfile = Objects.requireNonNull(intentRet)
+
+                        EqualizerProfile currentProfile = Objects
+                                .requireNonNull(intentRet)
                                 .getParcelableExtra(Constants.define.INTENT_PARCELABLE_NAME);
-                        int index = intentRet.getIntExtra(Constants.define.INTENT_INT_POSITION,
+
+                        int position = intentRet.getIntExtra(Constants.define.INTENT_INT_POSITION,
                                 Constants.define.INTENT_INT_POSITION_DEFAULT);
 
                         // If the index received is -1, it means that it is a new configuration,
                         // so it saves a new profile
-                        if(index > 0)
+                        if(position == Constants.define.NEW_PROFILE)
                         {
-                            equalizerProfiles.set(index, currentProfile);
+                            mainViewModel.AddProfile(currentProfile);
                         }
                         else {
-                            equalizerProfiles.add(currentProfile);
+                            mainViewModel.UpdateProfile(position, currentProfile);
                         }
+
                         // Update the ListView adapter
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(this, format(Locale.getDefault(), "%s",
-                                getString(R.string.saved)), Toast.LENGTH_SHORT).show();
-
+                        mainViewModel.SetToastText(format(Locale.getDefault(), "%s", getString(R.string.saved)));
                     }
                 }
         );
 
         // Defines an action for a quick click in the listview
         profileList.setOnItemClickListener((parent, view, position, id) -> {
-            EqualizerProfile profileSelected = equalizerProfiles.get(position);
-            Toast.makeText(this, format(Locale.getDefault(),getString(R.string.current_profile),
-                    profileSelected.getName()), Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(this, EqualizerActivity.class);
-            intent.putExtra(Constants.define.INTENT_PARCELABLE_NAME, profileSelected);
+            intent.putExtra(Constants.define.INTENT_PARCELABLE_NAME, mainViewModel.GetEqualizerProfiles(position));
             intent.putExtra(Constants.define.INTENT_INT_POSITION, position);
-            intent.putExtra(Constants.define.INTENT_INT_SIZE, equalizerProfiles.size());
+            intent.putExtra(Constants.define.INTENT_INT_SIZE, mainViewModel.GetAllEqualizerProfiles().size());
 
             eqActivity.launch(intent);
+
+            String text = format(Locale.getDefault(),getString(R.string.current_profile),
+                    mainViewModel.GetEqualizerProfiles(position).getName());
+
+            mainViewModel.SetToastText(text);
         });
 
         // Defines an action for a long click on a profile list
         profileList.setOnItemLongClickListener((parent, view, position, id) -> {
-            String profileSelected = equalizerProfiles.get(position).getName();
+            String NameProfileSelected = mainViewModel.GetEqualizerProfiles(position).getName();
             // If the selected item is different from the default profile, delete the profile from the list
-            if(!profileSelected.equals(defaultEqProfile.getName())) {
+            if(!NameProfileSelected.equals(Constants.define.PROFILE_DEFAULT_NAME)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(format(Locale.getDefault(), getString(R.string.exclusion)));
                 builder.setMessage(format(Locale.getDefault(),getString(R.string.confirmation_question_delete),
-                        equalizerProfiles.get(position).getName()));
+                        mainViewModel.GetEqualizerProfiles(position).getName()));
                 builder.setPositiveButton(
                         format(Locale.getDefault(), getString(R.string.positive_button_name)), (dialog, which) -> {
-                    equalizerProfiles.remove(position);
-                    adapter.notifyDataSetChanged();
-                });
+
+                            mainViewModel.RemoveProfile(position);
+                            adapter.notifyDataSetChanged();
+                        });
                 builder.setNegativeButton(
                         format(Locale.getDefault(), getString(R.string.negative_button_name)), null);
                 builder.show();
             } else {
-                Toast.makeText(this, format(Locale.getDefault(),
-                        getString(R.string.profile_cannot_deleted), profileSelected), Toast.LENGTH_SHORT).show();
+                String text = format(Locale.getDefault(), getString(R.string.profile_cannot_deleted), NameProfileSelected);
+                ToastShow(text);
             }
             return true;
         });
+    }
 
+    public void ToastShow(String Text)
+    {
+        Toast.makeText(this, format(Locale.getDefault(), Text), Toast.LENGTH_SHORT).show();
     }
 
 }

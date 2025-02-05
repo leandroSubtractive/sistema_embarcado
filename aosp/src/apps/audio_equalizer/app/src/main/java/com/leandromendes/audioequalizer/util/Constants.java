@@ -1,4 +1,4 @@
-package com.leandromendes.audioequalizer;
+package com.leandromendes.audioequalizer.util;
 
 public class Constants {
     public class define {
@@ -12,6 +12,9 @@ public class Constants {
         public static final int TREBLE_VALUE_DEFAULT = 0;
         public static final int PAN_VALUE_DEFAULT = 5;
         public static final int VOLUME_VALUE_DEFAULT = 6;
+        public static final String PROFILE_DEFAULT_NAME = "Default";
+        public static final int NEW_PROFILE = -1;
+        public static final String DATETIME_FORMAT = "dd-MM-yyyy HH-mm-ss";
 
 
 

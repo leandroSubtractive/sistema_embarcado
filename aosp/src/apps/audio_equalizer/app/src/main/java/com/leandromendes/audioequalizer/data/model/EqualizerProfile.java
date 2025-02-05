@@ -1,8 +1,13 @@
-package com.leandromendes.audioequalizer;
+package com.leandromendes.audioequalizer.data.model;
 
-import android.content.Context;
+import static java.lang.String.format;
+
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.leandromendes.audioequalizer.util.Constants;
+
+import java.util.Locale;
 
 public class EqualizerProfile implements Parcelable {
 
@@ -13,8 +18,8 @@ public class EqualizerProfile implements Parcelable {
     private int balanceEqValue;
     private int masterVolValue;
 
-    public EqualizerProfile(Context context) {
-        this.name = context.getResources().getString(R.string.default_profile);
+    public EqualizerProfile() {
+        this.name = format(Locale.getDefault(), "%s", Constants.define.PROFILE_DEFAULT_NAME);
         this.bassEqValue = Constants.define.BASS_VALUE_DEFAULT;
         this.midEqValue = Constants.define.MIDDLE_VALUE_DEFAULT;
         this.hiEqValue = Constants.define.TREBLE_VALUE_DEFAULT;
@@ -96,7 +101,7 @@ public class EqualizerProfile implements Parcelable {
         dest.writeInt(this.masterVolValue);
     }
 
-    public static final Creator<EqualizerProfile> CREATOR = new Creator<EqualizerProfile>() {
+    public static final Creator<EqualizerProfile> CREATOR = new Creator<>() {
         @Override
         public EqualizerProfile createFromParcel(Parcel source) {
             String name = source.readString();
@@ -106,11 +111,11 @@ public class EqualizerProfile implements Parcelable {
             int panEqValue = source.readInt();
             int maVolValue = source.readInt();
             return new EqualizerProfile(name,
-                        bassEqValue,
-                        midEqValue,
-                        hiEqValue,
-                        panEqValue,
-                        maVolValue);
+                    bassEqValue,
+                    midEqValue,
+                    hiEqValue,
+                    panEqValue,
+                    maVolValue);
         }
 
         @Override
