@@ -5,6 +5,7 @@ import static java.lang.String.*;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -94,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, EqualizerActivity.class);
             intent.putExtra(Constants.define.INTENT_PARCELABLE_NAME, mainViewModel.GetEqualizerProfiles(position));
             intent.putExtra(Constants.define.INTENT_INT_POSITION, position);
-            intent.putExtra(Constants.define.INTENT_INT_SIZE, mainViewModel.GetAllEqualizerProfiles().size());
 
             eqActivity.launch(intent);
 

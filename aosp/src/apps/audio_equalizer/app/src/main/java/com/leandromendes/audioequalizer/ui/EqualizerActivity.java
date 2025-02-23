@@ -4,6 +4,7 @@ package com.leandromendes.audioequalizer.ui;
 import static java.lang.String.*;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;

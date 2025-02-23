@@ -5,8 +5,7 @@ public class Constants {
         public static final String INTENT_PARCELABLE_NAME = "profile";
         public static final String INTENT_INT_POSITION = "position";
         public static final int INTENT_INT_POSITION_DEFAULT = -1;
-        public static final String INTENT_INT_SIZE = "size";
-        public static final int INTENT_INT_SIZE_DEFAULT = 0;
+        public static final String INTENT_VIEW_MODEL = "viewModel";
         public static final int BASS_VALUE_DEFAULT = 0;
         public static final int MIDDLE_VALUE_DEFAULT = 0;
         public static final int TREBLE_VALUE_DEFAULT = 0;
