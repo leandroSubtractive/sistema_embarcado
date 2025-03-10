@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AIDL_Interface"
         tools:targetApi="31">
+        <service
+            android:name=".RandomKey"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.leandromendes.aidl_interface.IRandomKey" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
