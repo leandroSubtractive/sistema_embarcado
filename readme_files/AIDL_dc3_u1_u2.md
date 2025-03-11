@@ -89,7 +89,7 @@ $ git --version
 
 ### 1.5. Emulador Android
 
-O processo de criação de um dispositivo virtual (AVD) já havia sido realizado em atividades anteriores. Para esse projeto, um novo dispositivo foi criado apenas para fins de prática.
+O processo de criação de um dispositivo virtual (AVD) já foi realizado em atividades anteriores. Para esse projeto, um novo dispositivo foi criado apenas para fins de prática.
 
 Etapas da criação e configuração do dispositivo virtual:
 
@@ -142,10 +142,10 @@ Etapas da criação e configuração do dispositivo virtual:
 ```bash
 .
 ├── aosp
-│   ├── kernel
-│   └── src
+│   ├── kernel # Arquivos de configuração e patch do kernel do Android
+│   └── src # Aplicativos desenvolvidos durante o curso
 │       └── apps # Aplicativos desenvolvidos até o momento
-│           ├── AIDL_Interface # Projeto do Hands on 1ua 2ua da disciplina: Interface e Gerenciamento de Serviços no Android
+│           ├── AIDL_Interface # Projeto Hands on UA1 e UA2 da disciplina: Interface e Gerenciamento de Serviços no Android
 │           │   ├── app
 │           │   ├── build
 │           │   ├── build.gradle.kts
@@ -161,19 +161,19 @@ Etapas da criação e configuração do dispositivo virtual:
 │           └── audio_equalizer
 ├── docs
 │   └── reports # Todos os relatórios no formato PDF
-├── readme_files
+├── readme_files # Todos os relatórios escritos em markdown
 │   ├── AIDL_dc3_u1_u2.md
 │   ├── android_application_dc2_p1.md
 │   ├── aosp_customization.md
 │   ├── environmental_preparation.md
 │   └── imgs
-├── README.md
+├── README.md # LEIA-ME principal do repositório
 └── .vscode
     └── settings.json
 
 ```
 
-O Caminho do projeto desenvolvido conforme a estrutura de pastas acima é `/aosp/src/apps/AIDL_Interface`. Todos os arquivos do projeto do android studio estão dentro desta pasta.
+O Caminho do projeto desenvolvido conforme a estrutura de pastas acima é `/aosp/src/apps/AIDL_Interface`. Todos os arquivos do projeto do `android studio` estão dentro desta pasta.
 
 ### 2.2 Implementação
 
@@ -184,14 +184,29 @@ Interface AIDL implementa, possui apenas o método `int getRandomKey()` conforme
     <figcaption style="text-align:center"><strong>Figura 9:</strong> Interface AIDL</figcaption>
 </p>
 
-A classe `RandomKey.class` implementa o método definido na interface conforme a imagem abaixo.
+A classe `RandomKey.class` implementa o método definido na interface conforme a imagem abaixo. Essa classe estende o `services` responsável pela execução do método.
 
 <p style="text-align:center">
     <img src=imgs/servico.png alt style="width:100%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 10:</strong> Service</figcaption>
 </p>
 
-O processo de conexão do binder ocorre no  onCreate chamado no mainActivity conforme o trecho abaixo.
+Quando a classe do serviço é criada usando o Android Studio, algumas configurações adicionais são criadas no arquivo Manifest do android.
+
+```xml
+<service
+    android:name=".RandomKey"
+    android:exported="true"
+    android:permission="android.permission.BIND_REMOTE_SERVICE" >
+    <intent-filter>
+        <action android:name="com.leandromendes.aidl_interface.IRandomKey" />
+    </intent-filter>
+</service>
+```
+
+A permissão e o intent-filter foram adicionados a configuração criada.
+
+O processo de conexão do binder ocorre no `onCreate` chamado na `MainActivity.class` conforme o trecho abaixo.
 
 ```java
 // Create an intent for a specific component
@@ -210,7 +225,7 @@ bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 Toda vez que o botão na interface gráfica é pressionado o serviço é acessado e retorna um número aleatório representando uma chave de acesso aleatória conforme o trecho abaixo.
 
 ```java
-// Escuta quando o botão é pressionado
+// Listens when the button is pressed
 generate.setOnClickListener(v -> {
     keyDisplay.setText(format("%d", generateKey()));
 });
@@ -224,7 +239,7 @@ generate.setOnClickListener(v -> {
 private int generateKey() {
     if(isConnected){
         try {
-            // Realiza a comunicao com o servico e retorna a chave aleatoria
+            // Communicates with the service and returns the random key
             return randomKeyService.getRandomKey();
         }
         catch (RemoteException e) {
@@ -233,6 +248,41 @@ private int generateKey() {
     }
     Log.d(TAG, "The service is not yet available!");
     return 0;
+}
+```
+
+Algumas configurações foram necessárias para a correta execução do aplicativo, a primeira foi habilitar a flag  `buildFeatures.aidl = true` no arquivo `build.gradle.kts`, Ela é usada no Android para ativar ou desativar o suporte para compilar arquivos AIDL _(Android Interface Definition Language)_.
+
+```json
+android {
+    namespace = "com.leandromendes.aidl_interface"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.leandromendes.aidl_interface"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    // Enable buld AIDL file
+    buildFeatures.aidl = true
 }
 ```
 
