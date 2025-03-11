@@ -62,4 +62,4 @@ capaz de receber sinais da Controller Area Network (CAN);
 * Implementar a estrutura e o funcionamento do Binder no Android;
 * Implementar uma interface AIDL em um serviço Android integrada ao Binder.
 
-:bookmark_tabs: Relátorio da atividade:
+:bookmark_tabs: Relátorio da atividade: [Interface AIDL](readme_files/AIDL_dc3_u1_u2.md)
