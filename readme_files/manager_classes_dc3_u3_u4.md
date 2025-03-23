@@ -12,7 +12,7 @@ Descrição
 
 Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/tree/dc-3-ua3-ua4-hands-on)
 
-Link da Aplicação: [Resource Management]()
+Link da Aplicação: [Resource Management](https://github.com/leandroSubtractive/sistema_embarcado/tree/dc-3-ua3-ua4-hands-on/aosp/src/apps/resource_management)
 
 > **:memo: Nota** _Este link é da branch do repositório onde se encontra o código-fonte da aplicação. Após a avaliação da atividade, a branch será megeada na devel._
 
