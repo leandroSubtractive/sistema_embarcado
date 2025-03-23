@@ -12,6 +12,7 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
   * [[DC-2] UA3 e UA4 - Hands On](#-dc-2-ua3-e-ua4---hands-on)
 * [Interface e Gerenciamento de Serviços no Android](#-interface-e-gerenciamento-de-serviços-no-android)
   * [[DC-3] UA1 e UA2 - Hands On](#-dc-3-ua1-e-ua2---hands-on)
+  * [[DC-3] UA3 e UA4 - Hands On](#-dc-3-ua3-e-ua4---hands-on)
 
 ## :book: Fundamentos do Android
 
@@ -63,3 +64,11 @@ capaz de receber sinais da Controller Area Network (CAN);
 * Implementar uma interface AIDL em um serviço Android integrada ao Binder.
 
 :bookmark_tabs: Relátorio da atividade: [Interface AIDL](readme_files/AIDL_dc3_u1_u2.md)
+
+### :white_check_mark: [DC-3] UA3 e UA4 - Hands On
+
+* Explicar as funções principais das Manager Classes no gerenciamento de atividades no Android;
+* Implementar a interação entre Manager Classes e System Services no Android
+* Utilizar o Espresso e JUnit como ferramentas de automação de testes para componentes gerenciados pelas Manager Classes.
+
+:bookmark_tabs: Relátorio da atividade: [Manager Classes](readme_files/manager_classes_dc3_u3_u4.md)
