@@ -1,6 +1,8 @@
 package com.leandromendes.resourcemanagement;
 
+import android.app.ActivityManager;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 
 
@@ -17,13 +19,13 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.leandromendes.resourcemanagement.adapters.TabsSetAdapter;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ResourceManagerLifecycle";
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
-
     private final String[] tabsName = {"Apps", "Processes"};
 
     @Override
@@ -49,15 +51,14 @@ public class MainActivity extends AppCompatActivity {
         TabsSetAdapter adapter = new TabsSetAdapter(this);
         viewPager2.setAdapter(adapter);
 
-        new TabLayoutMediator(tabLayout, viewPager2,
-                (tab, position) -> tab.setText(tabsName[position])).attach();
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart() called");
+        new TabLayoutMediator(tabLayout, viewPager2,
+                (tab, position) -> tab.setText(tabsName[position])).attach();
     }
 
     @Override
