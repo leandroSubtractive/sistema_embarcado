@@ -1,5 +1,6 @@
 package com.leandromendes.resourcemanagement;
 
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -8,9 +9,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.leandromendes.resourcemanagement.util.AppInfo;
+import com.leandromendes.resourcemanagement.util.AppViewAdapter;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ResourceManagerLifecycle";
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +32,13 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Log.d(TAG, "onCreate() called");
+        recyclerView = findViewById(R.id.resourceView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        List<ApplicationInfo> allAppsInstalled = AppInfo.GetAllAppsInfo(this);
+        AppViewAdapter appViewAdapter = new AppViewAdapter(this, allAppsInstalled);
+        recyclerView.setAdapter(appViewAdapter);
+
     }
 
     @Override
