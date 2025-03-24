@@ -1,6 +1,5 @@
 package com.leandromendes.resourcemanagement;
 
-import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,20 +11,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
-import com.leandromendes.resourcemanagement.util.AppInfo;
-import com.leandromendes.resourcemanagement.util.AppViewAdapter;
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.leandromendes.resourcemanagement.adapters.TabsSetAdapter;
 
-import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ResourceManagerLifecycle";
-    private RecyclerView recyclerView;
     private TabLayout tabLayout;
+    private ViewPager2 viewPager2;
+
+    private final String[] tabsName = {"Apps", "Processes"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +39,18 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate() called");
 
-        Toolbar toolbar = findViewById(R.id.toolbarApp);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.app_name));
 
-        tabLayout = findViewById(R.id.tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("Apps"));
-        tabLayout.addTab(tabLayout.newTab().setText("Processes"));
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager2 = findViewById(R.id.viewPager);
 
+        TabsSetAdapter adapter = new TabsSetAdapter(this);
+        viewPager2.setAdapter(adapter);
 
-        recyclerView = findViewById(R.id.resourceView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        List<ApplicationInfo> allAppsInstalled = AppInfo.GetAllAppsInfo(this);
-        AppViewAdapter appViewAdapter = new AppViewAdapter(this, allAppsInstalled);
-        recyclerView.setAdapter(appViewAdapter);
+        new TabLayoutMediator(tabLayout, viewPager2,
+                (tab, position) -> tab.setText(tabsName[position])).attach();
 
     }
 
