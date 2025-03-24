@@ -4,6 +4,9 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
 
+
+import androidx.appcompat.widget.Toolbar;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -12,14 +15,17 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
 import com.leandromendes.resourcemanagement.util.AppInfo;
 import com.leandromendes.resourcemanagement.util.AppViewAdapter;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ResourceManagerLifecycle";
     private RecyclerView recyclerView;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,17 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Log.d(TAG, "onCreate() called");
+
+        Toolbar toolbar = findViewById(R.id.toolbarApp);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.app_name));
+
+        tabLayout = findViewById(R.id.tabs);
+        tabLayout.addTab(tabLayout.newTab().setText("Apps"));
+        tabLayout.addTab(tabLayout.newTab().setText("Processes"));
+
 
         recyclerView = findViewById(R.id.resourceView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
