@@ -13,4 +13,8 @@ public class AppInfo {
         PackageManager packageManager = context.getPackageManager();
         return packageManager.getInstalledApplications(packageManager.GET_META_DATA);
     }
+
+    public static int GetTotalAppsInstall(@NonNull Context context) {
+        return GetAllAppsInfo(context).size();
+    }
 }

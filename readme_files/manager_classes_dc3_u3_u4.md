@@ -1,6 +1,6 @@
 # Gerenciamento Avançado de Recursos com Manager Classes e Testes Automatizados no Android
 
-Descrição
+Para exemplificar o uso dos gerenciadores de recursos do android, foi desenvolvido um aplicativo simples que demonstra o uso do WindowManager com a criação de uma tela sobreposta à tela do aplicativo, o PackageManager para listar aplicativos instalados no AVD e o ActivityManager para obter informações de processos no sistema. O App conta com uma tela inicial onde utiliza uma estrutura de recycleView para listar as informações e a TabLayout para trocar a exibição das informações.
 
 ## Objetivo
 
