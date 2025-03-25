@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Resource Management</string>
+
+    <!-- Button names -->
+    <string name="apps_button">Total Apps</string>
+    <string name="close_button">Close</string>
+
 </resources>

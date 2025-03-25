@@ -22,6 +22,11 @@ public class ProcessViewAdapter extends RecyclerView.Adapter<ProcessViewAdapter.
 
     public static class ProcessViewHolder extends RecyclerView.ViewHolder{
         private final TextView procInfo;
+
+        /**
+         * Provide a reference to the type of views that you are using
+         * (custom ViewHolder)
+         */
         public ProcessViewHolder(View itemView) {
             super(itemView);
             procInfo = itemView.findViewById(R.id.processTextView);

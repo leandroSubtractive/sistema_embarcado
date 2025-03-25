@@ -9,8 +9,15 @@ import com.leandromendes.resourcemanagement.tabs.AppsTab;
 import com.leandromendes.resourcemanagement.tabs.ProcessTab;
 
 public class TabsSetAdapter extends FragmentStateAdapter {
+
+    private final String[] tabsName = {"Apps", "Processes"};
+
     public TabsSetAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
+    }
+
+    public String[] getTabsName() {
+        return tabsName;
     }
 
     @NonNull
@@ -27,6 +34,6 @@ public class TabsSetAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 2;
+        return tabsName.length;
     }
 }

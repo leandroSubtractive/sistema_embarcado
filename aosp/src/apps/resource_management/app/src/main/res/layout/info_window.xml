@@ -29,6 +29,7 @@
             android:id="@+id/closeButton"
             android:layout_width="122dp"
             android:layout_height="wrap_content"
+            android:text="@string/close_button"
             android:contentDescription="@string/app_name" />
 
     </LinearLayout>
