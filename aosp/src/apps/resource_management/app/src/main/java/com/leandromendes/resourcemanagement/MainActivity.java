@@ -39,8 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
     private WindowManager windowManager;
+    private WindowManager.LayoutParams params;
     private View infoFloatingView;
     private TabsSetAdapter tabsSetAdapter;
+    private TextView textView;
 
     /**
      * ActivityResultLauncher to request the overlay permission.
@@ -88,6 +90,25 @@ public class MainActivity extends AppCompatActivity {
         // Instantiate a new tab adapter and define it on the view page
         tabsSetAdapter = new TabsSetAdapter(this);
         viewPager2.setAdapter(tabsSetAdapter);
+
+        // Gets an instance of WindowManager to manage the floating window.
+        windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+
+        // Gets a LayoutInflater to inflate the layout of the floating window.
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        infoFloatingView = inflater.inflate(R.layout.info_window, null);
+        textView = infoFloatingView.findViewById(R.id.infoView);
+
+        // Creates the layout parameters for the floating window
+        params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT, // Window width adjusted to content
+                WindowManager.LayoutParams.WRAP_CONTENT, // Window height adjusted to content
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, // Layout type for overlay
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, // Prevents the window from receiving incoming focus
+                PixelFormat.TRANSLUCENT); // Makes the background of the window translucent
+
+        // Sets the gravity of the floating window to center it on the screen
+        params.gravity = Gravity.CENTER;
 
         // Defines the action of the application total display button,
         // if permission has already been given, displays the screen with the information,
@@ -161,29 +182,12 @@ public class MainActivity extends AppCompatActivity {
      * The window displays the total number of applications installed on the device and a button to close it.
      */
     private void showInfoWindow() {
-        // Gets an instance of WindowManager to manage the floating window.
-        windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
 
-        // Gets a LayoutInflater to inflate the layout of the floating window.
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        infoFloatingView = inflater.inflate(R.layout.info_window, null);
+        // Gets and set the total number of apps on the floating screen
+        textView.setText("Total Apps Installed: " + GetTotalAppsInstall(this));
 
-        // Creates the layout parameters for the floating window
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT, // Window width adjusted to content
-                WindowManager.LayoutParams.WRAP_CONTENT, // Window height adjusted to content
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, // Layout type for overlay
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, // Prevents the window from receiving incoming focus
-                PixelFormat.TRANSLUCENT); // Makes the background of the window translucent
-
-        // Sets the gravity of the floating window to center it on the screen
-        params.gravity = Gravity.CENTER;
         // Add the floating window to the screen using WindowManager
         windowManager.addView(infoFloatingView, params);
-
-        // Gets and displays the total number of apps on the floating screen
-        TextView textView = infoFloatingView.findViewById(R.id.infoView);
-        textView.setText("Total Apps Installed: " + GetTotalAppsInstall(this));
 
         // Gets button that closes the overlay window
         Button closeButton = infoFloatingView.findViewById(R.id.closeButton);
