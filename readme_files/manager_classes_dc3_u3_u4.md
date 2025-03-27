@@ -34,6 +34,9 @@ Link da Aplicação: [Resource Management](https://github.com/leandroSubtractive
             - 2.2.2.3. [WindowManager](#2223-windowmanager)
                 - 2.2.2.3.1. [Permissões](#22231-permissões)
         - 2.2.3. [Layout](#223-layout)
+3. [Testes](#3-android-test)
+    - 3.1 [Casos de Teste](#31-casos-de-teste)
+    - 3.2 [Resultados](#32-resultados)
 
 ## 1. Ambiente de Desenvolvimento
 
@@ -307,49 +310,53 @@ O `WindowManager` foi utilizado para exibir uma tela sobreposta à tela do aplic
     <figcaption style="text-align:center"><strong>Figura 8:</strong> Tela Sobreposta</figcaption>
 </p>
 
-A instância do `windowManger` é obtida no método `onCreate()` da classe `MainActivity` assim como também é instanciada a tela sobreposta a uma View conforme trecho abaixo.
+A instância do `windowManger` é obtida no construtor `FloatingScreen()` da classe `FloatingScreen` assim como também é instanciada a tela sobreposta a uma View conforme trecho abaixo.
 
 ```java
 ...
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-...
+public class FloatingScreen {
+    private WindowManager windowManager;
+    private LayoutInflater inflater;
+    private WindowManager.LayoutParams params;
+    private View infoFloatingView;
+    private TextView textView;
+    private Context context;
 
-    // Gets an instance of WindowManager to manage the floating window.
-    windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+    public FloatingScreen(@NonNull Context context) {
+        // Gets an instance of WindowManager to manage the floating window.
+        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
-    // Gets a LayoutInflater to inflate the layout of the floating window.
-    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    infoFloatingView = inflater.inflate(R.layout.info_window, null);
-    textView = infoFloatingView.findViewById(R.id.infoView);
+        // Gets a LayoutInflater to inflate the layout of the floating window.
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        infoFloatingView = inflater.inflate(R.layout.info_window, null);
+        textView = infoFloatingView.findViewById(R.id.infoView);
 
-    // Creates the layout parameters for the floating window
-    params = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT, // Window width adjusted to content
-            WindowManager.LayoutParams.WRAP_CONTENT, // Window height adjusted to content
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, // Layout type for overlay
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, // Prevents the window from receiving incoming focus
-            PixelFormat.TRANSLUCENT); // Makes the background of the window translucent
+        // Creates the layout parameters for the floating window
+        params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT, // Window width adjusted to content
+                WindowManager.LayoutParams.WRAP_CONTENT, // Window height adjusted to content
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, // Layout type for overlay
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, // Prevents the window from receiving incoming focus
+                PixelFormat.TRANSLUCENT); // Makes the background of the window translucent
 
-    // Sets the gravity of the floating window to center it on the screen
-    params.gravity = Gravity.CENTER;
+        // Sets the gravity of the floating window to center it on the screen
+        params.gravity = Gravity.CENTER;
+
+        this.context = context;
+    }
 ...
 ```
 
 Quando o botão é pressionado, primeiro é feita uma verificação de permissão, caso não tenha, a mesma é solicitada ao usuário, após essa etapa a tela é adicionada à View e exibida conforme trecho abaixo.
 
 ```java
-private void showInfoWindow() {
+public void showInfoWindow() {
 
     // Gets and set the total number of apps on the floating screen
-    textView.setText("Total Apps Installed: " + GetTotalAppsInstall(this));
+    textView.setText("Total Apps Installed: " + GetTotalAppsInstall(this.context));
 
     // Add the floating window to the screen using WindowManager
     windowManager.addView(infoFloatingView, params);
-
-    // Gets button that closes the overlay window
-    Button closeButton = infoFloatingView.findViewById(R.id.closeButton);
-    closeButton.setOnClickListener(v -> windowManager.removeView(infoFloatingView));
 }
 ```
 
@@ -378,7 +385,7 @@ private void requestOverlayPermission() {
         overlayPermissionLauncher.launch(intent);
     } else {
         // Permission already granted, create floating window
-        showInfoWindow();
+        floatingScreen.showInfoWindow();
     }
 }
 ```
@@ -388,7 +395,7 @@ private final ActivityResultLauncher<Intent> overlayPermissionLauncher =
         registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (Settings.canDrawOverlays(MainActivity.this)) {
-                        showInfoWindow();
+                        floatingScreen.showInfoWindow();
                     } else {
                         Toast.makeText(MainActivity.this, "Permission denied!",
                                 Toast.LENGTH_SHORT).show();
@@ -417,4 +424,64 @@ Todos os arquivos .xml de Layout utilizados estão definidos na captura de tela 
 <p style="text-align:center">
     <img src=imgs/layout.png alt style="width:70%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 10:</strong> Layout</figcaption>
+</p>
+
+## 3. Android Test
+
+### 3.1 Casos de Teste
+
+Nesta atividade, foram implementados 3 casos de testes instrumentados.
+
+Neste primeiro caso de teste, é verificado se, quando a Tab é selecionada, a sua respectiva Recycle View é exibida.
+
+```java
+    /**
+     * Check that the RecycleView of the corresponding tab is displayed
+     */
+    @Test
+    public void recyclerViewAppsIsDisplayed() {
+        // Select the Tab by name, and check that the right RecycleView is appearing
+        onView(withText(tabsName[0])).check(matches(isDisplayed()));
+        onView(withId(R.id.recyclerViewApps))
+                    .check(matches(isDisplayed()));
+
+    }
+```
+
+Neste outro, é realizado o mesmo procedimento, só que para a Tab de processos.
+
+```java
+    /**
+     * Check that the RecycleView of the corresponding tab is displayed
+     */
+    @Test
+    public void recyclerViewProcessIsDisplayed() {
+        // Select the Tab by name, and check that the right RecycleView is appearing
+        onView(withText(tabsName[1])).perform(click());
+        onView(withText(tabsName[1])).check(matches(isDisplayed()));
+
+        onView(withId(R.id.recyclerViewProcess))
+                .check(matches(isDisplayed()));
+    }
+```
+
+Já neste último caso, é feita uma verificação se os componentes da tela estão visíveis após a inicialização.
+
+```java
+    /**
+     * Check that the screen components are showing up
+     */
+    @Test
+    public void screenComponentsIsDisplayed() {
+        onView(withId(R.id.button)).check(matches(isDisplayed()));
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
+        onView(withId(R.id.tabLayout)).check(matches(isDisplayed()));
+    }
+```
+
+### 3.2 Resultados
+
+<p style="text-align:center">
+    <img src=imgs/TestResult.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 11:</strong> Resultados dos Testes</figcaption>
 </p>

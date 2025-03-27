@@ -2,6 +2,7 @@ package com.leandromendes.resourcemanagement;
 
 import static com.leandromendes.resourcemanagement.util.AppInfo.GetTotalAppsInstall;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +33,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.leandromendes.resourcemanagement.adapters.TabsSetAdapter;
+import com.leandromendes.resourcemanagement.ui.FloatingScreen;
 
 import java.util.Objects;
 
@@ -38,11 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "ResourceManagerLifecycle";
     private TabLayout tabLayout;
     private ViewPager2 viewPager2;
-    private WindowManager windowManager;
-    private WindowManager.LayoutParams params;
-    private View infoFloatingView;
     private TabsSetAdapter tabsSetAdapter;
-    private TextView textView;
+
+    private FloatingScreen floatingScreen;
 
     /**
      * ActivityResultLauncher to request the overlay permission.
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     result -> {
                         if (Settings.canDrawOverlays(MainActivity.this)) {
-                            showInfoWindow();
+                            floatingScreen.showInfoWindow();
                         } else {
                             Toast.makeText(MainActivity.this, "Permission denied!",
                                     Toast.LENGTH_SHORT).show();
@@ -91,30 +92,19 @@ public class MainActivity extends AppCompatActivity {
         tabsSetAdapter = new TabsSetAdapter(this);
         viewPager2.setAdapter(tabsSetAdapter);
 
-        // Gets an instance of WindowManager to manage the floating window.
-        windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-
-        // Gets a LayoutInflater to inflate the layout of the floating window.
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        infoFloatingView = inflater.inflate(R.layout.info_window, null);
-        textView = infoFloatingView.findViewById(R.id.infoView);
-
-        // Creates the layout parameters for the floating window
-        params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT, // Window width adjusted to content
-                WindowManager.LayoutParams.WRAP_CONTENT, // Window height adjusted to content
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, // Layout type for overlay
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, // Prevents the window from receiving incoming focus
-                PixelFormat.TRANSLUCENT); // Makes the background of the window translucent
-
-        // Sets the gravity of the floating window to center it on the screen
-        params.gravity = Gravity.CENTER;
+        // Initializes the screen responsible for displaying the number of installed applications,
+        // this screen is a floating screen.
+        floatingScreen = new FloatingScreen(this);
 
         // Defines the action of the application total display button,
         // if permission has already been given, displays the screen with the information,
         // otherwise makes the request
         Button showInfoButton = findViewById(R.id.button);
         showInfoButton.setOnClickListener(v -> requestOverlayPermission());
+
+        // Gets button that closes the overlay window
+        Button closeButton = floatingScreen.getInfoFloatingView().findViewById(R.id.closeButton);
+        closeButton.setOnClickListener(v -> floatingScreen.removeInfoWindow());
     }
 
     @Override
@@ -143,15 +133,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "onStop() called");
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
-        if (infoFloatingView != null) {
-            windowManager.removeView(infoFloatingView);
-        }
+        floatingScreen.removeInfoWindow();
     }
 
     /**
@@ -171,26 +160,7 @@ public class MainActivity extends AppCompatActivity {
             overlayPermissionLauncher.launch(intent);
         } else {
             // Permission already granted, create floating window
-            showInfoWindow();
+            floatingScreen.showInfoWindow();
         }
-    }
-
-    /**
-     * Displays a floating window with information about the total number of installed applications.
-     * <p>
-     * This method creates and displays a floating window that overlays other applications on the screen.
-     * The window displays the total number of applications installed on the device and a button to close it.
-     */
-    private void showInfoWindow() {
-
-        // Gets and set the total number of apps on the floating screen
-        textView.setText("Total Apps Installed: " + GetTotalAppsInstall(this));
-
-        // Add the floating window to the screen using WindowManager
-        windowManager.addView(infoFloatingView, params);
-
-        // Gets button that closes the overlay window
-        Button closeButton = infoFloatingView.findViewById(R.id.closeButton);
-        closeButton.setOnClickListener(v -> windowManager.removeView(infoFloatingView));
     }
 }
