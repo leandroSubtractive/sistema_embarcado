@@ -13,6 +13,9 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 * [Interface e Gerenciamento de Serviços no Android](#-interface-e-gerenciamento-de-serviços-no-android)
   * [[DC-3] UA1 e UA2 - Hands On](#-dc-3-ua1-e-ua2---hands-on)
   * [[DC-3] UA3 e UA4 - Hands On](#-dc-3-ua3-e-ua4---hands-on)
+* [Serviços Avançados e Integração Nativa no Android](#-serviços-avançados-e-integração-nativa-no-android)
+  * [[DC-4] UA1 e UA2 - Hands On](#-dc-4-ua1-e-ua2---hands-on)
+  * [[DC-4] UA3 e UA4 - Hands On](#-dc-4-ua3-e-ua4---hands-on)
 
 ## :book: Fundamentos do Android
 
@@ -72,3 +75,22 @@ capaz de receber sinais da Controller Area Network (CAN);
 * Utilizar o Espresso e JUnit como ferramentas de automação de testes para componentes gerenciados pelas Manager Classes.
 
 :bookmark_tabs: Relátorio da atividade: [Manager Classes](readme_files/manager_classes_dc3_u3_u4.md)
+
+## :computer: Serviços Avançados e Integração Nativa no Android
+
+### :white_check_mark: [DC-4] UA1 e UA2 - Hands On
+
+* Implementar métodos do ciclo de vida dos serviços de áudio no Android;
+* Elaborar um serviço de reprodução de áudio no Android;
+* Implementar a chamada do serviço de reprodução de áudio no Android.
+
+:bookmark_tabs: Relátorio da atividade: [Native Android Service](readme_files/android_service_dc4_u1_u2.md)
+
+### :white_check_mark: [DC-4] UA3 e UA4 - Hands On
+
+* Implementar um serviço de sistema Android que utilize JNI e JUNIT;
+* Implementar testes unitários para verificação do funcionamento do serviço no sistema Android;
+* Integrar outros componentes ao serviço do sistema Android;
+* Elaborar testes apresentando os resultados obtidos.
+
+:bookmark_tabs: Relátorio da atividade: []()
