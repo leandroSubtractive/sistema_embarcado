@@ -10,6 +10,8 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 * [Programação Orientada a Objetos para Android](#-programação-orientada-a-objetos-para-android)
   * [[DC-2] UA1 e UA2 - Hands On](#-dc-2-ua1-e-ua2---hands-on)
   * [[DC-2] UA3 e UA4 - Hands On](#-dc-2-ua3-e-ua4---hands-on)
+* [Interface e Gerenciamento de Serviços no Android](#-interface-e-gerenciamento-de-serviços-no-android)
+  * [[DC-3] UA1 e UA2 - Hands On](#-dc-3-ua1-e-ua2---hands-on)
 
 ## :book: Fundamentos do Android
 
@@ -52,3 +54,12 @@ capaz de receber sinais da Controller Area Network (CAN);
 :bookmark_tabs: Relátorio da atividade:
 
 :arrow_forward: Video da atividade:
+
+## :computer: Interface e Gerenciamento de Serviços no Android
+
+### :white_check_mark: [DC-3] UA1 e UA2 - Hands On
+
+* Implementar a estrutura e o funcionamento do Binder no Android;
+* Implementar uma interface AIDL em um serviço Android integrada ao Binder.
+
+:bookmark_tabs: Relátorio da atividade: [Interface AIDL](readme_files/AIDL_dc3_u1_u2.md)
