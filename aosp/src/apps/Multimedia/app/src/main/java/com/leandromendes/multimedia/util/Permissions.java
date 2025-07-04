@@ -1,9 +1,19 @@
 package com.leandromendes.multimedia.util;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Permissions {
@@ -21,5 +31,4 @@ public class Permissions {
     {
         return MULTIPLE_PERMISSIONS_REQUEST_CODE;
     }
-
 }
