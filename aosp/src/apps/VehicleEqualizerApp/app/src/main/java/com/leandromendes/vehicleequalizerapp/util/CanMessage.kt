@@ -46,7 +46,7 @@ class CanMessage (val id: Int, val data: ByteArray){
          * Calcula código hash baseado no ID e conteudo da mensagem.
          */
         result = 31 * result + data.contentHashCode()
-        
+
         return result
     }
 }
