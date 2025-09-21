@@ -4,9 +4,11 @@ Relatório descrevendo os passos utilizados para a customização do Android OSP
 
 ## Objetivo
 
-- Customizar o sistema operacional Android com funcionalidades emuladas para que seja
-capaz de receber sinais da Controller Area Network (CAN);
-- Reproduzir um fluxo CAN simulado através das funcionalidades criadas.
+- Configurar um dispositivo virtual, como o "Pixel 5", com a API adequada e personalizar
+configurações, como resolução e armazenamento, para garantir simulações precisas
+- Definir os principais subsistemas do sistema embarcado, como a interface do usuário, além de
+desenvolver um diagrama claro que mostre os fluxos de dados e interações entre os
+subsistemas.
 
 ## Sumário
 
