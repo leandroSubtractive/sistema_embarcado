@@ -1,4 +1,4 @@
-# Interface e Gerenciamento de Serviços no Android
+# Implementação de Comunicação IPC utilizando HIDL e AIDL: Integração Básica de Serviços Android
 
 Para alcançar os objetivos definidos para essa atividade, foi implementado um aplicativo simples que gera chaves de acesso aleatórias ao pressionar um botão na tela. Os tópicos a seguir descreverão mais sobre o funcionamento do aplicativo e seu diagrama de solução.
 
@@ -9,11 +9,9 @@ Para alcançar os objetivos definidos para essa atividade, foi implementado um a
 
 ## Reposítorio
 
-Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/tree/dc-3-ua1-ua2-hands-on)
+Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/)
 
-Link da Aplicação: [AIDL_Interface](https://github.com/leandroSubtractive/sistema_embarcado/tree/dc-3-ua1-ua2-hands-on/aosp/src/apps/AIDL_Interface)
-
-> **:memo: Nota** _Este link é da branch do repositório onde se encontra o código-fonte da aplicação. Após a avaliação da atividade, a branch será megeada na devel._
+Link da Aplicação: [AIDL_Interface](https://github.com/leandroSubtractive/sistema_embarcado/tree/devel/aosp/src/apps/AIDL_Interface)
 
 ## Sumário
 

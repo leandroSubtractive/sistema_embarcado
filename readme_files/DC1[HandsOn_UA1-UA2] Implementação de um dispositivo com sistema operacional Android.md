@@ -1,4 +1,4 @@
-# Ambiente de desenvolvimento Android
+# Implementação de um dispositivo com sistema operacional Android
 
 Roteiro de configuração e preparação do ambiente de trabalho Android em uma máquina com o sistema operacional Linux.
 
@@ -43,6 +43,8 @@ Nas seções a seguir serão descritos os passos para cada configuração.
       - 6.3.2. [Alterando o tamanho da RAM](#632-alterando-a-ram)
     - 6.4. [Instalando APP no Dispositivo Virtual](#64-instalando-app-no-emulador)
 7. [Referências](#7-referências)
+
+## Ambiente de desenvolvimento Android
 
 ## 1. Estação de Trabalho
 
