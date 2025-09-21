@@ -4,18 +4,21 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 
 ## :books: Disciplinas
 
-* [Fundamentos do Android](#-fundamentos-do-android)
+* [G95140|EXT-ADS-037|Fundamentos do Android](#-fundamentos-do-android)
   * [[DC-1] UA1 e UA2 - Hands On](#-dc-1-ua1-e-ua2---hands-on)
   * [[DC-1] UA3 e UA4 - Hands On](#-dc-1-ua3-e-ua4---hands-on)
-* [Programação Orientada a Objetos para Android](#-programação-orientada-a-objetos-para-android)
+* [G95140|EXT-ADS-038|Programação Orientada a Objetos para Android](#-programação-orientada-a-objetos-para-android)
   * [[DC-2] UA1 e UA2 - Hands On](#-dc-2-ua1-e-ua2---hands-on)
   * [[DC-2] UA3 e UA4 - Hands On](#-dc-2-ua3-e-ua4---hands-on)
-* [Interface e Gerenciamento de Serviços no Android](#-interface-e-gerenciamento-de-serviços-no-android)
+* [G95140|EXT-ADS-039|Interface e Gerenciamento de Serviços no Android	](#-interface-e-gerenciamento-de-serviços-no-android)
   * [[DC-3] UA1 e UA2 - Hands On](#-dc-3-ua1-e-ua2---hands-on)
   * [[DC-3] UA3 e UA4 - Hands On](#-dc-3-ua3-e-ua4---hands-on)
-* [Serviços Avançados e Integração Nativa no Android](#-serviços-avançados-e-integração-nativa-no-android)
+* [G95140|EXT-ADS-040|Serviços Avançados e Integração Nativa no Android](#-serviços-avançados-e-integração-nativa-no-android)
   * [[DC-4] UA1 e UA2 - Hands On](#-dc-4-ua1-e-ua2---hands-on)
   * [[DC-4] UA3 e UA4 - Hands On](#-dc-4-ua3-e-ua4---hands-on)
+* [G95140|EXT-ADS-041|Desenvolvimento e Integração de HAL no Android](#-desenvolvimento-e-integração-de-hal-no-android)
+  * [[DC-5] UA1 e UA2 - Hands On](#-dc-5-ua1-e-ua2---hands-on)
+  * [[DC-5] UA3 e UA4 - Hands On](#-dc-5-ua3-e-ua4---hands-on)
 * [Programação de Sistemas Embarcados com Linux](#-programação-de-sistemas-embarcados-com-linux)
   * [[DC-6] UA1 e UA2 - Hands On](#-dc-6-ua1-e-ua2---hands-on)
   * [[DC-6] UA3 e UA4 - Hands On](#-dc-6-ua3-e-ua4---hands-on)
@@ -95,6 +98,23 @@ capaz de receber sinais da Controller Area Network (CAN);
 * Implementar testes unitários para verificação do funcionamento do serviço no sistema Android;
 * Integrar outros componentes ao serviço do sistema Android;
 * Elaborar testes apresentando os resultados obtidos.
+
+:bookmark_tabs: Relátorio da atividade: []()
+
+## :computer: Desenvolvimento e Integração de HAL no Android
+
+### :white_check_mark: [DC-5] UA1 e UA2 - Hands On
+
+* Diagnosticar problemas de áudio e consumo de energia em dispositivos;
+* Classificar dados de diferentes HALs para solução de problemas de áudio e energia em dispositivos.
+
+:bookmark_tabs: Relátorio da atividade:
+
+### :white_check_mark: [DC-5] UA3 e UA4 - Hands On
+
+* Classificar os bugs em códigos nativos utilizando profiling;
+* Implementar estratégias de otimização de performance em um serviço nativo do Android Studio;
+* Implementar testes unitários para um serviço nativo do Android Studio.
 
 :bookmark_tabs: Relátorio da atividade: []()
 
