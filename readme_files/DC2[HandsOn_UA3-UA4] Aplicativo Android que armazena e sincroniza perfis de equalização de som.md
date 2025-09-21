@@ -4,7 +4,7 @@ Relatório de implementação de aplicativo Android para gerenciamento de perfis
 
 ## Links
 
-Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/tree/DC-2-ua1-ua2-hands-on)
+Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/)
 
 ## Objetivo
 
