@@ -17,8 +17,8 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
   * [[DC-4] UA1 e UA2 - Hands On](#-dc-4-ua1-e-ua2---hands-on)
   * [[DC-4] UA3 e UA4 - Hands On](#-dc-4-ua3-e-ua4---hands-on)
 * [Programação de Sistemas Embarcados com Linux](#-programação-de-sistemas-embarcados-com-linux)
-  * [[DC-5] UA1 e UA2 - Hands On](#-dc-5-ua1-e-ua2---hands-on)
-  * [[DC-5] UA3 e UA4 - Hands On](#-dc-5-ua3-e-ua4---hands-on)
+  * [[DC-6] UA1 e UA2 - Hands On](#-dc-6-ua1-e-ua2---hands-on)
+  * [[DC-6] UA3 e UA4 - Hands On](#-dc-6-ua3-e-ua4---hands-on)
 
 ## :book: Fundamentos do Android
 
@@ -100,9 +100,9 @@ capaz de receber sinais da Controller Area Network (CAN);
 
 ## :computer: Programação de Sistemas Embarcados com Linux
 
-### :white_check_mark: [DC-5] UA1 e UA2 - Hands On
+### :white_check_mark: [DC-6] UA1 e UA2 - Hands On
 
-### :white_check_mark: [DC-5] UA3 e UA4 - Hands On
+### :white_check_mark: [DC-6] UA3 e UA4 - Hands On
 
 * Utilizar ferramentas de automação para implantar aplicativos Android em emuladores ou dispositivos;
 * Explicar a configuração do kernel Linux para habilitar o suporte à rede CAN;
@@ -111,4 +111,4 @@ capaz de receber sinais da Controller Area Network (CAN);
 
 :bookmark_tabs: Relátorio da atividade: [Descrição da Solução](readme_files/Automation_and_optimization_of_Embedded_Android_Systems.md)
 
-:arrow_forward: Video da atividade: 
+:arrow_forward: Video da atividade:
