@@ -19,6 +19,9 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 * [G95140|EXT-ADS-041|Desenvolvimento e Integração de HAL no Android](#-desenvolvimento-e-integração-de-hal-no-android)
   * [[DC-5] UA1 e UA2 - Hands On](#-dc-5-ua1-e-ua2---hands-on)
   * [[DC-5] UA3 e UA4 - Hands On](#-dc-5-ua3-e-ua4---hands-on)
+* [Programação de Sistemas Embarcados com Linux](#-programação-de-sistemas-embarcados-com-linux)
+  * [[DC-6] UA1 e UA2 - Hands On](#-dc-6-ua1-e-ua2---hands-on)
+  * [[DC-6] UA3 e UA4 - Hands On](#-dc-6-ua3-e-ua4---hands-on)
 
 ## :book: Fundamentos do Android
 
@@ -105,7 +108,7 @@ capaz de receber sinais da Controller Area Network (CAN);
 * Diagnosticar problemas de áudio e consumo de energia em dispositivos;
 * Classificar dados de diferentes HALs para solução de problemas de áudio e energia em dispositivos.
 
-:bookmark_tabs: Relátorio da atividade: 
+:bookmark_tabs: Relátorio da atividade:
 
 ### :white_check_mark: [DC-5] UA3 e UA4 - Hands On
 
@@ -114,3 +117,18 @@ capaz de receber sinais da Controller Area Network (CAN);
 * Implementar testes unitários para um serviço nativo do Android Studio.
 
 :bookmark_tabs: Relátorio da atividade: []()
+
+## :computer: Programação de Sistemas Embarcados com Linux
+
+### :white_check_mark: [DC-6] UA1 e UA2 - Hands On
+
+### :white_check_mark: [DC-6] UA3 e UA4 - Hands On
+
+* Utilizar ferramentas de automação para implantar aplicativos Android em emuladores ou dispositivos;
+* Explicar a configuração do kernel Linux para habilitar o suporte à rede CAN;
+* Explicar as principais estratégias de otimização de código em desenvolvimento de software;
+* Justificar o uso de estratégias de otimização de código em sistemas embarcados Android automotivos.
+
+:bookmark_tabs: Relátorio da atividade: [Descrição da Solução](readme_files/Automation_and_optimization_of_Embedded_Android_Systems.md)
+
+:arrow_forward: Video da atividade:
