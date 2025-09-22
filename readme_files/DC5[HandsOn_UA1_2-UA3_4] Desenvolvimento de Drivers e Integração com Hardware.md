@@ -10,4 +10,4 @@ envio e recebimento de mensagens e sua aplicação no controle do equalizador.
 
 Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/)
 
-Link da Aplicação: [Resource Management](https://github.com/leandroSubtractive/sistema_embarcado/tree/devel/aosp/src/apps/VehicleEqualizerApp)
+Link da Aplicação: [VehicleEqualizerApp](https://github.com/leandroSubtractive/sistema_embarcado/tree/devel/aosp/src/apps/VehicleEqualizerApp)
