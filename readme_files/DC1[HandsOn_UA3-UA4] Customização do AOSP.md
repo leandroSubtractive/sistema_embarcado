@@ -2,7 +2,17 @@
 
 Relatório descrevendo os passos utilizados para a customização do Android OSP.
 
-## Objetivo
+## CURSO
+
+FORMAÇÃO EM SISTEMAS EMBARCADOS
+
+LEANDRO MENDES DOS SANTOS
+
+## Links
+
+Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/)
+
+## Objetivos De Aprendizagem
 
 - Configurar um dispositivo virtual, como o "Pixel 5", com a API adequada e personalizar
 configurações, como resolução e armazenamento, para garantir simulações precisas

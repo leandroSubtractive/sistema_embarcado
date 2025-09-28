@@ -2,6 +2,12 @@
 
 Relatório de implementação de aplicativo Android para gerenciamento de perfis de audio.
 
+## CURSO
+
+FORMAÇÃO EM SISTEMAS EMBARCADOS
+
+LEANDRO MENDES DOS SANTOS
+
 ## Links
 
 Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/)
@@ -51,6 +57,7 @@ A principal função deste aplicativo é permitir a customização das configura
 ### 1.1. Sistema Operacional
 
 ```sh
+
 # O comando lsb_release imprime certas informações de LSB (Linux Standard Base) e distribuição.
 $ lsb_release -a
 No LSB modules are available.
@@ -58,13 +65,16 @@ Distributor ID: Ubuntu
 Description: Ubuntu 22.04.5 LTS
 Release: 22.04
 Codename: jammy
+
 ```
 
 ### 1.2. Java(JDK)
 
 ```bash
+
 # Retorna informações do Java caso esteja instalado
 $ java --version
+
 ```
 
 <p style="text-align:center">
@@ -76,6 +86,7 @@ $ java --version
 ### 1.3. Android Studio
 
 ```bash
+
 # Informações gerais do Android Studio
 Android Studio Narwhal 3 Feature Drop | 2025.1.3
 Build #AI-251.26094.121.2513.14007798, built on August 28, 2025
@@ -97,8 +108,10 @@ Current Desktop: ubuntu:GNOME
 ### 1.4. Git
 
 ```bash
+
 # Retorna a versão do Git caso esteja instalado
 $ git --version
+
 ```
 
 <p style="text-align:center">
@@ -143,7 +156,7 @@ Analisando a imagem anterior, temos os seguintes estados:
 O aplicativo desenvolvido é capaz de armazenar perfis de equalização contendo configurações customizadas baseadas nos ajustes do usuário. A figura abaixo descreve o fluxo de funcionamento do aplicativo.
 
 <p style="text-align:center">
-    <img src=imgs/VehicleEqualizerFullv1.png alt style="width:45%; height:auto;">
+    <img src=imgs/VehicleEqualizerFullv1.png alt style="width:80%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 4:</strong> Fluxograma da solução</figcaption>
 </p>
 
@@ -154,14 +167,14 @@ O aplicativo desenvolvido é capaz de armazenar perfis de equalização contendo
 A tela abaixo é a tela inicial do aplicativo. Ao abrir o aplicativo, é exibida a tela de perfis. Caso não tenha nenhum perfil cadastrado, o único perfil que será exibido é o perfil `Default`.
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_134333.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_134333.png alt style="width:60%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 5:</strong> Tela inicial com o perfil Defualt</figcaption>
 </p>
 
 A tela seguinte exibe a mesma tela com vários perfis cadastrados.
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_140623.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_140623.png alt style="width:60%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 6:</strong> Tela inicial com vários perfis</figcaption>
 </p>
 
@@ -172,7 +185,7 @@ Na próxima seção, veremos como editar e criar um novo perfil.
 Para entrar na tela de edição, basta tocar em qualquer perfil da tela principal e a tela da figura abaixo será exibida. Um novo perfil sempre é criado a partir de um perfil existente, seja o perfil Default ou outro qualquer.
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_134443.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_134443.png alt style="width:60%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 7:</strong> Tela de configuração</figcaption>
 </p>
 
@@ -181,7 +194,7 @@ A tela de configuração possui os ajustes de áudio principal de um sistema de 
 Na parte inferior da tela, é possível notar que os botões de `Salvar` e `Reset` não estão disponíveis. Estes botoes só se tornam utilizáveis quando alguma configuração é alterada.
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_142532.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_142532.png alt style="width:60%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 8:</strong> Alteração de configurações</figcaption>
 </p>
 
@@ -194,7 +207,7 @@ A figura acima exibe os botões ativos após a alteração das configurações. 
 - **New Profile:** Cria novo perfil.
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_134502.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_134502.png alt style="width:55%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 9:</strong> Nome do novo perfil</figcaption>
 </p>
 
@@ -204,12 +217,12 @@ Ao apertar para criar um novo perfil, é exibido um
 Além de voltar para a tela inicial, a mensagem de aviso é exibida na tela conforme a figura abaixo. A mesma também é exibida ao selecionar um perfil.
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_140045.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_140045.png alt style="width:60%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 10:</strong> Perfil salvo</figcaption>
 </p>
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_140055.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_140055.png alt style="width:60%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 11:</strong> Perfil selecionado</figcaption>
 </p>
 
@@ -218,14 +231,14 @@ Além de voltar para a tela inicial, a mensagem de aviso é exibida na tela conf
 Para excluir um perfil, é relativamente simples, basta ir para a tela inicial e segurar apertando sobre o perfil que deseja apagar e uma mensagem de alerta será exibida pedindo para confirmar.
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_140118.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_140118.png alt style="width:60%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 12:</strong> Apagando perfil</figcaption>
 </p>
 
 O perfil default não pode ser apagado, caso tente apagar, a seguinte mensagem aparecerá conforme figura abaixo.
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250928_140139.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250928_140139.png alt style="width:60%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 13:</strong> Apagando perfil Default</figcaption>
 </p>
 
@@ -240,20 +253,21 @@ O código do aplicativo foi implementado para seguir a arquitetura MVVM[[3]](htt
 - **ViewModel:** Esta camada atua como intermediária entre o Modelo e a Visualização. Ela prepara os dados para a Visualização de forma consumível, manipula a lógica de negócios e expõe fluxos de dados observáveis ​​à Visualização.
 
 <p style="text-align:center">
-    <img src=imgs/MVVM-Architecture-Pattern-in-Android.webp alt style="width:65%; height:auto;">
+    <img src=imgs/MVVM-Architecture-Pattern-in-Android.webp alt style="width:70%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 14:</strong> MVVM Architecture</figcaption>
 </p>
 
 A imagem abaixo apresenta a estrutura de pastas do projeto e, para cada arquivo, vou caracterizá-lo dentro das camadas da arquitetura MVVM.
 
 <p style="text-align:center">
-    <img src=imgs/estrutura-do-código.png alt style="width:60%; height:auto;">
+    <img src=imgs/estrutura-do-código.png alt style="width:45%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 15:</strong> Estruta do código fonte do aplicativo `VehicleEqualizer`</figcaption>
 </p>
 
 Esta é a classe principal do modelo de dados que representa o objeto do perfil de equalização. A anotação `@Parcelize` implementa de maneira implícita todos os métodos `Parcelable.` Na figura 13 também temos a classe `UserRepository` que está também dentro do pacote de dados, responsável pelo gerenciamento dos dados.
 
 ```kt
+
 package com.leandromendes.vehicleequalizer.data.model
 
 import android.os.Parcelable
@@ -270,11 +284,13 @@ data class EqualizerProfile(
     var masterVolValue: Int = Constants.define.VOLUME_VALUE_DEFAULT,
     var isSelected: Boolean = true
 ) : Parcelable
+
 ```
 
 De maneira geral tenho a seguinte estrutura no meu aplicativo:
 
 ```sh
+
 com
 └── leandromendes
     └── vehicleequalizer
@@ -291,6 +307,7 @@ com
         └── util # Métodos útilitarios 
             ├── Constants.kt
             └── ProfileListUtils.kt
+
 ```
 
 ### 4.1. Testes Unitários
@@ -298,6 +315,7 @@ com
 A classe UserRepositoryTest foi implementada para testar todos os métodos da classe UserRepository com o intuito de validar os principais métodos de gerenciamento de dados.
 
 ```kt
+
 class UserRepositoryTest {
     private lateinit var userRepository: UserRepository
 
@@ -416,6 +434,9 @@ class UserRepositoryTest {
         assertEquals(newProfile1.name, retrievedProfile.name)
     }
 }
+
+
+
 ```
 
 Resultado da execução:

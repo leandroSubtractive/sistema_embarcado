@@ -2,6 +2,12 @@
 
 Roteiro de configuração e preparação do ambiente de trabalho Android em uma máquina com o sistema operacional Linux.
 
+## CURSO
+
+FORMAÇÃO EM SISTEMAS EMBARCADOS
+
+LEANDRO MENDES DOS SANTOS
+
 ## Objetivo
 
 - Descrever a arquitetura do sistema operacional Android;
