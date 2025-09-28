@@ -30,17 +30,87 @@ A principal função deste aplicativo é permitir a customização das configura
 
 ## Sumário
 
-- [1. Ciclo De Vida das Activities](#1-cilco-de-vida-das-activities)
-- [2. Descrição Da Solução](#2-descrição-da-solução)
-    - [2.1. Uso Do Aplicativo](#21-uso-do-aplicativo)
-        - [2.1.1 Tela Inicial](#211-tela-inicial)
-        - [2.1.2 Tela de Edição](#212-tela-de-edição)
-        - [2.1.3. Excluindo Um Perfil](#213-excluindo-um-perfil)
-- [3. Tecnologias Abordadas](#3-tecnologias-abordadas)
-- [4. Conclusão](#4-conclusão)
-- [5. Referências](#5-referências)
+1. [Ambiente de desenvolvimento](#1-ambiente-de-desenvolvimento)
+    - 1.1. [Sistema Operacional](#11-sistema-operacional)
+    - 1.2. [Java(JDK)](#12-javajdk)
+    - 1.3. [Android Studio](#13-android-studio)
+    - 1.4. [Git](#14-git)
+    - 1.5. [Emulador Android](#15-emulador-android)
+2. [Ciclo De Vida das Activities](#2-ciclo-de-vida-das-activities)
+3. [Descrição Da Solução](#3-descrição-da-solução)
+    - 3.1. [Uso Do Aplicativo](#31-uso-do-aplicativo)
+        - 3.1.1. [Tela Inicial](#311-tela-inicial)
+        - 3.1.2. [Tela de Edição](#312-tela-de-edição)
+        - 3.1.3. [Excluindo Um Perfil](#313-excluindo-um-perfil)
+4. [Tecnologias Abordadas](#4-tecnologias-abordadas)
+5. [Conclusão](#5-conclusão)
+6. [Referências](#6-referências)
 
-## 1. Ciclo De Vida das Activities
+## 1. Ambiente de Desenvolvimento
+
+### 1.1. Sistema Operacional
+
+```sh
+# O comando lsb_release imprime certas informações de LSB (Linux Standard Base) e distribuição.
+$ lsb_release -a
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description: Ubuntu 22.04.5 LTS
+Release: 22.04
+Codename: jammy
+```
+
+### 1.2. Java(JDK)
+
+```bash
+# Retorna informações do Java caso esteja instalado
+$ java --version
+```
+
+<p style="text-align:center">
+    <img src=imgs/java_v.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 1:</strong> Captura da tela após a execução do comando, ferramenta
+    instalada corretamente</figcaption>
+</p>
+
+### 1.3. Android Studio
+
+```bash
+# Informações gerais do Android Studio
+Android Studio Narwhal 3 Feature Drop | 2025.1.3
+Build #AI-251.26094.121.2513.14007798, built on August 28, 2025
+Runtime version: 21.0.7+-13880790-b1038.58 amd64
+VM: OpenJDK 64-Bit Server VM by JetBrains s.r.o.
+Toolkit: sun.awt.X11.XToolkit
+Linux 6.8.0-83-generic
+Ubuntu 22.04.5 LTS; glibc: 2.35
+Kotlin plugin: K2 mode
+GC: G1 Young Generation, G1 Concurrent GC, G1 Old Generation
+Memory: 2968M
+Cores: 12
+Registry:
+  ide.experimental.ui=true
+Current Desktop: ubuntu:GNOME
+
+```
+
+### 1.4. Git
+
+```bash
+# Retorna a versão do Git caso esteja instalado
+$ git --version
+```
+
+<p style="text-align:center">
+    <img src=imgs/git.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 2:</strong> Captura da tela após a execução do comando, neste caso ferramenta está instalada corretamente</figcaption>
+</p>
+
+### 1.5. Emulador Android
+
+O Emulador Android utilizado é o mesmo da atividade anterior, não foi realiza que já foi entregue e descrita na sessão [1.5 Emulador Android](https://github.com/leandroSubtractive/sistema_embarcado/blob/devel/readme_files/AIDL_dc3_u1_u2.md#15-emulador-android) do relatório [Interface e Gerenciamento de Serviços no Android](https://github.com/leandroSubtractive/sistema_embarcado/blob/devel/readme_files/AIDL_dc3_u1_u2.md#interface-e-gerenciamento-de-servi%C3%A7os-no-android).
+
+## 2. Ciclo De Vida das Activities
 
 No desenvolvimento de aplicativos Android, a `Activity` é um componente fundamental que representa uma única tela de interface do usuário. Seu comportamento e estado são controlados pelo `ciclo de vida da Activity`, que é gerenciado por um conjunto de callbacks que o sistema executa em momentos específicos (como quando a tela é criada, iniciada ou destruída)[[1]](https://developer.android.com/guide/components/activities/activity-lifecycle?hl=pt-br#java)[[2]](https://www.alura.com.br/artigos/activity-lifecycle-por-que-conhecer-ciclo-de-vida-activity?srsltid=AfmBOoq_IdyHgJK3VRbXPUxNUXCgH_amOGegJ6gmiI2nsLbdlPUtpyuP).
 
@@ -48,7 +118,7 @@ A figura 1 abaixo apresenta o fluxo do ciclo de vida de uma activity.
 
 <p style="text-align:center">
     <img src=imgs/activity_lifecycle.png alt style="width:65%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 1:</strong> Ciclo de vida de uma Activity</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 3:</strong> Ciclo de vida de uma Activity</figcaption>
 </p>
 
 Analisando a imagem anterior, temos os seguintes estados:
@@ -68,42 +138,42 @@ Analisando a imagem anterior, temos os seguintes estados:
 - **onRestart()**
     - A Activity que estava em estado de `onStop()` é chamada para ser reiniciada, passando para o estado de `onStart()` em seguida.
 
-## 2. Descrição Da Solução
+## 3. Descrição Da Solução
 
 O aplicativo desenvolvido é capaz de armazenar perfis de equalização contendo configurações customizadas baseadas nos ajustes do usuário. A figura abaixo descreve o fluxo de funcionamento do aplicativo.
 
 <p style="text-align:center">
     <img src=imgs/VehicleEqualizerFullv1.png alt style="width:45%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 2:</strong> Fluxograma da solução</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 4:</strong> Fluxograma da solução</figcaption>
 </p>
 
-### 2.1. Uso Do Aplicativo
+### 3.1. Uso Do Aplicativo
 
-#### 2.1.1. Tela Inicial
+#### 3.1.1. Tela Inicial
 
 A tela abaixo é a tela inicial do aplicativo. Ao abrir o aplicativo, é exibida a tela de perfis. Caso não tenha nenhum perfil cadastrado, o único perfil que será exibido é o perfil `Default`.
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_134333.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 3:</strong> Tela inicial com o perfil Defualt</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 5:</strong> Tela inicial com o perfil Defualt</figcaption>
 </p>
 
 A tela seguinte exibe a mesma tela com vários perfis cadastrados.
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_140623.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 4:</strong> Tela inicial com vários perfis</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 6:</strong> Tela inicial com vários perfis</figcaption>
 </p>
 
 Na próxima seção, veremos como editar e criar um novo perfil.
 
-#### 2.1.2. Tela de Edição
+#### 3.1.2. Tela de Edição
 
 Para entrar na tela de edição, basta tocar em qualquer perfil da tela principal e a tela da figura abaixo será exibida. Um novo perfil sempre é criado a partir de um perfil existente, seja o perfil Default ou outro qualquer.
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_134443.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 5:</strong> Tela de configuração</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 7:</strong> Tela de configuração</figcaption>
 </p>
 
 A tela de configuração possui os ajustes de áudio principal de um sistema de som veicular, cortes de frequências, graves, médios e agudos, além do ajuste de panorama e volume.
@@ -112,7 +182,7 @@ Na parte inferior da tela, é possível notar que os botões de `Salvar` e `Rese
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_142532.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 6:</strong> Alteração de configurações</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 8:</strong> Alteração de configurações</figcaption>
 </p>
 
 A figura acima exibe os botões ativos após a alteração das configurações. a regra de negócio aplicada para esses botões é a seguinte:
@@ -125,7 +195,7 @@ A figura acima exibe os botões ativos após a alteração das configurações. 
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_134502.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 7:</strong> Nome do novo perfil</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 9:</strong> Nome do novo perfil</figcaption>
 </p>
 
 Ao apertar para criar um novo perfil, é exibido um 
@@ -135,31 +205,31 @@ Além de voltar para a tela inicial, a mensagem de aviso é exibida na tela conf
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_140045.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 8:</strong> Perfil salvo</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 10:</strong> Perfil salvo</figcaption>
 </p>
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_140055.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 9:</strong> Perfil selecionado</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 11:</strong> Perfil selecionado</figcaption>
 </p>
 
-#### 2.1.3. Excluindo Um Perfil
+#### 3.1.3. Excluindo Um Perfil
 
 Para excluir um perfil, é relativamente simples, basta ir para a tela inicial e segurar apertando sobre o perfil que deseja apagar e uma mensagem de alerta será exibida pedindo para confirmar.
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_140118.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 10:</strong> Apagando perfil</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 12:</strong> Apagando perfil</figcaption>
 </p>
 
 O perfil default não pode ser apagado, caso tente apagar, a seguinte mensagem aparecerá conforme figura abaixo.
 
 <p style="text-align:center">
     <img src=imgs/Screenshot_20250928_140139.png alt style="width:50%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 11:</strong> Apagando perfil Default</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 13:</strong> Apagando perfil Default</figcaption>
 </p>
 
-## 3. Tecnologias Abordadas
+## 4. Tecnologias Abordadas
 
 O código do aplicativo foi implementado para seguir a arquitetura MVVM[[3]](https://www.geeksforgeeks.org/android/mvvm-model-view-viewmodel-architecture-pattern-in-android/). A principal característica da arquitetura MVVM é a divisão de responsabilidades em três principais componentes:
 
@@ -171,14 +241,14 @@ O código do aplicativo foi implementado para seguir a arquitetura MVVM[[3]](htt
 
 <p style="text-align:center">
     <img src=imgs/MVVM-Architecture-Pattern-in-Android.webp alt style="width:65%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 12:</strong> MVVM Architecture</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 14:</strong> MVVM Architecture</figcaption>
 </p>
 
 A imagem abaixo apresenta a estrutura de pastas do projeto e, para cada arquivo, vou caracterizá-lo dentro das camadas da arquitetura MVVM.
 
 <p style="text-align:center">
     <img src=imgs/estrutura-do-código.png alt style="width:60%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 13:</strong> Estruta do código fonte do aplicativo `VehicleEqualizer`</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 15:</strong> Estruta do código fonte do aplicativo `VehicleEqualizer`</figcaption>
 </p>
 
 Esta é a classe principal do modelo de dados que representa o objeto do perfil de equalização. A anotação `@Parcelize` implementa de maneira implícita todos os métodos `Parcelable.` Na figura 13 também temos a classe `UserRepository` que está também dentro do pacote de dados, responsável pelo gerenciamento dos dados.
@@ -223,7 +293,7 @@ com
             └── ProfileListUtils.kt
 ```
 
-### 3.1. Testes Unitários
+### 4.1. Testes Unitários
 
 A classe UserRepositoryTest foi implementada para testar todos os métodos da classe UserRepository com o intuito de validar os principais métodos de gerenciamento de dados.
 
@@ -352,10 +422,10 @@ Resultado da execução:
 
 <p style="text-align:center">
     <img src=imgs/testes.png alt style="width:100%; height:auto;">
-    <figcaption style="text-align:center"><strong>Figura 14:</strong> Testes Unitários</figcaption>
+    <figcaption style="text-align:center"><strong>Figura 16:</strong> Testes Unitários</figcaption>
 </p>
 
-## 4. Conclusão
+## 5. Conclusão
 
 A aplicação ainda não possui conexão com o banco de dados, os dados são salvos em memória, mas acredito que o objetivo inicial foi atingido, que era a criação de perfis customizados de equalização.
 
@@ -366,7 +436,7 @@ Para o momento, não foi necessária a implementação de estrutura como.
 - Processes and Threads
 - Remote Procedure Calls
 
-## 5. Referências
+## 6. Referências
 
 - 1 [Ciclo de vida da atividade](https://developer.android.com/guide/components/activities/activity-lifecycle?hl=pt-br#java)
 - 2 [Ciclo de vida das Activities](https://www.alura.com.br/artigos/activity-lifecycle-por-que-conhecer-ciclo-de-vida-activity?srsltid=AfmBOoq_IdyHgJK3VRbXPUxNUXCgH_amOGegJ6gmiI2nsLbdlPUtpyuP)

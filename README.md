@@ -59,7 +59,7 @@ subsistemas.
 
 :bookmark_tabs: Relátorio da atividade: [Descrição da Solução](readme_files/DC2[HandsOn_UA1-UA2]%20Aplicativo%20Android%20que%20armazena%20e%20sincroniza%20perfis%20de%20equalização%20de%20som.md)
 
-:arrow_forward: Video da atividade:  
+:arrow_forward: Video da atividade:[Video](https://drive.google.com/drive/folders/1xURd7VnulzM-5QFO18Kk7mN_jLk9DK0C)  
 
 ### :white_check_mark: [DC-2] UA3 e UA4 - Hands On
 
