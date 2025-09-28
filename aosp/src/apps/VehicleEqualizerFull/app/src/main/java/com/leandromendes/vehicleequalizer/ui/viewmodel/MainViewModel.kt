@@ -1,4 +1,4 @@
-package com.leandromendes.vehicleequalizer.ui
+package com.leandromendes.vehicleequalizer.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

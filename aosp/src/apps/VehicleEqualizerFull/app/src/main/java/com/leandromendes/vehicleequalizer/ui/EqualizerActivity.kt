@@ -254,7 +254,7 @@ class EqualizerActivity : AppCompatActivity() {
         val format = SimpleDateFormat(Constants.define.DATETIME_FORMAT, Locale.getDefault())
         val dateTime = format.format(currentDate)
 
-        profileName = String.format(
+        val newProfileName = String.format(
             Locale.getDefault(),
             "%s %s",
             getString(R.string.new_profile_button),
@@ -266,15 +266,17 @@ class EqualizerActivity : AppCompatActivity() {
         val view =
             LayoutInflater.from(this@EqualizerActivity).inflate(R.layout.dialog_text_input, null)
         val input = view.findViewById<EditText>(R.id.edit_text)
-        input.setHint(profileName)
+        input.setHint(newProfileName)
         builder.setView(view)
 
         builder.setPositiveButton(
             getString(R.string.agree_button_name)
         ) { dialog: DialogInterface?, which: Int ->
             val text = input.getText().toString()
-            if (!text.isEmpty()) {
-                profileName = text
+            profileName = if (!text.isEmpty()) {
+                text
+            }else {
+                newProfileName
             }
             idPosition = Constants.define.INTENT_INT_POSITION_DEFAULT
             saveChangeProfile(profile)

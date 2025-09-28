@@ -20,7 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.ui.EqualizerActivity
-import com.leandromendes.vehicleequalizer.ui.MainViewModel
+import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModel
 import com.leandromendes.vehicleequalizer.util.Constants
 import com.leandromendes.vehicleequalizer.util.ProfileListUtils
 import java.util.Locale
