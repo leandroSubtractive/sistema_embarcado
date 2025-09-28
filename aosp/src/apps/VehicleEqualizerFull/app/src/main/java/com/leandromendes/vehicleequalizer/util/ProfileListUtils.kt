@@ -13,16 +13,16 @@ class ProfileListUtils(
     private val context: Context,
     private val profiles: MutableList<EqualizerProfile>
 ) : ArrayAdapter<EqualizerProfile?>(
-    context, android.R.layout.simple_list_item_1,
+    context, android.R.layout.simple_list_item_2,
     profiles
 ) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val rowView = inflater.inflate(R.layout.item_profile, parent, false)
 
-        val txtNome = rowView.findViewById<TextView>(R.id.profileName)
-        val profile = profiles.get(position)
-        txtNome.setText(profile.name)
+        val profileName = rowView.findViewById<TextView>(R.id.profileName)
+        val profile = profiles[position]
+        profileName.text = profile.name
 
         return rowView
     }

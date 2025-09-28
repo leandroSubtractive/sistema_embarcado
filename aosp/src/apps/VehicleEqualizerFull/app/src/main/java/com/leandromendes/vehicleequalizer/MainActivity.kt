@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
@@ -42,11 +41,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
-        // Define the title of the list of profile names
-        val toolbar: Toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(R.string.toolbar_name)
 
         // Initialize adapter for profile list
         val profileList = findViewById<ListView>(R.id.profileList)

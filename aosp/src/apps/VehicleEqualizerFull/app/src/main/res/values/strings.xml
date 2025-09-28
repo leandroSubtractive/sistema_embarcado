@@ -32,8 +32,8 @@
     <string name="decibel">db</string>
     <string name="spl">L</string>
 
-    <!-- String toolBar -->
-    <string name="toolbar_name">Profiles</string>
+    <!-- String profile list -->
+    <string name="sub_text">Profile</string>
 
     <!-- Informative messages -->
     <string name="saved">Saved successfully!</string>

@@ -1,6 +1,5 @@
 package com.leandromendes.vehicleequalizer.ui
 
-import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -29,13 +28,13 @@ class EqualizerActivity : AppCompatActivity() {
     private lateinit var textViewMid: TextView
     private lateinit var textViewTreble: TextView
     private lateinit var textViewBalance: TextView
+    private lateinit var profileName: String
+    private lateinit var saveButton: Button
     private var bassValue = 0
     private var midValue = 0
     private var highValue = 0
     private var balanceValue = 0
     private var masterVolValue = 0
-    private lateinit var profileName: String
-    private lateinit var saveButton: Button
     private var idPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -294,6 +293,7 @@ class EqualizerActivity : AppCompatActivity() {
         profile.hiEqValue = highValue
         profile.balanceEqValue = balanceValue
         profile.masterVolValue = masterVolValue
+
         val resultIntent = Intent()
         resultIntent.putExtra(Constants.define.INTENT_PARCELABLE_NAME, profile)
         resultIntent.putExtra(Constants.define.INTENT_INT_POSITION, idPosition)
@@ -301,7 +301,6 @@ class EqualizerActivity : AppCompatActivity() {
         finish()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun drawTextOnTheBars(textView: TextView, value: Int) {
         textView.text = String.format(
             Locale.getDefault(), "%s%s",
@@ -309,7 +308,6 @@ class EqualizerActivity : AppCompatActivity() {
         )
     }
 
-    @SuppressLint("SetTextI18n")
     private fun drawTextOnThePanBar(textView: TextView, value: Int) {
         val offset = 5
         val balance = (offset - value)
