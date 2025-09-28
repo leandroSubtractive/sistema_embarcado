@@ -16,6 +16,7 @@ class ProfileListUtils(
     context, android.R.layout.simple_list_item_2,
     profiles
 ) {
+    // Overwrites the main method to create and return the View of an item in the list
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val rowView = inflater.inflate(R.layout.item_profile, parent, false)

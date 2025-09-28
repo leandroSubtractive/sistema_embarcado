@@ -11,6 +11,7 @@ data class EqualizerProfile(
     var midEqValue: Int = Constants.define.MIDDLE_VALUE_DEFAULT,
     var hiEqValue: Int = Constants.define.TREBLE_VALUE_DEFAULT,
     var balanceEqValue: Int = Constants.define.PAN_VALUE_DEFAULT,
-    var masterVolValue: Int = Constants.define.VOLUME_VALUE_DEFAULT
+    var masterVolValue: Int = Constants.define.VOLUME_VALUE_DEFAULT,
+    var isSelected: Boolean = true
 ) : Parcelable
 

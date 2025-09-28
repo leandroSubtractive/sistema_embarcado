@@ -24,5 +24,6 @@ object Constants {
         const val PROFILE_DEFAULT_NAME = "Default"
         const val NEW_PROFILE = -1
         const val DATETIME_FORMAT = "dd-MM-yyyy HH-mm-ss"
+
     }
 }

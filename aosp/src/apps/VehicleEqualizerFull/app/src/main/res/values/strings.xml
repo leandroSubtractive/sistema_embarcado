@@ -13,7 +13,7 @@
     <!-- Default values for graphical interface parameters -->
     <string name="default_db_value">0db</string>
     <string name="default_pan_value">Center</string>
-    <string name="default_volume_value">0L</string>
+    <string name="default_volume_value">0U</string>
     <string name="default_profile">Default</string>
 
     <!-- Name of the seekBar equalizer components -->
@@ -30,7 +30,7 @@
 
     <!-- Units of measurement for audio signals -->
     <string name="decibel">db</string>
-    <string name="spl">L</string>
+    <string name="spl">U</string>
 
     <!-- String profile list -->
     <string name="sub_text">Profile</string>

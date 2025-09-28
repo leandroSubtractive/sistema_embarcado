@@ -3,6 +3,7 @@ package com.leandromendes.vehicleequalizer
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
@@ -28,6 +29,8 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
     var mainViewModel: MainViewModel? = null
 
+    private val logTAG = "VehicleEqualizerApp"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.enableEdgeToEdge()
@@ -40,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        // Creates or obtains the MainViewModel instance.
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         // Initialize adapter for profile list
@@ -47,20 +51,31 @@ class MainActivity : AppCompatActivity() {
         val adapter = ProfileListUtils(this, mainViewModel!!.getAllEqualizerProfiles())
         profileList.setAdapter(adapter)
 
+        // Start observing the LiveData containing the Toast text in the ViewModel
         mainViewModel!!.getToastText()
             .observe(this, Observer { text: String? -> this.toastShow(text!!) })
 
+        /**
+         * Registers a callback to start an Activity
+         * and handle its result (the returned data) asynchronously.
+         *
+         * The variable ‘eqActivity’ is the launcher that will be used to start the Activity.
+         */
         val eqActivity = registerForActivityResult(
             StartActivityForResult()
         ) { result: ActivityResult? ->
+            // Checks if the Activity result was successful
             if (result!!.resultCode == RESULT_OK) {
+                // Get the return Intent
                 val intentRet = result.data
 
+                // Extract the EqualizerProfile object
                 val currentProfile: EqualizerProfile = intentRet?.getParcelableExtra(
                     Constants.define.INTENT_PARCELABLE_NAME,
                     EqualizerProfile::class.java
                 ) as EqualizerProfile
 
+                // Extracts the position of the profile in the list.
                 val position = intentRet.getIntExtra(
                     Constants.define.INTENT_INT_POSITION,
                     Constants.define.INTENT_INT_POSITION_DEFAULT
@@ -70,8 +85,10 @@ class MainActivity : AppCompatActivity() {
                 // so it saves a new profile
                 if (position == Constants.define.NEW_PROFILE) {
                     mainViewModel!!.addProfile(currentProfile)
+                    Log.d(logTAG, "Saving new profile" )
                 } else {
                     mainViewModel!!.updateProfile(position, currentProfile)
+                    Log.d(logTAG, "Updating current profile" )
                 }
 
                 // Update the ListView adapter
@@ -135,10 +152,11 @@ class MainActivity : AppCompatActivity() {
                     getString(R.string.profile_cannot_deleted),
                     nameProfileSelected
                 )
-                toastShow(text)
+                mainViewModel!!.setToastText(text)
             }
             true
         }
+        Log.d(logTAG, "All components of the main screen have been initialized" )
     }
 
     fun toastShow(text: String) {
