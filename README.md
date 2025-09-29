@@ -33,7 +33,7 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 
 :bookmark_tabs: Relátorio da atividade: [Ambiente de desenvolvimento Android](readme_files/DC1[HandsOn_UA1-UA2]%20Implementação%20de%20um%20dispositivo%20com%20sistema%20operacional%20Android.md)
 
-:arrow_forward:  Video da atividade:  
+:arrow_forward:  Video da atividade: [Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QFO18Kk7mN_jLk9DK0C)
 
 ### :white_check_mark: [DC-1] UA3 e UA4 - Hands On
 
@@ -45,7 +45,7 @@ subsistemas.
 
 :bookmark_tabs: Relátorio da atividade: [Customização do AOSP](readme_files/DC1[HandsOn_UA3-UA4]%20Customização%20do%20AOSP.md)
 
-:arrow_forward:  Video da atividade:
+:arrow_forward:  Video da atividade:[Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QFO18Kk7mN_jLk9DK0C)
 
 ## :computer: Programação Orientada a Objetos para Android
 
