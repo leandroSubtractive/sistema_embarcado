@@ -49,4 +49,11 @@ class ProfileRecyclerViewAdapter(
     override fun getItemCount(): Int {
         return profiles.size
     }
+
+    // Novo método para atualizar a lista de perfis do LiveData
+    fun updateProfiles(newProfiles: List<EqualizerProfile>) {
+        profiles.clear()
+        profiles.addAll(newProfiles)
+        notifyDataSetChanged() // Por simplificação, mas você pode usar DiffUtil aqui
+    }
 }

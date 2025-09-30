@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.ui.EqualizerActivity
 import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModel
+import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModelFactory
 import com.leandromendes.vehicleequalizer.util.Constants
 import com.leandromendes.vehicleequalizer.util.ProfileRecyclerViewAdapter
 import java.util.Locale
@@ -27,7 +28,6 @@ import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     var mainViewModel: MainViewModel? = null
-
     private lateinit var adapter: ProfileRecyclerViewAdapter
     private val logTAG = "VehicleEqualizerApp"
 
@@ -43,8 +43,10 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Creates or obtains the MainViewModel instance.
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        // Obtain the Application, Database, and Repository to inject into the ViewModel
+        val application = application as ProfileApplication // Casting for the new Application class
+        val factory = MainViewModelFactory(application.repository)
+        mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java] // Usa o Factory
 
         /**
          * Registers a callback to start an Activity
@@ -54,61 +56,62 @@ class MainActivity : AppCompatActivity() {
          */
         val eqActivity = registerForActivityResult(
             StartActivityForResult()
-            ) { result: ActivityResult? ->
-                // Checks if the Activity result was successful
-                if (result!!.resultCode == RESULT_OK) {
-                    // Get the return Intent
-                    val intentRet = result.data
+        ) { result: ActivityResult? ->
+            // Checks if the Activity result was successful
+            if (result!!.resultCode == RESULT_OK) {
+                // Get the return Intent
+                val intentRet = result.data
 
-                    // Extract the EqualizerProfile object
-                    val currentProfile: EqualizerProfile = intentRet?.getParcelableExtra(
-                        Constants.define.INTENT_PARCELABLE_NAME,
-                        EqualizerProfile::class.java
-                    ) as EqualizerProfile
+                // Extract the EqualizerProfile object
+                val currentProfile: EqualizerProfile = intentRet?.getParcelableExtra(
+                    Constants.define.INTENT_PARCELABLE_NAME,
+                    EqualizerProfile::class.java
+                ) as EqualizerProfile
 
-                    // Extracts the position of the profile in the list.
-                    val position = intentRet.getIntExtra(
-                        Constants.define.INTENT_INT_POSITION,
-                        Constants.define.INTENT_INT_POSITION_DEFAULT
-                    )
+                // Extracts the position of the profile in the list.
+                val position = intentRet.getIntExtra(
+                    Constants.define.INTENT_INT_POSITION,
+                    Constants.define.INTENT_INT_POSITION_DEFAULT
+                )
 
-                    // If the index received is -1, it means that it is a new configuration,
-                    // so it saves a new profile
-                    if (position == Constants.define.NEW_PROFILE) {
-                        mainViewModel!!.addProfile(currentProfile)
+                // If the index received is -1, it means that it is a new configuration,
+                // so it saves a new profile
+                if (position == Constants.define.NEW_PROFILE) {
+                    mainViewModel!!.addProfile(currentProfile)
 
-                        val newPosition = mainViewModel!!.getAllEqualizerProfiles().size - 1
-                        adapter.notifyItemInserted(newPosition)
+                    Log.d(logTAG, "Saving new profile")
+                } else {
+                    // Update uses the object ID.
+                    // The returned ‘currentProfile’ object already has the database ID.
+                    mainViewModel!!.updateProfile(currentProfile)
 
-                        Log.d(logTAG, "Saving new profile")
-                    } else {
-                        mainViewModel!!.updateProfile(position, currentProfile)
-                        adapter.notifyItemChanged(position)
-
-                        Log.d(logTAG, "Updating current profile")
-                    }
-
-                    mainViewModel!!.setToastText(
-                        String.format(
-                            Locale.getDefault(),
-                            "%s",
-                            getString(R.string.saved)
-                        )
-                    )
+                    Log.d(logTAG, "Updating current profile")
                 }
+
+                mainViewModel!!.setToastText(
+                    String.format(
+                        Locale.getDefault(),
+                        "%s",
+                        getString(R.string.saved)
+                    )
+                )
             }
+        }
 
         // Initialize adapter for profile list
         val recyclerView = findViewById<RecyclerView>(R.id.profileList)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        // Variable to store the current list of profiles.
+        // Initialized with an empty list. It will be filled by LiveData.
+        var currentProfileList: List<EqualizerProfile> = emptyList()
+
         // Start observing the LiveData containing the Toast text in the ViewModel
         mainViewModel!!.getToastText()
             .observe(this, Observer { text: String? -> this.toastShow(text!!) })
 
-        // MUDANÇA: Usar o novo ProfileRecyclerViewAdapter e passar as ações de click/long click como lambdas
         adapter = ProfileRecyclerViewAdapter(
-            profiles = mainViewModel!!.getAllEqualizerProfiles(),
+            profiles = currentProfileList.toMutableList(), // Pass an empty/copyable list
             // onQuickClick (Item Click)
             onItemClick = { profile: EqualizerProfile, position: Int ->
                 val intent = Intent(this, EqualizerActivity::class.java)
@@ -147,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                     builder.setPositiveButton(
                         String.format(Locale.getDefault(), getString(R.string.positive_button_name))
                     ) { dialog: DialogInterface?, which: Int ->
-                        mainViewModel!!.removeProfile(position)
+                        mainViewModel!!.removeProfile(profile)
                         adapter.notifyItemRemoved(position)
                     }
                     builder.setNegativeButton(
@@ -172,6 +175,15 @@ class MainActivity : AppCompatActivity() {
 
         // Define the Adapter in RecyclerView
         recyclerView.adapter = adapter
+
+        // Observe the Room's LiveData and update the Adapter
+        mainViewModel!!.allProfilesLiveData.observe(this) { profiles ->
+            // Updates the list in the Adapter and notifies the change
+            currentProfileList = profiles // Updates the reference list
+            (recyclerView.adapter as ProfileRecyclerViewAdapter).updateProfiles(profiles)
+            Log.d(logTAG, "Live Data profiles updated. Count: ${profiles.size}")
+        }
+
         Log.d(logTAG, "All components of the main screen have been initialized")
     }
 
