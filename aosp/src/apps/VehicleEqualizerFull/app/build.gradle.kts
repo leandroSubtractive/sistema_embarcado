@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.junit)
     testImplementation(libs.junit.jupiter)
@@ -50,9 +51,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
 
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:1.13.10")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
 
 }
