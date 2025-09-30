@@ -23,6 +23,7 @@ Link do Vídeo: [Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QF
     - 1.3. [Android Studio](#13-android-studio)
     - 1.4. [Git](#14-git)
     - 1.5. [Emulador Android](#15-emulador-android)
+2. [Aplicativos Desenvolvidos Durante o Curso](#2-aplicativos-desenvolvidos-durante-o-curso)
 
 ## 1. Ambiente de Desenvolvimento
 
@@ -87,3 +88,11 @@ $ git --version
 ### 1.5. Emulador Android
 
 O Emulador Android utilizado é o mesmo da atividade anterior, não foi realiza que já foi entregue e descrita na sessão [1.5 Emulador Android](https://github.com/leandroSubtractive/sistema_embarcado/blob/devel/readme_files/AIDL_dc3_u1_u2.md#15-emulador-android) do relatório [Interface e Gerenciamento de Serviços no Android](https://github.com/leandroSubtractive/sistema_embarcado/blob/devel/readme_files/AIDL_dc3_u1_u2.md#interface-e-gerenciamento-de-servi%C3%A7os-no-android).
+
+## 2. Aplicativos Desenvolvidos Durante o Curso
+
+
+<p style="text-align:center">
+    <img src=imgs/All_Apps.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 3:</strong> Aplicativos agrupados por disciplinas.</figcaption>
+</p>

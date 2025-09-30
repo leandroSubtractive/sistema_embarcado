@@ -10,7 +10,7 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 * [G95140|EXT-ADS-038|Programação Orientada a Objetos para Android](#-programação-orientada-a-objetos-para-android)
   * [[DC-2] UA1 e UA2 - Hands On](#-dc-2-ua1-e-ua2---hands-on)
   * [[DC-2] UA3 e UA4 - Hands On](#-dc-2-ua3-e-ua4---hands-on)
-* [G95140|EXT-ADS-039|Interface e Gerenciamento de Serviços no Android	](#-interface-e-gerenciamento-de-serviços-no-android)
+* [G95140|EXT-ADS-039|Interface e Gerenciamento de Serviços no Android](#-interface-e-gerenciamento-de-serviços-no-android)
   * [[DC-3] UA1 e UA2 - Hands On](#-dc-3-ua1-e-ua2---hands-on)
   * [[DC-3] UA3 e UA4 - Hands On](#-dc-3-ua3-e-ua4---hands-on)
 * [G95140|EXT-ADS-040|Serviços Avançados e Integração Nativa no Android](#-serviços-avançados-e-integração-nativa-no-android)
@@ -19,7 +19,7 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 * [G95140|EXT-ADS-041|Desenvolvimento e Integração de HAL no Android](#-desenvolvimento-e-integração-de-hal-no-android)
   * [[DC-5] UA1 e UA2 - Hands On](#-dc-5-ua1-e-ua2---hands-on)
   * [[DC-5] UA3 e UA4 - Hands On](#-dc-5-ua3-e-ua4---hands-on)
-* [Programação de Sistemas Embarcados com Linux](#-programação-de-sistemas-embarcados-com-linux)
+* [G95140|EXT-ADS-042|Programação de Sistemas Embarcados com Linux](#-programação-de-sistemas-embarcados-com-linux)
   * [[DC-6] UA1 e UA2 - Hands On](#-dc-6-ua1-e-ua2---hands-on)
   * [[DC-6] UA3 e UA4 - Hands On](#-dc-6-ua3-e-ua4---hands-on)
 
@@ -33,7 +33,7 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 
 :bookmark_tabs: Relátorio da atividade: [Ambiente de desenvolvimento Android](readme_files/DC1[HandsOn_UA1-UA2]%20Implementação%20de%20um%20dispositivo%20com%20sistema%20operacional%20Android.md)
 
-:arrow_forward:  Video da atividade:  
+:arrow_forward:  Video da atividade: [Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QFO18Kk7mN_jLk9DK0C)
 
 ### :white_check_mark: [DC-1] UA3 e UA4 - Hands On
 
@@ -45,7 +45,7 @@ subsistemas.
 
 :bookmark_tabs: Relátorio da atividade: [Customização do AOSP](readme_files/DC1[HandsOn_UA3-UA4]%20Customização%20do%20AOSP.md)
 
-:arrow_forward:  Video da atividade:
+:arrow_forward:  Video da atividade:[Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QFO18Kk7mN_jLk9DK0C)
 
 ## :computer: Programação Orientada a Objetos para Android
 
@@ -59,7 +59,7 @@ subsistemas.
 
 :bookmark_tabs: Relátorio da atividade: [Descrição da Solução](readme_files/DC2[HandsOn_UA1-UA2]%20Aplicativo%20Android%20que%20armazena%20e%20sincroniza%20perfis%20de%20equalização%20de%20som.md)
 
-:arrow_forward: Video da atividade:  
+:arrow_forward: Video da atividade:[Video](https://drive.google.com/drive/folders/1xURd7VnulzM-5QFO18Kk7mN_jLk9DK0C)  
 
 ### :white_check_mark: [DC-2] UA3 e UA4 - Hands On
 

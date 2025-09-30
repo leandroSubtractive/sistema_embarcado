@@ -2,6 +2,18 @@
 
 Roteiro de configuração e preparação do ambiente de trabalho Android em uma máquina com o sistema operacional Linux.
 
+## CURSO
+
+FORMAÇÃO EM SISTEMAS EMBARCADOS
+
+LEANDRO MENDES DOS SANTOS
+
+## Links
+
+Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_embarcado/)
+
+Link do Vídeo: [Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QFO18Kk7mN_jLk9DK0C)
+
 ## Objetivo
 
 - Descrever a arquitetura do sistema operacional Android;
