@@ -3,7 +3,7 @@ package com.leandromendes.vehicleequalizer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.leandromendes.vehicleequalizer.data.ProfileDao
+import com.leandromendes.vehicleequalizer.data.dao.ProfileDao
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.data.repository.UserRepository
 import com.leandromendes.vehicleequalizer.util.Constants
@@ -65,7 +65,6 @@ fun <T> LiveData<T>.getOrAwaitValue(
 /**
  * Fake/Mock implementation of ProfileDao for use in unit tests.
  */
-// 💡 FIXED: Implement the ProfileDao interface
 class FakeProfileDao : ProfileDao {
 
     // Simulates the database table

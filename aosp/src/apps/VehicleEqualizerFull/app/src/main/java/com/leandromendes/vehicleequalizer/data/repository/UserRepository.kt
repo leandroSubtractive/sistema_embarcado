@@ -1,7 +1,7 @@
 package com.leandromendes.vehicleequalizer.data.repository
 
 import androidx.lifecycle.LiveData
-import com.leandromendes.vehicleequalizer.data.ProfileDao
+import com.leandromendes.vehicleequalizer.data.dao.ProfileDao
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 
 class UserRepository(private val profileDao: ProfileDao) {

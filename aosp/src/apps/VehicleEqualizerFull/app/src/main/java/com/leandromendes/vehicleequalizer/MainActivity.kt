@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         // Obtain the Application, Database, and Repository to inject into the ViewModel
         val application = application as ProfileApplication // Casting for the new Application class
         val factory = MainViewModelFactory(application.repository)
-        mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java] // Usa o Factory
+        mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java] // Use this Factory
 
         /**
          * Registers a callback to start an Activity
