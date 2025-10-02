@@ -3,32 +3,29 @@ package com.leandromendes.vehicleequalizer.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.data.repository.UserRepository
+import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
-    var userRepository: UserRepository = UserRepository()
+// MainViewModel now receives the Repository in the constructor
+class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
+
+    // LiveData that MainActivity will OBSERVE
+    val allProfilesLiveData: LiveData<List<EqualizerProfile>> = userRepository.allEqualizerProfiles
 
     private val toastText = MutableLiveData<String?>()
 
-    fun getAllEqualizerProfiles(): MutableList<EqualizerProfile> {
-        return userRepository.allEqualizerProfiles
-    }
-
-    fun getEqualizerProfiles(position: Int): EqualizerProfile {
-        return userRepository.getEqualizerProfile(position)
-    }
-
-    fun addProfile(equalizerProfile: EqualizerProfile) {
+    fun addProfile(equalizerProfile: EqualizerProfile) = viewModelScope.launch {
         userRepository.addProfile(equalizerProfile)
     }
 
-    fun updateProfile(position: Int, equalizerProfile: EqualizerProfile) {
-        userRepository.updateProfile(position, equalizerProfile)
+    fun updateProfile(equalizerProfile: EqualizerProfile) = viewModelScope.launch {
+        userRepository.updateProfile(equalizerProfile)
     }
 
-    fun removeProfile(position: Int) {
-        userRepository.removeProfile(position)
+    fun removeProfile(equalizerProfile: EqualizerProfile) = viewModelScope.launch {
+        userRepository.removeProfile(equalizerProfile)
     }
 
     fun getToastText(): LiveData<String?> {

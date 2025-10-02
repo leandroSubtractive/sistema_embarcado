@@ -1,26 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TwoLineListItem xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:minHeight="?attr/listPreferredItemHeight"
-android:mode="twoLine"
-android:paddingStart="?attr/listPreferredItemPaddingStart"
-android:paddingEnd="?attr/listPreferredItemPaddingEnd">
-
-<TextView android:id="@+id/profileName"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="22sp"
-    android:layout_marginTop="8dp"
-    android:textAppearance="?attr/textAppearanceListItem" />
+    android:padding="2dp">
 
-<TextView android:id="@+id/profileDesc"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="16sp"
-    android:text="@string/sub_text"
-    android:layout_below="@+id/profileName"
-    android:layout_alignStart="@+id/profileName"
-    android:textAppearance="?attr/textAppearanceListItemSecondary" />
 
-</TwoLineListItem>
+    <LinearLayout
+        android:id="@+id/printLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/material_dynamic_neutral95"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/iconView"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@color/material_dynamic_neutral_variant90"
+            android:contentDescription="@string/sub_text"
+            android:scaleType="centerCrop"
+            app:srcCompat="@android:drawable/ic_lock_silent_mode_off" />
+
+        <TextView
+            android:id="@+id/profileName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:text="@string/sub_text"
+            android:textSize="20sp" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

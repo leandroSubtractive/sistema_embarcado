@@ -5,9 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
@@ -18,17 +15,20 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.ui.EqualizerActivity
 import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModel
+import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModelFactory
 import com.leandromendes.vehicleequalizer.util.Constants
-import com.leandromendes.vehicleequalizer.util.ProfileListUtils
+import com.leandromendes.vehicleequalizer.util.ProfileRecyclerViewAdapter
 import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() {
     var mainViewModel: MainViewModel? = null
-
+    private lateinit var adapter: ProfileRecyclerViewAdapter
     private val logTAG = "VehicleEqualizerApp"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,17 +43,10 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Creates or obtains the MainViewModel instance.
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
-        // Initialize adapter for profile list
-        val profileList = findViewById<ListView>(R.id.profileList)
-        val adapter = ProfileListUtils(this, mainViewModel!!.getAllEqualizerProfiles())
-        profileList.setAdapter(adapter)
-
-        // Start observing the LiveData containing the Toast text in the ViewModel
-        mainViewModel!!.getToastText()
-            .observe(this, Observer { text: String? -> this.toastShow(text!!) })
+        // Obtain the Application, Database, and Repository to inject into the ViewModel
+        val application = application as ProfileApplication // Casting for the new Application class
+        val factory = MainViewModelFactory(application.repository)
+        mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java] // Use this Factory
 
         /**
          * Registers a callback to start an Activity
@@ -85,14 +78,16 @@ class MainActivity : AppCompatActivity() {
                 // so it saves a new profile
                 if (position == Constants.define.NEW_PROFILE) {
                     mainViewModel!!.addProfile(currentProfile)
-                    Log.d(logTAG, "Saving new profile" )
+
+                    Log.d(logTAG, "Saving new profile")
                 } else {
-                    mainViewModel!!.updateProfile(position, currentProfile)
-                    Log.d(logTAG, "Updating current profile" )
+                    // Update uses the object ID.
+                    // The returned ‘currentProfile’ object already has the database ID.
+                    mainViewModel!!.updateProfile(currentProfile)
+
+                    Log.d(logTAG, "Updating current profile")
                 }
 
-                // Update the ListView adapter
-                adapter.notifyDataSetChanged()
                 mainViewModel!!.setToastText(
                     String.format(
                         Locale.getDefault(),
@@ -103,13 +98,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Defines an action for a quick click in the listview
-        profileList.onItemClickListener =
-            OnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+        // Initialize adapter for profile list
+        val recyclerView = findViewById<RecyclerView>(R.id.profileList)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // Variable to store the current list of profiles.
+        // Initialized with an empty list. It will be filled by LiveData.
+        var currentProfileList: List<EqualizerProfile> = emptyList()
+
+        // Start observing the LiveData containing the Toast text in the ViewModel
+        mainViewModel!!.getToastText()
+            .observe(this, Observer { text: String? -> this.toastShow(text!!) })
+
+        adapter = ProfileRecyclerViewAdapter(
+            profiles = currentProfileList.toMutableList(), // Pass an empty/copyable list
+            // onQuickClick (Item Click)
+            onItemClick = { profile: EqualizerProfile, position: Int ->
                 val intent = Intent(this, EqualizerActivity::class.java)
                 intent.putExtra(
                     Constants.define.INTENT_PARCELABLE_NAME,
-                    mainViewModel!!.getEqualizerProfiles(position)
+                    profile
                 )
                 intent.putExtra(Constants.define.INTENT_INT_POSITION, position)
 
@@ -117,46 +125,66 @@ class MainActivity : AppCompatActivity() {
 
                 val text = String.format(
                     Locale.getDefault(), getString(R.string.current_profile),
-                    mainViewModel!!.getEqualizerProfiles(position).name
+                    profile.name
                 )
                 mainViewModel!!.setToastText(text)
-            }
-
-        // Defines an action for a long click on a profile list
-        profileList.setOnItemLongClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-            val nameProfileSelected = mainViewModel!!.getEqualizerProfiles(position).name
-            // If the selected item is different from the default profile, delete the profile from the list
-            if (nameProfileSelected != Constants.define.PROFILE_DEFAULT_NAME) {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle(String.format(Locale.getDefault(), getString(R.string.exclusion)))
-                builder.setMessage(
-                    String.format(
-                        Locale.getDefault(), getString(R.string.confirmation_question_delete),
-                        mainViewModel!!.getEqualizerProfiles(position).name
+            },
+            // onLongClick (Item Long Click)
+            onItemLongClick = { profile: EqualizerProfile, position: Int ->
+                val nameProfileSelected = profile.name
+                // If the selected item is different from the default profile, delete the profile from the list
+                if (nameProfileSelected != Constants.define.PROFILE_DEFAULT_NAME) {
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle(
+                        String.format(
+                            Locale.getDefault(),
+                            getString(R.string.exclusion)
+                        )
                     )
-                )
-                builder.setPositiveButton(
-                    String.format(Locale.getDefault(), getString(R.string.positive_button_name))
-                ) { dialog: DialogInterface?, which: Int ->
-                    mainViewModel!!.removeProfile(position)
-                    adapter.notifyDataSetChanged()
+                    builder.setMessage(
+                        String.format(
+                            Locale.getDefault(), getString(R.string.confirmation_question_delete),
+                            profile.name
+                        )
+                    )
+                    builder.setPositiveButton(
+                        String.format(Locale.getDefault(), getString(R.string.positive_button_name))
+                    ) { dialog: DialogInterface?, which: Int ->
+                        mainViewModel!!.removeProfile(profile)
+                        adapter.notifyItemRemoved(position)
+                    }
+                    builder.setNegativeButton(
+                        String.format(
+                            Locale.getDefault(),
+                            getString(R.string.negative_button_name)
+                        ),
+                        null
+                    )
+                    builder.show()
+                } else {
+                    val text = String.format(
+                        Locale.getDefault(),
+                        getString(R.string.profile_cannot_deleted),
+                        nameProfileSelected
+                    )
+                    mainViewModel!!.setToastText(text)
                 }
-                builder.setNegativeButton(
-                    String.format(Locale.getDefault(), getString(R.string.negative_button_name)),
-                    null
-                )
-                builder.show()
-            } else {
-                val text = String.format(
-                    Locale.getDefault(),
-                    getString(R.string.profile_cannot_deleted),
-                    nameProfileSelected
-                )
-                mainViewModel!!.setToastText(text)
+                true
             }
-            true
+        )
+
+        // Define the Adapter in RecyclerView
+        recyclerView.adapter = adapter
+
+        // Observe the Room's LiveData and update the Adapter
+        mainViewModel!!.allProfilesLiveData.observe(this) { profiles ->
+            // Updates the list in the Adapter and notifies the change
+            currentProfileList = profiles // Updates the reference list
+            (recyclerView.adapter as ProfileRecyclerViewAdapter).updateProfiles(profiles)
+            Log.d(logTAG, "Live Data profiles updated. Count: ${profiles.size}")
         }
-        Log.d(logTAG, "All components of the main screen have been initialized" )
+
+        Log.d(logTAG, "All components of the main screen have been initialized")
     }
 
     fun toastShow(text: String) {

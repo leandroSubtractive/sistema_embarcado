@@ -1,16 +1,131 @@
 package com.leandromendes.vehicleequalizer
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import com.leandromendes.vehicleequalizer.data.dao.ProfileDao
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.data.repository.UserRepository
 import com.leandromendes.vehicleequalizer.util.Constants
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 
+// --- LiveData Utility for Tests ---
+
+/**
+ * LiveData extension that blocks the test execution until a value is emitted.
+ */
+fun <T> LiveData<T>.getOrAwaitValue(
+    time: Long = 2,
+    timeUnit: TimeUnit = TimeUnit.SECONDS,
+    afterObserve: () -> Unit = {}
+): T {
+    var data: T? = null
+    val latch = CountDownLatch(1)
+    val observer = object : Observer<T> {
+        override fun onChanged(value: T) {
+            data = value
+            latch.countDown()
+            this@getOrAwaitValue.removeObserver(this)
+        }
+    }
+    this.observeForever(observer)
+
+    try {
+        afterObserve.invoke()
+
+        // Don't wait indefinitely if the LiveData is not set.
+        if (!latch.await(time, timeUnit)) {
+            throw TimeoutException("LiveData value was never set.")
+        }
+
+    } finally {
+        this.removeObserver(observer)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    return data as T
+}
+
+// --- Fake DAO (Simulates Room) ---
+
+/**
+ * Fake/Mock implementation of ProfileDao for use in unit tests.
+ */
+class FakeProfileDao : ProfileDao {
+
+    // Simulates the database table
+    private val data = mutableListOf<EqualizerProfile>()
+    // The MutableLiveData that notifies observers. Initializes with the default profile.
+    private val profilesLiveData = MutableLiveData<List<EqualizerProfile>>()
+    private var nextId = 1
+
+    init {
+        // Initializes with the default profile
+        val defaultProfile = EqualizerProfile(id = nextId++)
+        data.add(defaultProfile)
+        profilesLiveData.postValue(data.toList())
+    }
+
+    override fun getAllProfiles(): LiveData<List<EqualizerProfile>> {
+        return profilesLiveData
+    }
+
+    override suspend fun insert(profile: EqualizerProfile): Long {
+        // Copies the profile to ensure insertion uses a new ID
+        val newProfile = profile.copy(id = nextId++)
+        data.add(newProfile)
+        profilesLiveData.postValue(data.toList())
+        return newProfile.id.toLong()
+    }
+
+    override suspend fun update(profile: EqualizerProfile) {
+        val index = data.indexOfFirst { it.id == profile.id }
+        if (index != -1) {
+            data[index] = profile
+            profilesLiveData.postValue(data.toList())
+        }
+    }
+
+    override suspend fun delete(profile: EqualizerProfile) {
+        if (data.removeIf { it.id == profile.id }) {
+            profilesLiveData.postValue(data.toList())
+        }
+    }
+
+    // Implementation required if it exists in ProfileDao, even if not used in tests
+    override suspend fun deleteById(profileId: Int) {
+        if (data.removeIf { it.id == profileId }) {
+            profilesLiveData.postValue(data.toList())
+        }
+    }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryTest {
-    private lateinit var userRepository: UserRepository
 
-    private val defaultProfile = EqualizerProfile()
+    // Rule for LiveData to function correctly in the test
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
+
+    private lateinit var userRepository: UserRepository
+    private lateinit var fakeProfileDao: FakeProfileDao
+    private val testDispatcher = StandardTestDispatcher()
+
+    private val defaultProfileName = Constants.define.PROFILE_DEFAULT_NAME
     private val newProfile1 = EqualizerProfile(
         name = "Profile_1",
         bassEqValue = Constants.define.BASS_VALUE_DEFAULT,
@@ -23,105 +138,82 @@ class UserRepositoryTest {
 
     @Before
     fun setUp() {
-        userRepository = UserRepository()
+        // Sets up the Main dispatcher for coroutines
+        Dispatchers.setMain(testDispatcher)
+
+        // Initializes the Fake DAO and the Repository with the DAO (now works)
+        fakeProfileDao = FakeProfileDao()
+        userRepository = UserRepository(fakeProfileDao)
+    }
+
+    @After
+    fun tearDown() {
+        // Resets the Main dispatcher
+        Dispatchers.resetMain()
     }
 
     // --- Initialization Tests ---
     @Test
-    fun init_repositoryStartsWithOneDefaultProfile() {
-        // GIVEN: The repository was initialized in @Before.
+    fun init_repositoryStartsWithOneDefaultProfile() = runTest {
+        // WHEN: Gets the list of profiles from LiveData
+        val profiles = userRepository.allEqualizerProfiles.getOrAwaitValue()
 
-        // WHEN & THEN: Check that the list is not empty and has the expected size (1)
-        assertEquals(1, userRepository.allEqualizerProfiles.size)
-
-        // Check if the first profile is the default
-        assertEquals(defaultProfile.name, userRepository.getEqualizerProfile(0).name)
+        // THEN: The list size should be 1 and the name should be the default
+        assertEquals(1, profiles.size)
+        assertEquals(defaultProfileName, profiles.first().name)
     }
 
     // --- Tests for addProfile ---
     @Test
-    fun addProfile_addsNewProfileToListCorrectly() {
-        // GIVEN: Repository with 1 default profile (from init)
-
-        // WHEN: Add a new profile
+    fun addProfile_addsNewProfileToListCorrectly() = runTest {
+        // WHEN: Adds a new profile
         userRepository.addProfile(newProfile1)
 
-        // THEN: The size of the list should be 2 and the new profile should be in the last position
-        assertEquals(2, userRepository.allEqualizerProfiles.size)
-        assertEquals(newProfile1.name, userRepository.getEqualizerProfile(1).name)
+        // THEN: The list size (LiveData) should be 2 and the new profile should be at the end
+        val profiles = userRepository.allEqualizerProfiles.getOrAwaitValue()
+        assertEquals(2, profiles.size)
+        assertEquals(newProfile1.name, profiles.last().name)
     }
 
     // --- Tests for removeProfile ---
     @Test
-    fun removeProfile_removesProfileByValidIndex() {
-        // GIVEN: Add a second profile
+    fun removeProfile_removesProfileByObject() = runTest {
+        // GIVEN: Adds a second profile and saves the object for removal
         userRepository.addProfile(newProfile1)
-        assertEquals(2, userRepository.allEqualizerProfiles.size) // Verifica o GIVEN
+        var profiles = userRepository.allEqualizerProfiles.getOrAwaitValue()
+        val profileToRemove = profiles.last()
+        assertEquals(2, profiles.size)
 
-        // WHEN: Remove the added profile (index 1)
-        userRepository.removeProfile(1)
+        // WHEN: Removes the profile by object
+        userRepository.removeProfile(profileToRemove)
 
         // THEN: The size should return to 1
-        assertEquals(1, userRepository.allEqualizerProfiles.size)
-
-        // Check if the remaining profile is the default one
-        assertEquals(defaultProfile.name, userRepository.getEqualizerProfile(0).name)
+        profiles = userRepository.allEqualizerProfiles.getOrAwaitValue()
+        assertEquals(1, profiles.size)
+        assertEquals(defaultProfileName, profiles.first().name)
     }
 
+    // --- Updated Tests for updateProfile ---
     @Test
-    fun removeProfile_doesNothingIfIndexIsInvalid() {
-        // GIVEN: Repository with 1 default profile
-        val initialSize = userRepository.allEqualizerProfiles.size
+    fun updateProfile_replacesProfileAtValidIndex() = runTest {
+        // GIVEN: Gets the default object and its ID.
+        var profiles = userRepository.allEqualizerProfiles.getOrAwaitValue()
+        val profileToUpdate = profiles.first()
+        val originalId = profileToUpdate.id
 
-        // WHEN: Attempts to remove an invalid index (outside the upper limit)
-        userRepository.removeProfile(99)
-        // E: Attempts to remove an invalid (negative) index
-        userRepository.removeProfile(-1)
-
-        // THEN: The size of the list should not change
-        assertEquals(initialSize, userRepository.allEqualizerProfiles.size)
-    }
-
-    // --- Testes para updateProfile ---
-    @Test
-    fun updateProfile_replacesProfileAtValidIndex() {
-        // GIVEN: Repository with the default profile at index 0
         val newName = "Updated Profile"
-        val updatedProfile = EqualizerProfile(name = newName)
+        // Creates a new object with the same ID as the original
+        val updatedProfile = profileToUpdate.copy(name = newName)
 
-        // WHEN: Update profile in index 0
-        userRepository.updateProfile(0, updatedProfile)
+        // WHEN: Updates the profile
+        userRepository.updateProfile(updatedProfile)
 
-        // THEN: The name of the profile in index 0 should be the new name
-        assertEquals(newName, userRepository.getEqualizerProfile(0).name)
-        // The size of the list should remain 1
-        assertEquals(1, userRepository.allEqualizerProfiles.size)
-    }
+        // THEN: The profile name should be the new name and the size should remain 1
+        profiles = userRepository.allEqualizerProfiles.getOrAwaitValue()
+        val updatedInList = profiles.first()
 
-    @Test
-    fun updateProfile_doesNothingIfIndexIsInvalid() {
-        // GIVEN: Repository with 1 default profile
-        val originalProfile = userRepository.getEqualizerProfile(0)
-        val newName = "Invalid Test"
-        val updatedProfile = EqualizerProfile(name = newName)
-
-        // WHEN: Attempts to update an invalid index
-        userRepository.updateProfile(99, updatedProfile)
-
-        // THEN: The profile in index 0 should remain the original
-        assertEquals(originalProfile.name, userRepository.getEqualizerProfile(0).name)
-    }
-
-    // --- Testes para getEqualizerProfile ---
-    @Test
-    fun getEqualizerProfile_returnsCorrectProfile() {
-        // GIVEN: Adds the profile “Profile_1” to index 1
-        userRepository.addProfile(newProfile1)
-
-        // WHEN: Get the profile in index 1
-        val retrievedProfile = userRepository.getEqualizerProfile(1)
-
-        // THEN: The returned profile must have the name “Profile.”
-        assertEquals(newProfile1.name, retrievedProfile.name)
+        assertEquals(newName, updatedInList.name)
+        assertEquals(originalId, updatedInList.id)
+        assertEquals(1, profiles.size)
     }
 }

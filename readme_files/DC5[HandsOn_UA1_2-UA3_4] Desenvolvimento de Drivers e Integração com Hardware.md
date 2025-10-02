@@ -1,5 +1,11 @@
 # Desenvolvimento de Drivers e Integração com Hardware
 
+## CURSO
+
+FORMAÇÃO EM SISTEMAS EMBARCADOS
+
+LEANDRO MENDES DOS SANTOS
+
 ## Objetivo
 
 - Simular a leitura de dados de sensores do veículo (ex: velocidade,
@@ -53,12 +59,12 @@ MainActivity) recebam as mensagens CAN sem que o simulador precise saber quem s�
 ## Resultados
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250929_202341.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250929_202341.png alt style="width:40%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 1:</strong> Tela inicial do aplicativo</figcaption>
 </p>
 
 <p style="text-align:center">
-    <img src=imgs/Screenshot_20250929_202454.png alt style="width:50%; height:auto;">
+    <img src=imgs/Screenshot_20250929_202454.png alt style="width:40%; height:auto;">
     <figcaption style="text-align:center"><strong>Figura 2:</strong> Tela do aplicativo após apertar os botões</figcaption>
 </p>
 
