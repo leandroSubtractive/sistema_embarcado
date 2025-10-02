@@ -1,4 +1,4 @@
-package com.leandromendes.vehicleequalizer.data
+package com.leandromendes.vehicleequalizer.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -17,7 +17,7 @@ interface ProfileDao {
     fun getAllProfiles(): LiveData<List<EqualizerProfile>>
 
     // Inserts a new profile. If there is a conflict, it replaces it
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insert(profile: EqualizerProfile): Long // Returns the ID of the new item
 
     // Updates an existing profile
