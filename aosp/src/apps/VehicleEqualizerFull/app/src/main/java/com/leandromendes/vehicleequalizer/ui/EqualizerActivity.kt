@@ -1,10 +1,10 @@
 package com.leandromendes.vehicleequalizer.ui
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.SeekBar
@@ -22,198 +22,153 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 class EqualizerActivity : AppCompatActivity() {
+
     private lateinit var textViewBass: TextView
     private lateinit var textViewMid: TextView
     private lateinit var textViewTreble: TextView
     private lateinit var textViewBalance: TextView
-    private lateinit var profileName: String
+    private lateinit var textViewMasterVol: TextView
     private lateinit var saveButton: Button
-    private var bassValue = 0
-    private var midValue = 0
-    private var highValue = 0
-    private var balanceValue = 0
-    private var masterVolValue = 0
+    private lateinit var resetButton: Button
+
+    private lateinit var profileName: String
+    private lateinit var currentProfile: EqualizerProfile
     private var idPosition = 0
+
+    private var _bassValue = 0
+    private var bassValue: Int
+        get() = _bassValue
+        set(value) {
+            _bassValue = value
+            saveButton.isEnabled = true
+            resetButton.isEnabled = true
+        }
+
+    private var _midValue = 0
+    private var midValue: Int
+        get() = _midValue
+        set(value) {
+            _midValue = value
+            saveButton.isEnabled = true
+            resetButton.isEnabled = true
+        }
+
+    private var _highValue = 0
+    private var highValue: Int
+        get() = _highValue
+        set(value) {
+            _highValue = value
+            saveButton.isEnabled = true
+            resetButton.isEnabled = true
+        }
+
+    private var _balanceValue = 0
+    private var balanceValue: Int
+        get() = _balanceValue
+        set(value) {
+            _balanceValue = value
+            saveButton.isEnabled = true
+            resetButton.isEnabled = true
+        }
+
+    private var _masterVolValue = 0
+    private var masterVolValue: Int
+        get() = _masterVolValue
+        set(value) {
+            _masterVolValue = value
+            saveButton.isEnabled = true
+            resetButton.isEnabled = true
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.enableEdgeToEdge()
+        enableEdgeToEdge()
         setContentView(R.layout.activity_equalizer)
-        ViewCompat.setOnApplyWindowInsetsListener(
-            findViewById(R.id.main)
-        ) { v: View?, insets: WindowInsetsCompat? ->
-            val systemBars = insets!!.getInsets(WindowInsetsCompat.Type.systemBars())
-            v!!.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Get the intent
-        val intent = getIntent()
-
         // Gets all the parameters from the previous activity
-        val currentProfile: EqualizerProfile? = intent.getParcelableExtra(
-        Constants.define.INTENT_PARCELABLE_NAME,
-        EqualizerProfile::class.java
+        currentProfile = requireNotNull(
+            intent.getParcelableExtra(
+                INTENT_PARCELABLE_NAME, // Companion object key
+                EqualizerProfile::class.java
+            )
         )
         idPosition = intent.getIntExtra(
-            Constants.define.INTENT_INT_POSITION,
+            INTENT_INT_POSITION, // Companion object key
             Constants.define.INTENT_INT_POSITION_DEFAULT
         )
 
-        // Get button layout
+        // Initialize Views
         val newProfileButton = findViewById<Button>(R.id.newProfile)
-        val resetAllSettings = findViewById<Button>(R.id.reset)
+        resetButton = findViewById(R.id.reset)
         saveButton = findViewById(R.id.save)
 
-        // Sets the name of the current profile on the screen
-        profileName = currentProfile!!.name
-        // Local variables
+        // Initialization of all TextViews
         val textViewProfile = findViewById<TextView>(R.id.profileSelected)
+        textViewBass = findViewById(R.id.textViewBass)
+        textViewMid = findViewById(R.id.textViewMid)
+        textViewTreble = findViewById(R.id.textViewTreble)
+        textViewBalance = findViewById(R.id.textViewBalance)
+        textViewMasterVol = findViewById(R.id.textViewVolume)
+
+        // Sets the name of the current profile on the screen
+        profileName = currentProfile.name
         textViewProfile.text = profileName
 
         // Sets the initial values of the equalization faders
         // Bass frequency
-        bassValue = currentProfile.bassEqValue
-        textViewBass = findViewById(R.id.textViewBass)
-        drawTextOnTheBars(textViewBass, bassValue)
-        val seekBarBass = findViewById<SeekBar>(R.id.seekBarBass)
-        seekBarBass.progress = bassValue
+        setupSeekBar(
+            R.id.seekBarBass,
+            currentProfile.bassEqValue,
+            textViewBass,
+            ::drawTextOnTheBars
+        ) { progress -> bassValue = progress }
 
         // Mid frequency
-        midValue = currentProfile.midEqValue
-        textViewMid = findViewById(R.id.textViewMid)
-        drawTextOnTheBars(textViewMid, midValue)
-        val seekBarMid = findViewById<SeekBar>(R.id.seekBarMid)
-        seekBarMid.progress = midValue
+        setupSeekBar(
+            R.id.seekBarMid,
+            currentProfile.midEqValue,
+            textViewMid,
+            ::drawTextOnTheBars
+        ) { progress -> midValue = progress }
 
         // High frequency
-        highValue = currentProfile.hiEqValue
-        textViewTreble = findViewById(R.id.textViewTreble)
-        drawTextOnTheBars(textViewTreble, highValue)
-        val seekBarTreble = findViewById<SeekBar>(R.id.seekBarTreble)
-        seekBarTreble.progress = highValue
+        setupSeekBar(
+            R.id.seekBarTreble,
+            currentProfile.hiEqValue,
+            textViewTreble,
+            ::drawTextOnTheBars
+        ) { progress -> highValue = progress }
 
         // Balance
-        balanceValue = currentProfile.balanceEqValue
-        textViewBalance = findViewById(R.id.textViewBalance)
-        drawTextOnThePanBar(textViewBalance, balanceValue)
-        val seekBarBalance = findViewById<SeekBar>(R.id.seekBarBalance)
-        seekBarBalance.progress = balanceValue
+        setupSeekBar(
+            R.id.seekBarBalance,
+            currentProfile.balanceEqValue,
+            textViewBalance,
+            ::drawTextOnThePanBar
+        ) { progress -> balanceValue = progress }
 
         // Master Volume
-        masterVolValue = currentProfile.masterVolValue
-        val textViewMasterVol = findViewById<TextView>(R.id.textViewVolume)
-        drawTextOnTheVolBar(textViewMasterVol, masterVolValue)
-        val seekBarMasterVol = findViewById<SeekBar>(R.id.seekBarVolume)
-        seekBarMasterVol.progress = masterVolValue
+        setupSeekBar(
+            R.id.seekBarVolume,
+            currentProfile.masterVolValue,
+            textViewMasterVol,
+            ::drawTextOnTheVolBar
+        ) { progress -> masterVolValue = progress }
 
-
-        // Treatment for bass bar movement
-        seekBarBass.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                bassValue = progress
-                drawTextOnTheBars(textViewBass, bassValue)
-                // Only enable the save button if data has changed.
-                saveButton.setEnabled(true)
-                resetAllSettings.setEnabled(true)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-        })
-
-        // Treatment for mid bar movement
-        seekBarMid.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                midValue = progress
-                drawTextOnTheBars(textViewMid, midValue)
-                // Only enable the save button if data has changed.
-                saveButton.setEnabled(true)
-                resetAllSettings.setEnabled(true)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-        })
-
-        // Treatment for high bar movement
-        seekBarTreble.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                highValue = progress
-                drawTextOnTheBars(textViewTreble, highValue)
-                // Only enable the save button if data has changed.
-                saveButton.setEnabled(true)
-                resetAllSettings.setEnabled(true)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-        })
-
-        seekBarBalance.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                balanceValue = progress
-                drawTextOnThePanBar(textViewBalance, balanceValue)
-                // Only enable the save button if data has changed.
-                saveButton.setEnabled(true)
-                resetAllSettings.setEnabled(true)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-        })
-
-        seekBarMasterVol.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                masterVolValue = progress
-                drawTextOnTheVolBar(textViewMasterVol, masterVolValue)
-                // Only enable the save button if data has changed.
-                saveButton.setEnabled(true)
-                resetAllSettings.setEnabled(true)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                // TODO
-            }
-        })
 
         // Create new profile button action
-        newProfileButton.setOnClickListener { v: View? ->
-            saveNewChangeProfile(
-                currentProfile
-            )
+        newProfileButton.setOnClickListener {
+            saveNewChangeProfile(currentProfile)
         }
 
         // Save profile settings button action
-        saveButton.setOnClickListener { v: View? ->
-            // The Default profile cannot be overwritten, if you press on the default profile,
-            // it creates a new one.
+        saveButton.setOnClickListener {
             if (profileName == getString(R.string.default_profile)) {
                 saveNewChangeProfile(currentProfile)
             } else {
@@ -221,31 +176,54 @@ class EqualizerActivity : AppCompatActivity() {
             }
         }
 
-        // Reset all settings
-        resetAllSettings.setOnClickListener { v: View? ->
+        // Reset all settings to the saved value
+        resetButton.setOnClickListener {
             bassValue = currentProfile.bassEqValue
+            (findViewById<SeekBar>(R.id.seekBarBass)).setProgress(bassValue, true)
             drawTextOnTheBars(textViewBass, bassValue)
-            seekBarBass.setProgress(bassValue, true)
 
             midValue = currentProfile.midEqValue
+            (findViewById<SeekBar>(R.id.seekBarMid)).setProgress(midValue, true)
             drawTextOnTheBars(textViewMid, midValue)
-            seekBarMid.setProgress(midValue, true)
 
             highValue = currentProfile.hiEqValue
+            (findViewById<SeekBar>(R.id.seekBarTreble)).setProgress(highValue, true)
             drawTextOnTheBars(textViewTreble, highValue)
-            seekBarTreble.setProgress(highValue, true)
 
             balanceValue = currentProfile.balanceEqValue
+            (findViewById<SeekBar>(R.id.seekBarBalance)).setProgress(balanceValue, true)
             drawTextOnThePanBar(textViewBalance, balanceValue)
-            seekBarBalance.setProgress(balanceValue, true)
 
             masterVolValue = currentProfile.masterVolValue
+            (findViewById<SeekBar>(R.id.seekBarVolume)).setProgress(masterVolValue, true)
             drawTextOnTheVolBar(textViewMasterVol, masterVolValue)
-            seekBarMasterVol.setProgress(masterVolValue, true)
 
-            // Disable button
-            resetAllSettings.setEnabled(false)
-            saveButton.setEnabled(false)
+            // Disables buttons after reset
+            resetButton.isEnabled = false
+            saveButton.isEnabled = false
+        }
+    }
+
+    private fun setupSeekBar(
+        seekBarId: Int,
+        initialValue: Int,
+        textView: TextView,
+        drawTextFunc: (TextView, Int) -> Unit,
+        onProgressUpdate: (Int) -> Unit
+    ) {
+        findViewById<SeekBar>(seekBarId).apply {
+            progress = initialValue
+            drawTextFunc(textView, initialValue)
+
+            setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    onProgressUpdate(progress)
+                    drawTextFunc(textView, progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            })
         }
     }
 
@@ -254,37 +232,32 @@ class EqualizerActivity : AppCompatActivity() {
         val format = SimpleDateFormat(Constants.define.DATETIME_FORMAT, Locale.getDefault())
         val dateTime = format.format(currentDate)
 
-        val newProfileName = String.format(
+        val newProfileHint = String.format(
             Locale.getDefault(),
             "%s %s",
             getString(R.string.new_profile_button),
             dateTime
         )
-        val builder = AlertDialog.Builder(this@EqualizerActivity)
+        val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.dialogue_title))
 
-        val view =
-            LayoutInflater.from(this@EqualizerActivity).inflate(R.layout.dialog_text_input, null)
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_text_input, null)
         val input = view.findViewById<EditText>(R.id.edit_text)
-        input.setHint(newProfileName)
+        input.setHint(newProfileHint)
         builder.setView(view)
 
-        builder.setPositiveButton(
-            getString(R.string.agree_button_name)
-        ) { dialog: DialogInterface?, which: Int ->
-            val text = input.getText().toString()
-            profileName = if (!text.isEmpty()) {
-                text
-            }else {
-                newProfileName
+        builder.setPositiveButton(getString(R.string.agree_button_name)) { dialog: DialogInterface?, which: Int ->
+            val text = input.text.toString()
+            profileName = text.ifEmpty {
+                newProfileHint
             }
             idPosition = Constants.define.INTENT_INT_POSITION_DEFAULT
             saveChangeProfile(profile)
         }
 
-        builder.setNegativeButton(
-            getString(R.string.cancel_button_name)
-        ) { dialog: DialogInterface?, which: Int -> dialog!!.cancel() }
+        builder.setNegativeButton(getString(R.string.cancel_button_name)) { dialog: DialogInterface?, which: Int ->
+            dialog!!.cancel()
+        }
         builder.show()
     }
 
@@ -297,31 +270,66 @@ class EqualizerActivity : AppCompatActivity() {
         profile.masterVolValue = masterVolValue
 
         val resultIntent = Intent()
-        resultIntent.putExtra(Constants.define.INTENT_PARCELABLE_NAME, profile)
-        resultIntent.putExtra(Constants.define.INTENT_INT_POSITION, idPosition)
+        resultIntent.putExtra(INTENT_PARCELABLE_NAME, profile)
+        resultIntent.putExtra(INTENT_INT_POSITION, idPosition)
         setResult(RESULT_OK, resultIntent)
         finish()
     }
 
     private fun drawTextOnTheBars(textView: TextView, value: Int) {
-        textView.text = String.format(
-            Locale.getDefault(), "%s%s",
-            (if (value > 0) ("+$value") else value), getString(R.string.decibel)
-        )
+
+        textView.text = when {
+            value > 0 -> "+$value${getString(R.string.decibel)}"
+            else -> "$value${getString(R.string.decibel)}"
+        }
     }
 
     private fun drawTextOnThePanBar(textView: TextView, value: Int) {
         val offset = 5
-        val balance = (offset - value)
-        textView.text = String.format(
-            Locale.getDefault(), "%s",
-            if (balance > 0) "+$balance" else if (balance < 0) "+" + (-balance) else getString(
-                R.string.default_pan_value
-            )
-        )
+        val balance = offset - value
+
+        textView.text = when {
+            balance > 0 -> "+$balance"
+            balance < 0 -> "+${-balance}"
+            else -> getString(R.string.default_pan_value)
+        }
     }
 
     private fun drawTextOnTheVolBar(textView: TextView, value: Int) {
-        textView.text = String.format(Locale.getDefault(), "%s%s", value, getString(R.string.spl))
+        textView.text = String.format(
+            Locale.getDefault(),
+            "%s%s",
+            value.toString(),
+            getString(R.string.spl)
+        )
+    }
+
+    companion object {
+        const val INTENT_PARCELABLE_NAME = Constants.define.INTENT_PARCELABLE_NAME
+        const val INTENT_INT_POSITION = Constants.define.INTENT_INT_POSITION
+
+        /**
+         * Creates an Intent to launch EqualizerActivity, encapsulating the extras.
+         */
+        fun newIntent(context: Context, profile: EqualizerProfile, position: Int): Intent {
+            return Intent(context, EqualizerActivity::class.java).apply {
+                putExtra(INTENT_PARCELABLE_NAME, profile)
+                putExtra(INTENT_INT_POSITION, position)
+            }
+        }
+
+        /**
+         * Extracts the result Intent profile used by the calling Activity
+         */
+        fun getResultProfile(intent: Intent): EqualizerProfile? {
+            return intent.getParcelableExtra(INTENT_PARCELABLE_NAME, EqualizerProfile::class.java)
+        }
+
+        /**
+         * Extracts the position of the result Intent used by the calling Activity
+         */
+        fun getResultPosition(intent: Intent): Int {
+            return intent.getIntExtra(INTENT_INT_POSITION, Constants.define.INTENT_INT_POSITION_DEFAULT)
+        }
     }
 }

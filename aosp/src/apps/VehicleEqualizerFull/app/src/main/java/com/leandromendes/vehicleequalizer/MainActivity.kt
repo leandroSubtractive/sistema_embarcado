@@ -1,7 +1,6 @@
 package com.leandromendes.vehicleequalizer
 
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -23,11 +22,11 @@ import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModel
 import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModelFactory
 import com.leandromendes.vehicleequalizer.util.Constants
 import com.leandromendes.vehicleequalizer.util.ProfileRecyclerViewAdapter
-import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() {
-    var mainViewModel: MainViewModel? = null
+    
+    private lateinit var mainViewModel: MainViewModel
     private lateinit var adapter: ProfileRecyclerViewAdapter
     private val logTAG = "VehicleEqualizerApp"
 
@@ -58,43 +57,35 @@ class MainActivity : AppCompatActivity() {
             StartActivityForResult()
         ) { result: ActivityResult? ->
             // Checks if the Activity result was successful
-            if (result!!.resultCode == RESULT_OK) {
+            if (result!!.resultCode == RESULT_OK && result.data != null) {
                 // Get the return Intent
-                val intentRet = result.data
-
+                val intentRet = result.data!!
                 // Extract the EqualizerProfile object
-                val currentProfile: EqualizerProfile = intentRet?.getParcelableExtra(
-                    Constants.define.INTENT_PARCELABLE_NAME,
-                    EqualizerProfile::class.java
-                ) as EqualizerProfile
-
+                val currentProfile = EqualizerActivity.getResultProfile(intentRet)
                 // Extracts the position of the profile in the list.
-                val position = intentRet.getIntExtra(
-                    Constants.define.INTENT_INT_POSITION,
-                    Constants.define.INTENT_INT_POSITION_DEFAULT
-                )
+                val position = EqualizerActivity.getResultPosition(intentRet)
+
+                // Verify that the profile was successfully extracted
+                if (currentProfile == null) {
+                    Log.e(logTAG, "Error retrieving EqualizerProfile from result Intent")
+                    return@registerForActivityResult
+                }
 
                 // If the index received is -1, it means that it is a new configuration,
                 // so it saves a new profile
                 if (position == Constants.define.NEW_PROFILE) {
-                    mainViewModel!!.addProfile(currentProfile)
+                    mainViewModel.addProfile(currentProfile)
 
                     Log.d(logTAG, "Saving new profile")
                 } else {
                     // Update uses the object ID.
                     // The returned ‘currentProfile’ object already has the database ID.
-                    mainViewModel!!.updateProfile(currentProfile)
+                    mainViewModel.updateProfile(currentProfile)
 
                     Log.d(logTAG, "Updating current profile")
                 }
 
-                mainViewModel!!.setToastText(
-                    String.format(
-                        Locale.getDefault(),
-                        "%s",
-                        getString(R.string.saved)
-                    )
-                )
+                mainViewModel.setToastText(getString(R.string.saved))
             }
         }
 
@@ -107,27 +98,19 @@ class MainActivity : AppCompatActivity() {
         var currentProfileList: List<EqualizerProfile> = emptyList()
 
         // Start observing the LiveData containing the Toast text in the ViewModel
-        mainViewModel!!.getToastText()
+        mainViewModel.getToastText()
             .observe(this, Observer { text: String? -> this.toastShow(text!!) })
 
         adapter = ProfileRecyclerViewAdapter(
             profiles = currentProfileList.toMutableList(), // Pass an empty/copyable list
             // onQuickClick (Item Click)
             onItemClick = { profile: EqualizerProfile, position: Int ->
-                val intent = Intent(this, EqualizerActivity::class.java)
-                intent.putExtra(
-                    Constants.define.INTENT_PARCELABLE_NAME,
-                    profile
-                )
-                intent.putExtra(Constants.define.INTENT_INT_POSITION, position)
-
+                // Use the Intent Factory from EqualizerActivity
+                val intent = EqualizerActivity.newIntent(this, profile, position)
                 eqActivity.launch(intent)
 
-                val text = String.format(
-                    Locale.getDefault(), getString(R.string.current_profile),
-                    profile.name
-                )
-                mainViewModel!!.setToastText(text)
+                val text = getString(R.string.current_profile, profile.name)
+                mainViewModel.setToastText(text)
             },
             // onLongClick (Item Long Click)
             onItemLongClick = { profile: EqualizerProfile, position: Int ->
@@ -135,39 +118,18 @@ class MainActivity : AppCompatActivity() {
                 // If the selected item is different from the default profile, delete the profile from the list
                 if (nameProfileSelected != Constants.define.PROFILE_DEFAULT_NAME) {
                     val builder = AlertDialog.Builder(this)
-                    builder.setTitle(
-                        String.format(
-                            Locale.getDefault(),
-                            getString(R.string.exclusion)
-                        )
-                    )
-                    builder.setMessage(
-                        String.format(
-                            Locale.getDefault(), getString(R.string.confirmation_question_delete),
-                            profile.name
-                        )
-                    )
-                    builder.setPositiveButton(
-                        String.format(Locale.getDefault(), getString(R.string.positive_button_name))
-                    ) { dialog: DialogInterface?, which: Int ->
-                        mainViewModel!!.removeProfile(profile)
+                    builder.setTitle(getString(R.string.exclusion))
+                    builder.setMessage(getString(R.string.confirmation_question_delete, profile.name))
+
+                    builder.setPositiveButton(getString(R.string.positive_button_name)) { _: DialogInterface?, _: Int ->
+                        mainViewModel.removeProfile(profile)
                         adapter.notifyItemRemoved(position)
                     }
-                    builder.setNegativeButton(
-                        String.format(
-                            Locale.getDefault(),
-                            getString(R.string.negative_button_name)
-                        ),
-                        null
-                    )
+                    builder.setNegativeButton(getString(R.string.negative_button_name), null)
                     builder.show()
                 } else {
-                    val text = String.format(
-                        Locale.getDefault(),
-                        getString(R.string.profile_cannot_deleted),
-                        nameProfileSelected
-                    )
-                    mainViewModel!!.setToastText(text)
+                    val text = getString(R.string.profile_cannot_deleted, nameProfileSelected)
+                    mainViewModel.setToastText(text)
                 }
                 true
             }
@@ -177,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         // Observe the Room's LiveData and update the Adapter
-        mainViewModel!!.allProfilesLiveData.observe(this) { profiles ->
+        mainViewModel.allProfilesLiveData.observe(this) { profiles ->
             // Updates the list in the Adapter and notifies the change
             currentProfileList = profiles // Updates the reference list
             (recyclerView.adapter as ProfileRecyclerViewAdapter).updateProfiles(profiles)
@@ -188,7 +150,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun toastShow(text: String) {
-        Toast.makeText(this, String.format(Locale.getDefault(), text), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 }
 
