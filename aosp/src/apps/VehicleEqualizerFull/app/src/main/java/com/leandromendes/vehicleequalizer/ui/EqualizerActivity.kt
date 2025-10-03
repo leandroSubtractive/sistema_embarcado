@@ -100,7 +100,7 @@ class EqualizerActivity : AppCompatActivity() {
         )
         idPosition = intent.getIntExtra(
             INTENT_INT_POSITION, // Companion object key
-            Constants.define.INTENT_INT_POSITION_DEFAULT
+            Constants.Define.INTENT_INT_POSITION_DEFAULT
         )
 
         // Initialize Views
@@ -229,7 +229,7 @@ class EqualizerActivity : AppCompatActivity() {
 
     private fun saveNewChangeProfile(profile: EqualizerProfile) {
         val currentDate = Date()
-        val format = SimpleDateFormat(Constants.define.DATETIME_FORMAT, Locale.getDefault())
+        val format = SimpleDateFormat(Constants.Define.DATETIME_FORMAT, Locale.getDefault())
         val dateTime = format.format(currentDate)
 
         val newProfileHint = String.format(
@@ -251,7 +251,7 @@ class EqualizerActivity : AppCompatActivity() {
             profileName = text.ifEmpty {
                 newProfileHint
             }
-            idPosition = Constants.define.INTENT_INT_POSITION_DEFAULT
+            idPosition = Constants.Define.INTENT_INT_POSITION_DEFAULT
             saveChangeProfile(profile)
         }
 
@@ -305,8 +305,8 @@ class EqualizerActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val INTENT_PARCELABLE_NAME = Constants.define.INTENT_PARCELABLE_NAME
-        const val INTENT_INT_POSITION = Constants.define.INTENT_INT_POSITION
+        const val INTENT_PARCELABLE_NAME = Constants.Define.INTENT_PARCELABLE_NAME
+        const val INTENT_INT_POSITION = Constants.Define.INTENT_INT_POSITION
 
         /**
          * Creates an Intent to launch EqualizerActivity, encapsulating the extras.
@@ -329,7 +329,7 @@ class EqualizerActivity : AppCompatActivity() {
          * Extracts the position of the result Intent used by the calling Activity
          */
         fun getResultPosition(intent: Intent): Int {
-            return intent.getIntExtra(INTENT_INT_POSITION, Constants.define.INTENT_INT_POSITION_DEFAULT)
+            return intent.getIntExtra(INTENT_INT_POSITION, Constants.Define.INTENT_INT_POSITION_DEFAULT)
         }
     }
 }
