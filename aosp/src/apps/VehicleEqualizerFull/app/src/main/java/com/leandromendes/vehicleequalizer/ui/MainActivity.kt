@@ -1,4 +1,4 @@
-package com.leandromendes.vehicleequalizer
+package com.leandromendes.vehicleequalizer.ui
 
 import android.Manifest
 import android.content.BroadcastReceiver
@@ -17,7 +17,6 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -27,16 +26,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.leandromendes.vehicleequalizer.ProfileApplication
+import com.leandromendes.vehicleequalizer.R
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.service.AudioService
-import com.leandromendes.vehicleequalizer.ui.EqualizerActivity
 import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModel
 import com.leandromendes.vehicleequalizer.ui.viewmodel.MainViewModelFactory
-import com.leandromendes.vehicleequalizer.util.Constants.PlaybackStates
-import com.leandromendes.vehicleequalizer.util.Constants.Define
-import com.leandromendes.vehicleequalizer.util.Constants.MusicConstants
+import com.leandromendes.vehicleequalizer.util.Constants
 import com.leandromendes.vehicleequalizer.util.ProfileRecyclerViewAdapter
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,27 +51,28 @@ class MainActivity : AppCompatActivity() {
     private var isPlaying = false // Flag to signal the play status
     private val stateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == MusicConstants.BROADCAST_MUSIC_STATE) {
-                val currentPosition = intent.getIntExtra(MusicConstants.EXTRA_CURRENT_POSITION, 0)
-                duration = intent.getIntExtra(MusicConstants.EXTRA_DURATION, 0)
-                val title = intent.getStringExtra(MusicConstants.EXTRA_TRACK_TITLE) ?: "Unknown track"
-                val state = intent.getStringExtra(MusicConstants.EXTRA_STATE) ?: PlaybackStates.STOPPED
+            if (intent?.action == Constants.MusicConstants.BROADCAST_MUSIC_STATE) {
+                val currentPosition = intent.getIntExtra(Constants.MusicConstants.EXTRA_CURRENT_POSITION, 0)
+                duration = intent.getIntExtra(Constants.MusicConstants.EXTRA_DURATION, 0)
+                val title = intent.getStringExtra(Constants.MusicConstants.EXTRA_TRACK_TITLE) ?: "Unknown track"
+                val state = intent.getStringExtra(Constants.MusicConstants.EXTRA_STATE) ?: Constants.PlaybackStates.STOPPED
 
                 if (!isSeeking) {
                     seekBar.max = duration
                     seekBar.progress = currentPosition
                 }
-                timeText.text = getString(R.string.time_format,
+                timeText.text = getString(
+                    R.string.time_format,
                     formatTime(currentPosition),
                     formatTime(duration)
                 )
                 trackTitle.text = title
 
                 // Updates the icon if the status has changed outside the button
-                if (state == PlaybackStates.PLAYING && !isPlaying) {
+                if (state == Constants.PlaybackStates.PLAYING && !isPlaying) {
                     playPauseButton.setImageResource(R.drawable.ic_pause)
                     isPlaying = true
-                } else if ((state == PlaybackStates.PAUSED || state == PlaybackStates.STOPPED) && isPlaying) {
+                } else if ((state == Constants.PlaybackStates.PAUSED || state == Constants.PlaybackStates.STOPPED) && isPlaying) {
                     playPauseButton.setImageResource(R.drawable.ic_play_arrow)
                     isPlaying = false
                 }
@@ -121,7 +119,7 @@ class MainActivity : AppCompatActivity() {
          * The variable ‘eqActivity’ is the launcher that will be used to start the Activity.
          */
         val eqActivity = registerForActivityResult(
-            StartActivityForResult()
+            ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult? ->
             // Checks if the Activity result was successful
             if (result!!.resultCode == RESULT_OK && result.data != null) {
@@ -140,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
                 // If the index received is -1, it means that it is a new configuration,
                 // so it saves a new profile
-                if (position == Define.NEW_PROFILE) {
+                if (position == Constants.Define.NEW_PROFILE) {
                     mainViewModel.addProfile(currentProfile)
 
                     Log.d(logTAG, "Saving new profile")
@@ -165,9 +163,9 @@ class MainActivity : AppCompatActivity() {
         var currentProfileList: List<EqualizerProfile> = emptyList()
 
         // Start observing the LiveData containing the Toast text in the ViewModel
-        mainViewModel.getToastText()
-            .observe(this, Observer { text: String? -> this.toastShow(text!!) })
+        mainViewModel.getToastText().observe(this, Observer { text: String? -> this.toastShow(text!!) })
 
+        // Adapter configuration
         adapter = ProfileRecyclerViewAdapter(
             profiles = currentProfileList.toMutableList(), // Pass an empty/copyable list
             // onQuickClick (Item Click)
@@ -183,10 +181,15 @@ class MainActivity : AppCompatActivity() {
             onItemLongClick = { profile: EqualizerProfile, position: Int ->
                 val nameProfileSelected = profile.name
                 // If the selected item is different from the default profile, delete the profile from the list
-                if (nameProfileSelected != Define.PROFILE_DEFAULT_NAME) {
+                if (nameProfileSelected != Constants.Define.PROFILE_DEFAULT_NAME) {
                     val builder = AlertDialog.Builder(this)
                     builder.setTitle(getString(R.string.exclusion))
-                    builder.setMessage(getString(R.string.confirmation_question_delete, profile.name))
+                    builder.setMessage(
+                        getString(
+                            R.string.confirmation_question_delete,
+                            profile.name
+                        )
+                    )
 
                     builder.setPositiveButton(getString(R.string.positive_button_name)) { _: DialogInterface?, _: Int ->
                         mainViewModel.removeProfile(profile)
@@ -213,6 +216,7 @@ class MainActivity : AppCompatActivity() {
             Log.d(logTAG, "Live Data profiles updated. Count: ${profiles.size}")
         }
 
+        // Get all the music player interface components
         playPauseButton = findViewById(R.id.playPauseButton)
         nextButton = findViewById(R.id.next_button)
         prevButton = findViewById(R.id.prev_button)
@@ -223,7 +227,7 @@ class MainActivity : AppCompatActivity() {
         // Play/Pause button with animation
         playPauseButton.setOnClickListener {
             val nextIcon = if (isPlaying) R.drawable.ic_play_arrow else R.drawable.ic_pause
-            val action = if (isPlaying) MusicConstants.ACTION_PAUSE else MusicConstants.ACTION_PLAY
+            val action = if (isPlaying) Constants.MusicConstants.ACTION_PAUSE else Constants.MusicConstants.ACTION_PLAY
             isPlaying = !isPlaying
 
             // animation: fade out + scale -> icon change -> fade in
@@ -246,11 +250,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         nextButton.setOnClickListener {
-            sendActionToService(MusicConstants.ACTION_NEXT)
+            sendActionToService(Constants.MusicConstants.ACTION_NEXT)
         }
 
         prevButton.setOnClickListener {
-            sendActionToService(MusicConstants.ACTION_PREVIOUS)
+            sendActionToService(Constants.MusicConstants.ACTION_PREVIOUS)
         }
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -262,14 +266,15 @@ class MainActivity : AppCompatActivity() {
                 isSeeking = false
                 val position = seekBar?.progress ?: 0
                 val intent = Intent(this@MainActivity, AudioService::class.java)
-                intent.action = MusicConstants.ACTION_SEEK_TO
-                intent.putExtra(MusicConstants.EXTRA_SEEK_POSITION, position)
+                intent.action = Constants.MusicConstants.ACTION_SEEK_TO
+                intent.putExtra(Constants.MusicConstants.EXTRA_SEEK_POSITION, position)
                 startService(intent)
             }
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    timeText.text = getString(R.string.time_format,
+                    timeText.text = getString(
+                        R.string.time_format,
                         formatTime(progress),
                         formatTime(duration)
                     )
@@ -278,17 +283,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        // Start the service
-        val intent = Intent(this, AudioService::class.java)
-        ContextCompat.startForegroundService(this, intent)
-
-
         Log.d(logTAG, "All components of the main screen have been initialized")
     }
 
     override fun onResume() {
         super.onResume()
-        val filter = IntentFilter(MusicConstants.BROADCAST_MUSIC_STATE)
+        val filter = IntentFilter(Constants.MusicConstants.BROADCAST_MUSIC_STATE)
         registerReceiver(stateReceiver, filter, RECEIVER_NOT_EXPORTED)
     }
 
@@ -299,7 +299,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(stateReceiver)
     }
 
     private fun toastShow(text: String) {
@@ -319,4 +318,3 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-

@@ -58,7 +58,7 @@ class NotificationModule(private val context: Context) : NotificationInterface {
         val contentIntent = PendingIntent.getActivity(
             context,
             0,
-            Intent(context, Class.forName("com.leandromendes.vehicleequalizer.MainActivity")),
+            Intent(context, Class.forName("com.leandromendes.vehicleequalizer.ui.MainActivity")),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
