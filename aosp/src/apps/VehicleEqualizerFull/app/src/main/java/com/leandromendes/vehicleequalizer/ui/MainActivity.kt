@@ -57,9 +57,12 @@ class MainActivity : AppCompatActivity() {
                 val title = intent.getStringExtra(Constants.MusicConstants.EXTRA_TRACK_TITLE) ?: "Unknown track"
                 val state = intent.getStringExtra(Constants.MusicConstants.EXTRA_STATE) ?: Constants.PlaybackStates.STOPPED
 
-                if (!isSeeking) {
+                if (!isSeeking && state != Constants.PlaybackStates.STOPPED) {
                     seekBar.max = duration
                     seekBar.progress = currentPosition
+                } else if (!isSeeking && state == Constants.PlaybackStates.STOPPED) {
+                    seekBar.max = duration
+                    seekBar.progress = 0
                 }
                 timeText.text = getString(
                     R.string.time_format,

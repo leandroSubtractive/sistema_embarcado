@@ -16,7 +16,7 @@ import com.leandromendes.vehicleequalizer.util.Constants.MusicConstants
 class NotificationModule(private val context: Context) : NotificationInterface {
 
     companion object {
-        const val CHANNEL_ID = "music_playback_channel"
+        const val CHANNEL_ID = "AudioServiceChannel"
         const val NOTIFICATION_ID = 1 // Arbitrary value
     }
 
