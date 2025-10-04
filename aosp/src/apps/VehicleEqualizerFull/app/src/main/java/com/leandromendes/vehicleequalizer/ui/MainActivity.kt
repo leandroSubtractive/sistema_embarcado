@@ -39,13 +39,13 @@ class MainActivity : AppCompatActivity() {
 
     private val logTAG = "VehicleEqualizerApp"
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var adapter: ProfileRecyclerViewAdapter
     private lateinit var trackTitle: TextView
-    private lateinit var seekBar: SeekBar
     private lateinit var timeText: TextView
+    private lateinit var seekBar: SeekBar
     private lateinit var playPauseButton: ImageButton
     private lateinit var nextButton: ImageButton
     private lateinit var prevButton: ImageButton
+    private lateinit var adapter: ProfileRecyclerViewAdapter
     private var isSeeking = false
     private var duration = 0
     private var isPlaying = false // Flag to signal the play status
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                 if (!isSeeking && state != Constants.PlaybackStates.STOPPED) {
                     seekBar.max = duration
                     seekBar.progress = currentPosition
-                } else if (!isSeeking && state == Constants.PlaybackStates.STOPPED) {
+                } else if (!isSeeking) {
                     seekBar.max = duration
                     seekBar.progress = 0
                 }
@@ -115,6 +115,10 @@ class MainActivity : AppCompatActivity() {
         val factory = MainViewModelFactory(application.repository)
         mainViewModel = ViewModelProvider(this, factory)[MainViewModel::class.java] // Use this Factory
 
+
+        // Start observing the LiveData containing the Toast text in the ViewModel
+        mainViewModel.getToastText().observe(this, Observer { text: String? -> this.toastShow(text!!) })
+
         /**
          * Registers a callback to start an Activity
          * and handle its result (the returned data) asynchronously.
@@ -157,16 +161,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Initialize adapter for profile list
-        val recyclerView = findViewById<RecyclerView>(R.id.profileList)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
         // Variable to store the current list of profiles.
         // Initialized with an empty list. It will be filled by LiveData.
         var currentProfileList: List<EqualizerProfile> = emptyList()
-
-        // Start observing the LiveData containing the Toast text in the ViewModel
-        mainViewModel.getToastText().observe(this, Observer { text: String? -> this.toastShow(text!!) })
 
         // Adapter configuration
         adapter = ProfileRecyclerViewAdapter(
@@ -207,6 +204,10 @@ class MainActivity : AppCompatActivity() {
                 true
             }
         )
+
+        // Initialize adapter for profile list
+        val recyclerView = findViewById<RecyclerView>(R.id.profileList)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Define the Adapter in RecyclerView
         recyclerView.adapter = adapter
