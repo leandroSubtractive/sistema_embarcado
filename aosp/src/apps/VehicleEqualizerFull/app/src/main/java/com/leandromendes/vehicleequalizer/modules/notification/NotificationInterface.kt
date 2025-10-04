@@ -1,11 +1,10 @@
 package com.leandromendes.vehicleequalizer.modules.notification
 
-import android.content.Context
-import androidx.media3.session.MediaSession
-import android.app.Service
+import android.app.Notification
 
 interface NotificationInterface {
-    fun showNotification(playbackState: String)
-    fun updateNotification(playbackState: String)
+    fun showNotification(playbackState: String, trackTitle: String = "No music")
+    fun updateNotification(playbackState: String, trackTitle: String = "No music")
     fun cancelNotification()
+    fun buildNotification(playbackState: String, trackTitle: String = "No music"): Notification
 }

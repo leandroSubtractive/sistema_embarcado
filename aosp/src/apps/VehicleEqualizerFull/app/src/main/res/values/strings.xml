@@ -9,6 +9,9 @@
     <string name="cancel_button_name">Cancel</string>
     <string name="positive_button_name">Yes</string>
     <string name="negative_button_name">No</string>
+    <string name="play_pause">Play/Pause</string>
+    <string name="next">Next track</string>
+    <string name="previous">Previous track</string>
 
     <!-- Default values for graphical interface parameters -->
     <string name="default_db_value">0db</string>
@@ -41,4 +44,11 @@
     <string name="confirmation_question_delete">Do you want to delete profile %s?</string>
     <string name="profile_cannot_deleted">Cannot delete %s profile.</string>
     <string name="current_profile">Profile %s selected</string>
+
+    <!-- Interface labels -->
+    <string name="track_title_default">Music</string>
+    <string name="time_default">00:00 / 00:00</string>
+    <string name="time_format">%1$s / %2$s</string>
+    <string name="time_mm_ss">%1$02d:%2$02d</string>
+
 </resources>
