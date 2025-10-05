@@ -286,6 +286,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+        // 🚀 inicia o AudioService logo no começo
+        val serviceIntent = Intent(this, AudioService::class.java)
+        startForegroundService(serviceIntent)
 
         Log.d(logTAG, "All components of the main screen have been initialized")
     }

@@ -4,7 +4,7 @@
     <!-- Button names -->
     <string name="reset_button">Reset</string>
     <string name="save_button">Save</string>
-    <string name="new_profile_button">New Profile</string>
+    <string name="new_profile_button">New</string>
     <string name="agree_button_name">OK</string>
     <string name="cancel_button_name">Cancel</string>
     <string name="positive_button_name">Yes</string>
@@ -16,7 +16,7 @@
     <!-- Default values for graphical interface parameters -->
     <string name="default_db_value">0db</string>
     <string name="default_pan_value">Center</string>
-    <string name="default_volume_value">0U</string>
+    <string name="default_volume_value">0%</string>
     <string name="default_profile">Default</string>
 
     <!-- Name of the seekBar equalizer components -->
@@ -33,7 +33,7 @@
 
     <!-- Units of measurement for audio signals -->
     <string name="decibel">db</string>
-    <string name="spl">U</string>
+    <string name="spl">%</string>
 
     <!-- String profile list -->
     <string name="sub_text">Profile</string>
@@ -50,5 +50,6 @@
     <string name="time_default">00:00 / 00:00</string>
     <string name="time_format">%1$s / %2$s</string>
     <string name="time_mm_ss">%1$02d:%2$02d</string>
+    <string name="active_equalizer">Active Equalizer</string>
 
 </resources>

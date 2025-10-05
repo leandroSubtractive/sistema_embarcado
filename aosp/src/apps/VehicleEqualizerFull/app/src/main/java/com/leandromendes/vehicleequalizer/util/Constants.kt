@@ -40,6 +40,19 @@ object Constants {
         const val EXTRA_DURATION = "extra_duration"
         const val EXTRA_TRACK_TITLE = "extra_track_title"
         const val BROADCAST_MUSIC_STATE = "com.leandromendes.vehicleequalizer.BROADCAST_MUSIC_STATE"
+
+        const val ACTION_APPLY_PROFILE = "com.leandromendes.vehicleequalizer.ACTION_APPLY_PROFILE"
+        const val ACTION_ENABLE_EQUALIZER = "com.leandromendes.vehicleequalizer.ACTION_ENABLE_EQUALIZER"
+
+        const val ACTION_SET_BASS = "com.leandromendes.vehicleequalizer.ACTION_SET_BASS"
+        const val ACTION_SET_MID = "com.leandromendes.vehicleequalizer.ACTION_SET_MID"
+        const val ACTION_SET_TREBLE = "com.leandromendes.vehicleequalizer.ACTION_SET_TREBLE"
+        const val ACTION_SET_VOLUME = "com.leandromendes.vehicleequalizer.ACTION_SET_VOLUME"
+        const val ACTION_SET_BALANCE = "com.leandromendes.vehicleequalizer.ACTION_SET_BALANCE"
+
+        const val EXTRA_LEVEL = "extra_level"
+        const val EXTRA_PROFILE = "extra_profile"
+        const val EXTRA_ENABLED = "extra_enabled"
     }
 
     object PlaybackStates {

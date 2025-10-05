@@ -1,6 +1,7 @@
 package com.leandromendes.vehicleequalizer.modules.playback
 
 interface PlaybackInterface {
+    fun setOnPreparedListener(listener: () -> Unit)
     fun setRawDataSource(resId: Int)
     fun play()
     fun pause()
@@ -10,4 +11,5 @@ interface PlaybackInterface {
     fun getCurrentPosition(): Int
     fun isPlaying(): Boolean
     fun release()
+    fun getAudioSessionId(): Int
 }

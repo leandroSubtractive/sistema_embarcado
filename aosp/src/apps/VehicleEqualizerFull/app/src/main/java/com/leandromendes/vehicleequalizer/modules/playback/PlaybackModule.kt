@@ -9,10 +9,19 @@ class PlaybackModule(private val context: Context) : PlaybackInterface {
 
     private val logTAG = "PlaybackModule"
     private var mediaPlayer: MediaPlayer? = null
+    private var onPreparedListener: (() -> Unit)? = null
+
+    override fun setOnPreparedListener(listener: () -> Unit) {
+        onPreparedListener = listener
+    }
 
     override fun setRawDataSource(@RawRes resId: Int) {
         release()
         mediaPlayer = MediaPlayer.create(context, resId).apply {
+            setOnPreparedListener {
+                Log.d(logTAG, "MediaPlayer preparado")
+                onPreparedListener?.invoke()
+            }
             setOnCompletionListener {
                 Log.d(logTAG, "Finished track.")
             }
@@ -49,16 +58,32 @@ class PlaybackModule(private val context: Context) : PlaybackInterface {
 
     override fun seekTo(position: Int) {
         mediaPlayer?.seekTo(position)
+        Log.d("PlaybackModule", "Avançando para posição: $position ms")
     }
 
-    override fun getDuration(): Int = mediaPlayer?.duration ?: 0
+    override fun getDuration(): Int {
+        return mediaPlayer?.duration ?: 0
+    }
 
-    override fun getCurrentPosition(): Int = mediaPlayer?.currentPosition ?: 0
+    override fun getCurrentPosition(): Int {
+        val position = mediaPlayer?.currentPosition ?: 0
+        Log.d("PlaybackModule", "Posição atual: $position ms")
+        return position
+    }
 
-    override fun isPlaying(): Boolean = mediaPlayer?.isPlaying ?: false
+    override fun isPlaying(): Boolean {
+        return mediaPlayer?.isPlaying ?: false
+    }
 
     override fun release() {
         mediaPlayer?.release()
         mediaPlayer = null
+        Log.d("PlaybackModule", "MediaPlayer liberado")
+    }
+
+    override fun getAudioSessionId(): Int {
+        val id = mediaPlayer?.audioSessionId ?: -1
+        Log.d("PlaybackModule", "AudioSessionId solicitado: $id")
+        return id
     }
 }
