@@ -23,18 +23,21 @@ class AudioService : Service() {
     private lateinit var playbackModule: PlaybackInterface
     private lateinit var notificationModule: NotificationInterface
     private var equalizerModule: EqualizerInterface? = null
+    private var lastProfile: EqualizerProfile? = null
+    private var isStopped = true
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var updateRunnable : Runnable
     private var currentTrackIndex = 0
-    private var isStopped = true
     private lateinit var trackList : List<Track>
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(logTAG, "Service created")
+
         notificationModule = NotificationModule(this)
         playbackModule = PlaybackModule(this)
 
-        // 🔑 só inicializa equalizer quando MediaPlayer estiver pronto
+        // Only initialize the equalizer when MediaPlayer is ready
         if (playbackModule is PlaybackModule) {
             (playbackModule as PlaybackModule).setOnPreparedListener {
                 initEqualizerIfNeeded()
@@ -57,7 +60,7 @@ class AudioService : Service() {
             )
         )
 
-        // Atualizações periódicas (posição do player)
+        // Periodic updates (player position)
         updateRunnable = object : Runnable {
             override fun run() {
                 broadcastState()
@@ -140,42 +143,39 @@ class AudioService : Service() {
             }
 
             MusicConstants.ACTION_APPLY_PROFILE -> {
-                val profile =
+                ensureEqualizerInitialized()
+                lastProfile =
                     intent.getParcelableExtra(
                         MusicConstants.EXTRA_PROFILE,
                         EqualizerProfile::class.java
                     )
-                profile?.let { equalizerModule?.applyProfile(it) }
+                applyLastProfile(lastProfile)
             }
 
             MusicConstants.ACTION_ENABLE_EQUALIZER -> {
+                ensureEqualizerInitialized()
                 val enabled = intent.getBooleanExtra(MusicConstants.EXTRA_ENABLED, true)
-                equalizerModule?.enable(enabled)
+                equalizerModule?.setEnable(enabled)
             }
 
-            MusicConstants.ACTION_SET_BASS -> {
+            MusicConstants.ACTION_SET_BAND_LEVEL -> {
+                ensureEqualizerInitialized()
+                val band = intent.getIntExtra(MusicConstants.EXTRA_BAND, 0)
                 val level = intent.getIntExtra(MusicConstants.EXTRA_LEVEL, 0)
-                equalizerModule?.setBass(level)
-            }
-
-            MusicConstants.ACTION_SET_MID -> {
-                val level = intent.getIntExtra(MusicConstants.EXTRA_LEVEL, 0)
-                equalizerModule?.setMid(level)
-            }
-
-            MusicConstants.ACTION_SET_TREBLE -> {
-                val level = intent.getIntExtra(MusicConstants.EXTRA_LEVEL, 0)
-                equalizerModule?.setTreble(level)
+                equalizerModule?.setBandLevelSafe(band, level)
             }
 
             MusicConstants.ACTION_SET_VOLUME -> {
+                ensureEqualizerInitialized()
                 val level = intent.getIntExtra(MusicConstants.EXTRA_LEVEL, 5)
                 equalizerModule?.setVolume(level)
             }
 
-            MusicConstants.ACTION_SET_BALANCE -> {
-                val level = intent.getIntExtra(MusicConstants.EXTRA_LEVEL, 0)
-                equalizerModule?.setBalance(level)
+            MusicConstants.ACTION_EQUALIZER_STATUS -> {
+                val intent = Intent(MusicConstants.ACTION_UPDATE_UI).apply {
+                    putExtra(MusicConstants.EXTRA_EQUALIZER_ENABLED, equalizerModule?.getEnabled() ?: false)
+                }
+                sendBroadcast(intent)
             }
 
         }
@@ -192,19 +192,13 @@ class AudioService : Service() {
         return START_STICKY
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        playbackModule.release()
-        equalizerModule?.release() // 🔑 libera o equalizer
-        handler.removeCallbacks(updateRunnable)
-        notificationModule.cancelNotification()
-    }
-
-    override fun onBind(intent: Intent?): IBinder? = null
-
     private fun loadTrack(index: Int) {
         val track = trackList[index]
         playbackModule.setRawDataSource(track.resId)
+    }
+
+    private fun applyLastProfile(profile: EqualizerProfile?) {
+        profile?.let { equalizerModule?.applyProfile(it) }
     }
 
     private fun broadcastState() {
@@ -213,6 +207,7 @@ class AudioService : Service() {
             putExtra(MusicConstants.EXTRA_CURRENT_POSITION, playbackModule.getCurrentPosition())
             putExtra(MusicConstants.EXTRA_DURATION, playbackModule.getDuration())
             putExtra(MusicConstants.EXTRA_TRACK_TITLE, trackList[currentTrackIndex].title)
+            putExtra(MusicConstants.EXTRA_EQUALIZER_ENABLED, equalizerModule?.getEnabled() ?: false)
         }
         sendBroadcast(intent)
     }
@@ -222,18 +217,34 @@ class AudioService : Service() {
         else if (playbackModule.isPlaying()) PlaybackStates.PLAYING
         else PlaybackStates.PAUSED
 
+    private fun ensureEqualizerInitialized() {
+        if (equalizerModule == null) {
+            initEqualizerIfNeeded()
+        }
+    }
     private fun initEqualizerIfNeeded() {
         val sessionId = playbackModule.getAudioSessionId()
         if (sessionId > 0) {
             try {
                 equalizerModule = EqualizerModule(this, sessionId)
-                Log.d(logTAG, "Equalizer inicializado com sessionId=$sessionId")
+                applyLastProfile(lastProfile)
+                Log.d(logTAG, "Equalizer initialized with sessionId=$sessionId")
                 equalizerModule?.printBandsInfo()
             } catch (e: Exception) {
-                Log.e(logTAG, "Falha ao inicializar Equalizer: ${e.message}")
+                Log.e(logTAG, "Failed to initialize Equalizer: ${e.message}")
             }
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        playbackModule.release()
+        equalizerModule?.release()
+        equalizerModule = null
+        handler.removeCallbacks(updateRunnable)
+        notificationModule.cancelNotification()
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
     data class Track(val resId: Int, val title: String)
 }

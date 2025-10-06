@@ -3,7 +3,9 @@ package com.leandromendes.vehicleequalizer.util
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.leandromendes.vehicleequalizer.R
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
@@ -17,8 +19,19 @@ class ProfileRecyclerViewAdapter(
 
     inner class ProfileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profileName: TextView = itemView.findViewById(R.id.profileName)
+        val iconView: ImageView = itemView.findViewById(R.id.iconView)
         fun bind(profile: EqualizerProfile, position: Int) {
             profileName.text = profile.name
+
+            if(profile.isSelected){
+                iconView.setBackgroundColor(
+                    ContextCompat.getColor(itemView.context, R.color.selected)
+                )
+            }else {
+                iconView.setBackgroundColor(
+                    ContextCompat.getColor(itemView.context, R.color.notSelected)
+                )
+            }
 
             // Configure or click listener
             itemView.setOnClickListener {
@@ -29,6 +42,7 @@ class ProfileRecyclerViewAdapter(
             itemView.setOnLongClickListener {
                 onItemLongClick(profile, position)
             }
+
         }
     }
 
@@ -50,10 +64,11 @@ class ProfileRecyclerViewAdapter(
         return profiles.size
     }
 
-    // Novo método para atualizar a lista de perfis do LiveData
+     //Update the LiveData profile list
     fun updateProfiles(newProfiles: List<EqualizerProfile>) {
         profiles.clear()
         profiles.addAll(newProfiles)
-        notifyDataSetChanged() // Por simplificação, mas você pode usar DiffUtil aqui
+        notifyDataSetChanged()
     }
+
 }

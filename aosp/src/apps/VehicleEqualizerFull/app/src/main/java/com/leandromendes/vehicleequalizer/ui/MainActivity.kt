@@ -146,6 +146,7 @@ class MainActivity : AppCompatActivity() {
                 // If the index received is -1, it means that it is a new configuration,
                 // so it saves a new profile
                 if (position == Constants.Define.NEW_PROFILE) {
+                    deselectProfile()
                     mainViewModel.addProfile(currentProfile)
 
                     Log.d(logTAG, "Saving new profile")
@@ -170,6 +171,9 @@ class MainActivity : AppCompatActivity() {
             profiles = currentProfileList.toMutableList(), // Pass an empty/copyable list
             // onQuickClick (Item Click)
             onItemClick = { profile: EqualizerProfile, position: Int ->
+
+                onProfileSelected(profile)
+
                 // Use the Intent Factory from EqualizerActivity
                 val intent = EqualizerActivity.newIntent(this, profile, position)
                 eqActivity.launch(intent)
@@ -217,6 +221,11 @@ class MainActivity : AppCompatActivity() {
             // Updates the list in the Adapter and notifies the change
             currentProfileList = profiles // Updates the reference list
             (recyclerView.adapter as ProfileRecyclerViewAdapter).updateProfiles(profiles)
+
+            // If there is a selected profile, apply it to AudioService
+            profiles.find { it.isSelected }?.let { selectedProfile ->
+                applyProfile(selectedProfile)
+            }
             Log.d(logTAG, "Live Data profiles updated. Count: ${profiles.size}")
         }
 
@@ -286,7 +295,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
-        // 🚀 inicia o AudioService logo no começo
+        // starts AudioService right at the beginning
         val serviceIntent = Intent(this, AudioService::class.java)
         startForegroundService(serviceIntent)
 
@@ -305,6 +314,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        unregisterReceiver(stateReceiver)
         super.onDestroy()
     }
 
@@ -316,6 +326,35 @@ class MainActivity : AppCompatActivity() {
             this.action = action
         }
         ContextCompat.startForegroundService(this, intent) // guarantees foreground service
+    }
+
+    private fun onProfileSelected(profile: EqualizerProfile) {
+
+        deselectProfile()
+        // Mark the clicked profile as selected
+        profile.isSelected = true
+        mainViewModel.updateProfile(profile)
+
+        applyProfile(profile)
+
+    }
+
+    private fun deselectProfile(){
+        // Deselect all profiles before selecting the current one
+        mainViewModel.allProfilesLiveData.value?.forEach { p ->
+            if (p.isSelected) {
+                p.isSelected = false
+                mainViewModel.updateProfile(p)
+            }
+        }
+    }
+
+    private fun applyProfile(profile: EqualizerProfile) {
+        val intent = Intent(this, AudioService::class.java).apply {
+            action = Constants.MusicConstants.ACTION_APPLY_PROFILE
+            putExtra(Constants.MusicConstants.EXTRA_PROFILE, profile)
+        }
+        ContextCompat.startForegroundService(this, intent)
     }
     private fun formatTime(millis: Int): String {
         val totalSeconds = millis / 1000

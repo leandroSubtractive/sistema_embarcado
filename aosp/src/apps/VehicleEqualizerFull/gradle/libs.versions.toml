@@ -24,6 +24,7 @@ recyclerview = "1.4.0"
 roomCompiler = "2.6.1"
 roomKtx = "2.8.1"
 roomRuntime = "2.8.1"
+verticalseekbar = "1.0.0"
 
 [libraries]
 androidx-appcompat-v130 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
@@ -53,6 +54,7 @@ mockk = { module = "io.mockk:mockk" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
 mockk-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+verticalseekbar = { module = "com.h6ah4i.android.widget.verticalseekbar:verticalseekbar", version.ref = "verticalseekbar" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

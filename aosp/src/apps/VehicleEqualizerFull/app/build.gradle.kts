@@ -68,4 +68,6 @@ dependencies {
     implementation(libs.androidx.appcompat.v130)
     implementation(libs.androidx.core.ktx.v1170)
 
+    implementation(libs.verticalseekbar)
+
 }

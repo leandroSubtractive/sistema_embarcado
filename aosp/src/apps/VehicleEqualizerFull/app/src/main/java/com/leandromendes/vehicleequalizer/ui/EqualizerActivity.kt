@@ -1,14 +1,16 @@
 package com.leandromendes.vehicleequalizer.ui
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
 import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.leandromendes.vehicleequalizer.R
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.service.AudioService
@@ -27,69 +30,43 @@ import java.util.Date
 import java.util.Locale
 
 class EqualizerActivity : AppCompatActivity() {
-
-    private lateinit var textViewBass: TextView
-    private lateinit var textViewMid: TextView
-    private lateinit var textViewTreble: TextView
-    private lateinit var textViewBalance: TextView
-    private lateinit var textViewMasterVol: TextView
+    private val logTAG = "EqualizerActivity"
+    private lateinit var newProfileButton: Button
     private lateinit var saveButton: Button
     private lateinit var resetButton: Button
-    private lateinit var newProfileButton: Button
+    private var band0Value = 0
+    private var band1Value = 0
+    private var band2Value = 0
+    private var band3Value = 0
+    private var band4Value = 0
+    private var masterVolValue = 0
+    private var idPosition = 0
+    private lateinit var textViewMasterVol: TextView
     private lateinit var equalizerSwitch: SwitchMaterial
     private lateinit var profileName: String
     private lateinit var currentProfile: EqualizerProfile
-    private var idPosition = 0
+    private lateinit var  volumeSeekBar : SeekBar
+    private lateinit var seekBarsBand0: VerticalSeekBar
+    private lateinit var seekBarsBand1: VerticalSeekBar
+    private lateinit var seekBarsBand2: VerticalSeekBar
+    private lateinit var seekBarsBand3: VerticalSeekBar
+    private lateinit var seekBarsBand4: VerticalSeekBar
 
-    private var _bassValue = 0
-    private var bassValue: Int
-        get() = _bassValue
-        set(value) {
-            _bassValue = value
-            saveButton.isEnabled = true
-            resetButton.isEnabled = true
-        }
+    private val updateUIReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == MusicConstants.ACTION_UPDATE_UI) {
+                val isEnabled = intent.getBooleanExtra(MusicConstants.EXTRA_EQUALIZER_ENABLED, false)
+                Log.d(logTAG, "Broadcast received - Equalizer enabled? $isEnabled")
 
-    private var _midValue = 0
-    private var midValue: Int
-        get() = _midValue
-        set(value) {
-            _midValue = value
-            saveButton.isEnabled = true
-            resetButton.isEnabled = true
-        }
+                // Updates the switch without infinite loop
+                if (equalizerSwitch.isChecked != isEnabled) {
+                    equalizerSwitch.isChecked = isEnabled
+                }
 
-    private var _highValue = 0
-    private var highValue: Int
-        get() = _highValue
-        set(value) {
-            _highValue = value
-            saveButton.isEnabled = true
-            resetButton.isEnabled = true
+                setControlsEnabled(isEnabled)
+            }
         }
-
-    private var _balanceValue = 0
-    private var balanceValue: Int
-        get() = _balanceValue
-        set(value) {
-            _balanceValue = value
-            saveButton.isEnabled = true
-            resetButton.isEnabled = true
-        }
-
-    private var _masterVolValue = 0
-    private var masterVolValue: Int
-        get() = _masterVolValue
-        set(value) {
-            _masterVolValue = value
-            saveButton.isEnabled = true
-            resetButton.isEnabled = true
-        }
-    private lateinit var bassSeekBar: SeekBar
-    private lateinit var midSeekBar: SeekBar
-    private lateinit var trebleSeekBar: SeekBar
-    private lateinit var volumeSeekBar: SeekBar
-    private lateinit var balanceSeekBar: SeekBar
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,17 +91,13 @@ class EqualizerActivity : AppCompatActivity() {
         )
 
         // Initialize Views
-        newProfileButton = findViewById<Button>(R.id.newProfile)
+        newProfileButton = findViewById(R.id.newProfile)
         resetButton = findViewById(R.id.reset)
         saveButton = findViewById(R.id.save)
         equalizerSwitch = findViewById(R.id.switchEqualizer)
 
         // Initialization of all TextViews
         val textViewProfile = findViewById<TextView>(R.id.profileSelected)
-        textViewBass = findViewById(R.id.textViewBass)
-        textViewMid = findViewById(R.id.textViewMid)
-        textViewTreble = findViewById(R.id.textViewTreble)
-        textViewBalance = findViewById(R.id.textViewBalance)
         textViewMasterVol = findViewById(R.id.textViewVolume)
 
         // Sets the name of the current profile on the screen
@@ -132,60 +105,82 @@ class EqualizerActivity : AppCompatActivity() {
         textViewProfile.text = profileName
 
         // Sets the initial values of the equalization faders
-        // Bass frequency
-        bassSeekBar = setupSeekBar(
-            R.id.seekBarBass,
-            MusicConstants.ACTION_SET_BASS,
-            currentProfile.bassEqValue,
-            textViewBass,
+        seekBarsBand0 = findViewById(R.id.seekBarBand1)
+        band0Value = currentProfile.band0
+        setupSeekBar(
+            seekBarsBand0,
+            MusicConstants.ACTION_SET_BAND_LEVEL,
+            0,
+            band0Value,
+            findViewById(R.id.GainBand1),
             ::drawTextOnTheBars
-        ) { progress -> bassValue = progress }
+        ){ progress -> band0Value = progress }
 
-        // Mid frequency
-        midSeekBar = setupSeekBar(
-            R.id.seekBarMid,
-            MusicConstants.ACTION_SET_MID,
-            currentProfile.midEqValue,
-            textViewMid,
+        seekBarsBand1 = findViewById(R.id.seekBarBand2)
+        band1Value = currentProfile.band1
+        setupSeekBar(
+            seekBarsBand1,
+            MusicConstants.ACTION_SET_BAND_LEVEL,
+            1,
+            currentProfile.band1,
+            findViewById(R.id.GainBand2),
             ::drawTextOnTheBars
-        ) { progress -> midValue = progress }
+        ){ progress -> band1Value = progress }
 
-        // High frequency
-       trebleSeekBar = setupSeekBar(
-            R.id.seekBarTreble,
-            MusicConstants.ACTION_SET_TREBLE,
-            currentProfile.hiEqValue,
-            textViewTreble,
+        seekBarsBand2 = findViewById(R.id.seekBarBand3)
+        band2Value = currentProfile.band2
+        setupSeekBar(
+            seekBarsBand2,
+            MusicConstants.ACTION_SET_BAND_LEVEL,
+            2,
+            band2Value,
+            findViewById(R.id.GainBand3),
             ::drawTextOnTheBars
-        ) { progress -> highValue = progress }
+        ){ progress -> band2Value = progress }
 
-        // Balance
-       balanceSeekBar = setupSeekBar(
-            R.id.seekBarBalance,
-            MusicConstants.ACTION_SET_BALANCE,
-            currentProfile.balanceEqValue,
-            textViewBalance,
-            ::drawTextOnThePanBar
-        ) { progress -> balanceValue = progress }
+        seekBarsBand3 = findViewById(R.id.seekBarBand4)
+        band3Value = currentProfile.band3
+        setupSeekBar(
+            seekBarsBand3,
+            MusicConstants.ACTION_SET_BAND_LEVEL,
+            3,
+            band3Value,
+            findViewById(R.id.GainBand4),
+            ::drawTextOnTheBars
+        ){ progress -> band3Value = progress }
+
+        seekBarsBand4 = findViewById(R.id.seekBarBand5)
+        band4Value = currentProfile.band4
+        setupSeekBar(
+            seekBarsBand4,
+            MusicConstants.ACTION_SET_BAND_LEVEL,
+            4,
+            band4Value,
+            findViewById(R.id.GainBand5),
+            ::drawTextOnTheBars
+        ){ progress -> band4Value = progress }
 
         // Master Volume
-       volumeSeekBar = setupSeekBar(
-            R.id.seekBarVolume,
+        volumeSeekBar = findViewById(R.id.seekBarVolume)
+        masterVolValue = currentProfile.masterVolValue
+        setupSeekBar(
+            volumeSeekBar,
             MusicConstants.ACTION_SET_VOLUME,
-            currentProfile.masterVolValue,
+            0,
+            masterVolValue,
             textViewMasterVol,
             ::drawTextOnTheVolBar
         ) { progress -> masterVolValue = progress }
 
 
-        // 🔹 Switch → ativa/desativa equalizer em tempo real
+        // Enable/Disable equalizer
         equalizerSwitch.setOnCheckedChangeListener { _, isChecked ->
             val intent = Intent(this, AudioService::class.java).apply {
                 action = MusicConstants.ACTION_ENABLE_EQUALIZER
                 putExtra(MusicConstants.EXTRA_ENABLED, isChecked)
             }
             ContextCompat.startForegroundService(this, intent)
-            // 🔑 Habilita/desabilita controles
+            // Enables/disables controls
             setControlsEnabled(isChecked)
         }
 
@@ -206,64 +201,78 @@ class EqualizerActivity : AppCompatActivity() {
 
         // Reset all settings to the saved value
         resetButton.setOnClickListener {
-            bassValue = currentProfile.bassEqValue
-            (findViewById<SeekBar>(R.id.seekBarBass)).setProgress(bassValue, true)
-            drawTextOnTheBars(textViewBass, bassValue)
 
-            midValue = currentProfile.midEqValue
-            (findViewById<SeekBar>(R.id.seekBarMid)).setProgress(midValue, true)
-            drawTextOnTheBars(textViewMid, midValue)
+            band0Value = currentProfile.band0
+            resetBand(0, band0Value, seekBarsBand0, findViewById(R.id.GainBand1))
 
-            highValue = currentProfile.hiEqValue
-            (findViewById<SeekBar>(R.id.seekBarTreble)).setProgress(highValue, true)
-            drawTextOnTheBars(textViewTreble, highValue)
+            band1Value = currentProfile.band1
+            resetBand(1, band1Value, seekBarsBand1, findViewById(R.id.GainBand2))
 
-            balanceValue = currentProfile.balanceEqValue
-            (findViewById<SeekBar>(R.id.seekBarBalance)).setProgress(balanceValue, true)
-            drawTextOnThePanBar(textViewBalance, balanceValue)
+            band2Value = currentProfile.band2
+            resetBand(2, band2Value, seekBarsBand2, findViewById(R.id.GainBand3))
+
+            band3Value = currentProfile.band3
+            resetBand(3, band3Value, seekBarsBand3, findViewById(R.id.GainBand4))
+
+            band4Value = currentProfile.band4
+            resetBand(4, band4Value, seekBarsBand4, findViewById(R.id.GainBand5))
 
             masterVolValue = currentProfile.masterVolValue
-            (findViewById<SeekBar>(R.id.seekBarVolume)).setProgress(masterVolValue, true)
+            volumeSeekBar.setProgress(masterVolValue, true)
             drawTextOnTheVolBar(textViewMasterVol, masterVolValue)
+            sendEqualizerCommand(MusicConstants.ACTION_SET_VOLUME, 0, masterVolValue)
 
             // Disables buttons after reset
             resetButton.isEnabled = false
             saveButton.isEnabled = false
         }
+
+        sendEqualizerCommand(MusicConstants.ACTION_EQUALIZER_STATUS, 0, 0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val filter = IntentFilter(MusicConstants.ACTION_UPDATE_UI)
+        registerReceiver(updateUIReceiver, filter, RECEIVER_NOT_EXPORTED)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(updateUIReceiver)
     }
 
     private fun setupSeekBar(
-        seekBarId: Int,
+        seekBar: SeekBar,
         action: String,
+        band: Int,
         initialValue: Int,
         textView: TextView,
         drawTextFunc: (TextView, Int) -> Unit,
         onProgressUpdate: (Int) -> Unit
-    ): SeekBar {
-        val seekBar = findViewById<SeekBar>(seekBarId).apply {
-            progress = initialValue
-            drawTextFunc(textView, initialValue)
+    ) {
+        seekBar.progress = initialValue
+        drawTextFunc(textView, initialValue)
 
-            setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    onProgressUpdate(progress)
-                    drawTextFunc(textView, progress)
-                    sendEqualizerCommand(action, progress) // 🔑 manda pro serviço em tempo real
-                }
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                onProgressUpdate(progress)
+                drawTextFunc(textView, progress)
+                sendEqualizerCommand(action, band,progress)
 
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-            })
-        }
-        return seekBar
+                if (!saveButton.isEnabled) saveButton.isEnabled = true
+                if (!resetButton.isEnabled) resetButton.isEnabled = true
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
     }
 
-    /**
-     * Envia comandos para o AudioService
-     */
-    private fun sendEqualizerCommand(action: String, level: Int) {
+    private fun sendEqualizerCommand(action: String, band: Int, level: Int) {
         val intent = Intent(this, AudioService::class.java).apply {
             this.action = action
+            putExtra(MusicConstants.EXTRA_BAND, band)
             putExtra(MusicConstants.EXTRA_LEVEL, level)
         }
         ContextCompat.startForegroundService(this, intent)
@@ -305,10 +314,11 @@ class EqualizerActivity : AppCompatActivity() {
 
     private fun saveChangeProfile(profile: EqualizerProfile) {
         profile.name = profileName
-        profile.bassEqValue = bassValue
-        profile.midEqValue = midValue
-        profile.hiEqValue = highValue
-        profile.balanceEqValue = balanceValue
+        profile.band0 = band0Value
+        profile.band1 = band1Value
+        profile.band2 = band2Value
+        profile.band3 = band3Value
+        profile.band4 = band4Value
         profile.masterVolValue = masterVolValue
 
         val resultIntent = Intent()
@@ -326,30 +336,36 @@ class EqualizerActivity : AppCompatActivity() {
         }
     }
 
-    private fun drawTextOnThePanBar(textView: TextView, value: Int) {
-        val offset = 5
-        val balance = offset - value
-
-        textView.text = when {
-            balance > 0 -> "+$balance"
-            balance < 0 -> "+${-balance}"
-            else -> getString(R.string.default_pan_value)
-        }
-    }
-
     private fun drawTextOnTheVolBar(textView: TextView, value: Int) {
-        textView.text = "$value%"
+        textView.text = getString(R.string.percentage_value, value)
     }
 
     private fun setControlsEnabled(enabled: Boolean) {
-        bassSeekBar.isEnabled = enabled
-        midSeekBar.isEnabled = enabled
-        trebleSeekBar.isEnabled = enabled
+        seekBarsBand0.isEnabled = enabled
+        seekBarsBand2.isEnabled = enabled
+        seekBarsBand3.isEnabled = enabled
+        seekBarsBand4.isEnabled = enabled
+        seekBarsBand1.isEnabled = enabled
         volumeSeekBar.isEnabled = enabled
-        balanceSeekBar.isEnabled = enabled
-        saveButton.isEnabled = enabled
-        resetButton.isEnabled = enabled
         newProfileButton.isEnabled = enabled
+
+        /**
+         * Enabling or disabling the equalizer only disables these buttons;
+         * the only thing that is enabled is user input.
+         */
+        saveButton.isEnabled = if(!enabled) false else saveButton.isEnabled
+        resetButton.isEnabled = if(!enabled) false else resetButton.isEnabled
+    }
+
+    private fun resetBand(
+        bandIndex: Int,
+        savedValue: Int,
+        seekBar: SeekBar,
+        gainTextView: TextView
+    ) {
+        seekBar.setProgress(savedValue, true)
+        drawTextOnTheBars(gainTextView, savedValue)
+        sendEqualizerCommand(MusicConstants.ACTION_SET_BAND_LEVEL, bandIndex, savedValue)
     }
 
     companion object {

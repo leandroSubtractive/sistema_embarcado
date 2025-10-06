@@ -8,21 +8,7 @@
     android:foregroundTint="#0A0A0C"
     tools:context=".ui.EqualizerActivity">
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchEqualizer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="@string/active_equalizer"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textViewTrebleName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.117"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileSelected"
-        app:layout_constraintVertical_bias="0.521" />
-
+    <!-- Application Name -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -37,229 +23,308 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Selected profile name -->
     <TextView
         android:id="@+id/profileSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="@string/default_profile"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarTreble"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.205" />
-
-    <SeekBar
-        android:id="@+id/seekBarTreble"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="188dp"
-        android:layout_marginEnd="20dp"
-        android:max="15"
-        android:min="-15"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <TextView
-        android:id="@+id/textViewTreble"
+    <!-- Equalizer on/off button -->
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchEqualizer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/default_db_value"
-        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        android:checked="true"
+        android:text="@string/active_equalizer"
+        android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarTreble"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileSelected"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/profileSelected" />
 
-    <TextView
-        android:id="@+id/textViewTrebleName"
-        android:layout_width="wrap_content"
+    <!-- Frequency band 1 -->
+    <LinearLayout
+        android:id="@+id/containerBand1"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/bar_treble_name"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarTreble"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.087"
+        android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileSelected"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toStartOf="@id/containerBand2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1">
 
-    <SeekBar
-        android:id="@+id/seekBarMid"
-        android:layout_width="match_parent"
+        <!-- Gain in dB -->
+        <TextView
+            android:id="@+id/GainBand1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/_0_db"
+            android:textColor="@color/material_dynamic_neutral50"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Vertical SeekBar -->
+        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:layout_gravity="center">
+
+            <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                android:id="@+id/seekBarBand1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:max="15"
+                android:min="-15"
+                android:progress="0"
+                android:splitTrack="false"
+                app:seekBarRotation="CW270" />
+        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+
+        <!-- Frequency -->
+        <TextView
+            android:id="@+id/labelFreqBand1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/frequencyFirstBand"
+            android:textSize="16sp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <!-- Frequency band 2 -->
+    <LinearLayout
+        android:id="@+id/containerBand2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="20dp"
-        android:max="15"
-        android:min="-15"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarTreble" />
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/containerBand1"
+        app:layout_constraintEnd_toStartOf="@id/containerBand3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1">
 
-    <TextView
-        android:id="@+id/textViewMid"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/GainBand2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_db"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/material_dynamic_neutral50"
+            android:layout_gravity="center"/>
+
+        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:layout_gravity="center">
+
+            <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                android:id="@+id/seekBarBand2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:max="15"
+                android:min="-15"
+                android:progress="0"
+                android:splitTrack="false"
+                app:seekBarRotation="CW270"/>
+        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+
+        <TextView
+            android:id="@+id/labelFreqBand2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/frequencySecondBand"
+            android:textSize="16sp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <!-- Frequency band 3 -->
+    <LinearLayout
+        android:id="@+id/containerBand3"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/default_db_value"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarMid"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarTreble"
-        app:layout_constraintVertical_bias="1.0" />
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/containerBand2"
+        app:layout_constraintEnd_toStartOf="@id/containerBand4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1">
 
-    <TextView
-        android:id="@+id/textViewMidName"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/GainBand3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_db"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/material_dynamic_neutral50"
+            android:layout_gravity="center"/>
+
+        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:layout_gravity="center">
+
+            <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                android:id="@+id/seekBarBand3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:max="15"
+                android:min="-15"
+                android:progress="0"
+                android:splitTrack="false"
+                app:seekBarRotation="CW270"/>
+        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+
+        <TextView
+            android:id="@+id/labelFreqBand3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/frequencyThirdBand"
+            android:textSize="16sp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <!-- Frequency band 4 -->
+    <LinearLayout
+        android:id="@+id/containerBand4"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/bar_mid_name"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarMid"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.088"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarTreble"
-        app:layout_constraintVertical_bias="1.0" />
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/containerBand3"
+        app:layout_constraintEnd_toStartOf="@id/containerBand5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1">
 
-    <SeekBar
-        android:id="@+id/seekBarBass"
-        android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/GainBand4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_db"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/material_dynamic_neutral50"
+            android:layout_gravity="center"/>
+
+        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:layout_gravity="center">
+
+            <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                android:id="@+id/seekBarBand4"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:max="15"
+                android:min="-15"
+                android:progress="0"
+                android:splitTrack="false"
+                app:seekBarRotation="CW270"/>
+        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+
+        <TextView
+            android:id="@+id/labelFreqBand4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/frequencyFourthBand"
+            android:textSize="16sp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <!-- Frequency band 5 -->
+    <LinearLayout
+        android:id="@+id/containerBand5"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="20dp"
-        android:max="15"
-        android:min="-15"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/containerBand4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarMid" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1">
 
-    <TextView
-        android:id="@+id/textViewBass"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:text="@string/default_db_value"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarBass"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarMid"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="TextSizeCheck" />
+        <TextView
+            android:id="@+id/GainBand5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_db"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/material_dynamic_neutral50"
+            android:layout_gravity="center"/>
 
-    <TextView
-        android:id="@+id/textViewBassName"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:text="@string/bar_bass_name"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarBass"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.085"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarMid"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="TextSizeCheck" />
+        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:layout_gravity="center">
 
-    <SeekBar
-        android:id="@+id/seekBarBalance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="20dp"
-        android:max="10"
-        android:min="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarBass" />
+            <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                android:id="@+id/seekBarBand5"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:max="15"
+                android:min="-15"
+                android:progress="0"
+                android:splitTrack="false"
+                app:seekBarRotation="CW270"/>
+        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
-    <TextView
-        android:id="@+id/textViewBalance"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:text="@string/default_pan_value"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarBalance"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarBass"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="TextSizeCheck" />
+        <TextView
+            android:id="@+id/labelFreqBand5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/frequencyFifthBand"
+            android:textSize="16sp"
+            android:layout_gravity="center"/>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewBalanceR"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:text="@string/balance_Right"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarBalance"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.907"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarBass"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="TextSizeCheck" />
 
-    <TextView
-        android:id="@+id/textViewBalanceL"
-        android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:text="@string/balance_left"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarBalance"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.079"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarBass"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="TextSizeCheck" />
-
+    <!-- Volume Control -->
     <SeekBar
         android:id="@+id/seekBarVolume"
         style="@android:style/Widget.DeviceDefault.SeekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="120dp"
         android:layout_marginEnd="20dp"
         android:max="100"
         android:progress="70"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarBalance" />
+        app:layout_constraintStart_toEndOf="@+id/textViewVolumeName"
+        app:layout_constraintTop_toBottomOf="@+id/switchEqualizer"
+        app:layout_constraintVertical_bias="0.792" />
 
+    <!-- Volume Label -->
     <TextView
         android:id="@+id/textViewVolume"
         android:layout_width="59dp"
         android:layout_height="24dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="456dp"
         android:text="@string/default_volume_value"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/seekBarVolume"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintHorizontal_bias="0.943"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarBalance"
+        app:layout_constraintTop_toBottomOf="@+id/profileSelected"
         app:layout_constraintVertical_bias="1.0"
         tools:ignore="TextSizeCheck" />
 
@@ -267,28 +332,26 @@
         android:id="@+id/textViewVolumeName"
         android:layout_width="81dp"
         android:layout_height="29dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/volume_name"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarVolume"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.087"
+        app:layout_constraintBottom_toTopOf="@+id/save"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarBalance"
-        app:layout_constraintVertical_bias="1.0"
         tools:ignore="TextSizeCheck" />
 
+    <!-- Section with all buttons -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/save"
         android:layout_width="104dp"
-        android:layout_height="43dp"
+        android:layout_height="48dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="32dp"
         android:enabled="false"
         android:text="@string/save_button"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/reset"
         app:layout_constraintHorizontal_bias="0.0"
@@ -297,14 +360,13 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/newProfile"
         android:layout_width="100dp"
-        android:layout_height="45dp"
+        android:layout_height="48dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="32dp"
-        android:backgroundTint="#664FA4"
         android:enabled="true"
         android:text="@string/new_profile_button"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/reset"
@@ -314,15 +376,15 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/reset"
         android:layout_width="100dp"
-        android:layout_height="45dp"
+        android:layout_height="48dp"
         android:enabled="false"
         android:text="@string/reset_button"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarVolume"
-        app:layout_constraintVertical_bias="0.604" />
+        app:layout_constraintTop_toBottomOf="@+id/seekBarVolume" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

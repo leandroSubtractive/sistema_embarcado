@@ -33,7 +33,7 @@
 
     <!-- Units of measurement for audio signals -->
     <string name="decibel">db</string>
-    <string name="spl">%</string>
+    <string name="spl">%s%%</string>
 
     <!-- String profile list -->
     <string name="sub_text">Profile</string>
@@ -51,5 +51,12 @@
     <string name="time_format">%1$s / %2$s</string>
     <string name="time_mm_ss">%1$02d:%2$02d</string>
     <string name="active_equalizer">Active Equalizer</string>
+    <string name="frequencySecondBand">230Hz</string>
+    <string name="frequencyFirstBand">60Hz</string>
+    <string name="frequencyThirdBand">910Hz</string>
+    <string name="frequencyFifthBand">14kHz</string>
+    <string name="frequencyFourthBand">3.6kHz</string>
+    <string name="_0_db">0 dB</string>
+    <string name="percentage_value">%d%%</string>
 
 </resources>
