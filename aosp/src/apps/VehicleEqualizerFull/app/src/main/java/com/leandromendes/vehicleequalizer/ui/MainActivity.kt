@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
     private var isSeeking = false
     private var duration = 0
     private var isPlaying = false // Flag to signal the play status
+
+    /**
+     * State receiver
+     */
     private val stateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == Constants.MusicConstants.BROADCAST_MUSIC_STATE) {
@@ -119,12 +123,10 @@ class MainActivity : AppCompatActivity() {
         // Start observing the LiveData containing the Toast text in the ViewModel
         mainViewModel.getToastText().observe(this, Observer { text: String? -> this.toastShow(text!!) })
 
-        /**
-         * Registers a callback to start an Activity
-         * and handle its result (the returned data) asynchronously.
-         *
-         * The variable ‘eqActivity’ is the launcher that will be used to start the Activity.
-         */
+
+        /* Registers a callback to start an Activity
+        and handle its result (the returned data) asynchronously.
+        The variable ‘eqActivity’ is the launcher that will be used to start the Activity */
         val eqActivity = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result: ActivityResult? ->
@@ -318,9 +320,21 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    /**
+     * Toast show
+     *
+     * @param text Message string
+     */
     private fun toastShow(text: String) {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
+
+    /**
+     * Send action to service
+     * Sends action command to audio service
+     *
+     * @param action Command
+     */
     private fun sendActionToService(action: String) {
         val intent = Intent(this, AudioService::class.java).apply {
             this.action = action
@@ -328,6 +342,12 @@ class MainActivity : AppCompatActivity() {
         ContextCompat.startForegroundService(this, intent) // guarantees foreground service
     }
 
+    /**
+     * On profile selected
+     * Select a new profile
+     *
+     * @param profile New profile
+     */
     private fun onProfileSelected(profile: EqualizerProfile) {
 
         deselectProfile()
@@ -339,6 +359,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Deselect profile
+     * Go through the list of profiles and deselect all those that are selected
+     */
     private fun deselectProfile(){
         // Deselect all profiles before selecting the current one
         mainViewModel.allProfilesLiveData.value?.forEach { p ->
@@ -349,6 +373,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Apply profile
+     * Send selected profile to audio service
+     *
+     * @param profile Audio profile
+     */
     private fun applyProfile(profile: EqualizerProfile) {
         val intent = Intent(this, AudioService::class.java).apply {
             action = Constants.MusicConstants.ACTION_APPLY_PROFILE
@@ -356,6 +386,14 @@ class MainActivity : AppCompatActivity() {
         }
         ContextCompat.startForegroundService(this, intent)
     }
+
+    /**
+     * Format time
+     * Auxiliary function for formatting the music time during playback
+     *
+     * @param millis Time value in milliseconds
+     * @return Value formated: 00:00
+     */
     private fun formatTime(millis: Int): String {
         val totalSeconds = millis / 1000
         val minutes = totalSeconds / 60

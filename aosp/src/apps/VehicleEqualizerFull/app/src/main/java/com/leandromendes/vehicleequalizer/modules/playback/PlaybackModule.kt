@@ -75,15 +75,15 @@ class PlaybackModule(private val context: Context) : PlaybackInterface {
         return mediaPlayer?.isPlaying ?: false
     }
 
-    override fun release() {
-        mediaPlayer?.release()
-        mediaPlayer = null
-        Log.d(logTAG, "MediaPlayer released")
-    }
-
     override fun getAudioSessionId(): Int {
         val id = mediaPlayer?.audioSessionId ?: -1
         Log.d(logTAG, "AudioSessionId requested: $id")
         return id
+    }
+
+    override fun release() {
+        mediaPlayer?.release()
+        mediaPlayer = null
+        Log.d(logTAG, "MediaPlayer released")
     }
 }

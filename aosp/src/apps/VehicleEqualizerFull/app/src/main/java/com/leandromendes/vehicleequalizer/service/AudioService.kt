@@ -173,6 +173,7 @@ class AudioService : Service() {
 
             MusicConstants.ACTION_EQUALIZER_STATUS -> {
                 val intent = Intent(MusicConstants.ACTION_UPDATE_UI).apply {
+                    // Equalizer status
                     putExtra(MusicConstants.EXTRA_EQUALIZER_ENABLED, equalizerModule?.getEnabled() ?: false)
                 }
                 sendBroadcast(intent)
@@ -192,36 +193,77 @@ class AudioService : Service() {
         return START_STICKY
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        playbackModule.release()
+        equalizerModule?.release()
+        equalizerModule = null
+        handler.removeCallbacks(updateRunnable)
+        notificationModule.cancelNotification()
+    }
+
+    /**
+     * Load track
+     *
+     * @param index Track index
+     */
     private fun loadTrack(index: Int) {
         val track = trackList[index]
         playbackModule.setRawDataSource(track.resId)
     }
 
+    /**
+     * Apply last profile
+     *
+     * @param profile Equalization profile
+     */
     private fun applyLastProfile(profile: EqualizerProfile?) {
         profile?.let { equalizerModule?.applyProfile(it) }
     }
 
+    /**
+     * Broadcast state
+     * states that the service sends
+     */
     private fun broadcastState() {
         val intent = Intent(MusicConstants.BROADCAST_MUSIC_STATE).apply {
+            // State of music playback
             putExtra(MusicConstants.EXTRA_STATE, playbackState())
+            // Get the current position of the song to update the counter in the interface
             putExtra(MusicConstants.EXTRA_CURRENT_POSITION, playbackModule.getCurrentPosition())
+            // obtains the total duration of the song
             putExtra(MusicConstants.EXTRA_DURATION, playbackModule.getDuration())
+            // Current song title
             putExtra(MusicConstants.EXTRA_TRACK_TITLE, trackList[currentTrackIndex].title)
-            putExtra(MusicConstants.EXTRA_EQUALIZER_ENABLED, equalizerModule?.getEnabled() ?: false)
         }
         sendBroadcast(intent)
     }
 
+    /**
+     * Playback state
+     * Get the equalizer status
+     *
+     * @return Equalizer status
+     */
     private fun playbackState(): String =
         if (isStopped) PlaybackStates.STOPPED
         else if (playbackModule.isPlaying()) PlaybackStates.PLAYING
         else PlaybackStates.PAUSED
 
+    /**
+     * Ensure equalizer initialized
+     *
+     */
     private fun ensureEqualizerInitialized() {
         if (equalizerModule == null) {
             initEqualizerIfNeeded()
         }
     }
+
+    /**
+     * Init equalizer if needed
+     *
+     */
     private fun initEqualizerIfNeeded() {
         val sessionId = playbackModule.getAudioSessionId()
         if (sessionId > 0) {
@@ -236,15 +278,18 @@ class AudioService : Service() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        playbackModule.release()
-        equalizerModule?.release()
-        equalizerModule = null
-        handler.removeCallbacks(updateRunnable)
-        notificationModule.cancelNotification()
-    }
-
+    /**
+     * On bind
+     *
+     */
     override fun onBind(intent: Intent?): IBinder? = null
+
+    /**
+     * Track
+     *
+     * @property resId Resource ID
+     * @property title Song name
+     * @constructor Create empty Track
+     */
     data class Track(val resId: Int, val title: String)
 }

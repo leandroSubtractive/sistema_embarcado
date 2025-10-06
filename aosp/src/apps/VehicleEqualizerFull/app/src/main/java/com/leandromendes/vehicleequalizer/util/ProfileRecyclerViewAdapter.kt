@@ -46,26 +46,26 @@ class ProfileRecyclerViewAdapter(
         }
     }
 
-    // Creates the ViewHolder (called when a new item is needed)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileViewHolder {
+        // Creates the ViewHolder (called when a new item is needed)
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_profile, parent, false)
         return ProfileViewHolder(view)
     }
 
-    // Connects the data to the ViewHolder (called to reuse the item)
     override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
+        // Connects the data to the ViewHolder (called to reuse the item)
         val profile = profiles[position]
         holder.bind(profile, position)
     }
 
-    // Returns the size of the list
     override fun getItemCount(): Int {
+        // Returns the size of the list
         return profiles.size
     }
 
-     //Update the LiveData profile list
     fun updateProfiles(newProfiles: List<EqualizerProfile>) {
+        //Update the LiveData profile list
         profiles.clear()
         profiles.addAll(newProfiles)
         notifyDataSetChanged()

@@ -31,9 +31,12 @@ import java.util.Locale
 
 class EqualizerActivity : AppCompatActivity() {
     private val logTAG = "EqualizerActivity"
+    private lateinit var currentProfile: EqualizerProfile
     private lateinit var newProfileButton: Button
     private lateinit var saveButton: Button
     private lateinit var resetButton: Button
+    private lateinit var equalizerSwitch: SwitchMaterial
+    private lateinit var profileName: String
     private var band0Value = 0
     private var band1Value = 0
     private var band2Value = 0
@@ -42,20 +45,21 @@ class EqualizerActivity : AppCompatActivity() {
     private var masterVolValue = 0
     private var idPosition = 0
     private lateinit var textViewMasterVol: TextView
-    private lateinit var equalizerSwitch: SwitchMaterial
-    private lateinit var profileName: String
-    private lateinit var currentProfile: EqualizerProfile
-    private lateinit var  volumeSeekBar : SeekBar
+    private lateinit var volumeSeekBar: SeekBar
     private lateinit var seekBarsBand0: VerticalSeekBar
     private lateinit var seekBarsBand1: VerticalSeekBar
     private lateinit var seekBarsBand2: VerticalSeekBar
     private lateinit var seekBarsBand3: VerticalSeekBar
     private lateinit var seekBarsBand4: VerticalSeekBar
 
+    /**
+     * Update ui receiver
+     */
     private val updateUIReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == MusicConstants.ACTION_UPDATE_UI) {
-                val isEnabled = intent.getBooleanExtra(MusicConstants.EXTRA_EQUALIZER_ENABLED, false)
+                val isEnabled =
+                    intent.getBooleanExtra(MusicConstants.EXTRA_EQUALIZER_ENABLED, false)
                 Log.d(logTAG, "Broadcast received - Equalizer enabled? $isEnabled")
 
                 // Updates the switch without infinite loop
@@ -114,7 +118,7 @@ class EqualizerActivity : AppCompatActivity() {
             band0Value,
             findViewById(R.id.GainBand1),
             ::drawTextOnTheBars
-        ){ progress -> band0Value = progress }
+        ) { progress -> band0Value = progress }
 
         seekBarsBand1 = findViewById(R.id.seekBarBand2)
         band1Value = currentProfile.band1
@@ -125,7 +129,7 @@ class EqualizerActivity : AppCompatActivity() {
             currentProfile.band1,
             findViewById(R.id.GainBand2),
             ::drawTextOnTheBars
-        ){ progress -> band1Value = progress }
+        ) { progress -> band1Value = progress }
 
         seekBarsBand2 = findViewById(R.id.seekBarBand3)
         band2Value = currentProfile.band2
@@ -136,7 +140,7 @@ class EqualizerActivity : AppCompatActivity() {
             band2Value,
             findViewById(R.id.GainBand3),
             ::drawTextOnTheBars
-        ){ progress -> band2Value = progress }
+        ) { progress -> band2Value = progress }
 
         seekBarsBand3 = findViewById(R.id.seekBarBand4)
         band3Value = currentProfile.band3
@@ -147,7 +151,7 @@ class EqualizerActivity : AppCompatActivity() {
             band3Value,
             findViewById(R.id.GainBand4),
             ::drawTextOnTheBars
-        ){ progress -> band3Value = progress }
+        ) { progress -> band3Value = progress }
 
         seekBarsBand4 = findViewById(R.id.seekBarBand5)
         band4Value = currentProfile.band4
@@ -158,7 +162,7 @@ class EqualizerActivity : AppCompatActivity() {
             band4Value,
             findViewById(R.id.GainBand5),
             ::drawTextOnTheBars
-        ){ progress -> band4Value = progress }
+        ) { progress -> band4Value = progress }
 
         // Master Volume
         volumeSeekBar = findViewById(R.id.seekBarVolume)
@@ -241,6 +245,19 @@ class EqualizerActivity : AppCompatActivity() {
         unregisterReceiver(updateUIReceiver)
     }
 
+    /**
+     * Setup seek bar
+     *
+     * @param seekBar SeekBar to be configured
+     * @param action Action command that will be sent to the audio service when the seekBar is changed
+     * @param band Frequency band ID
+     * @param initialValue Initial value of SeekBar
+     * @param textView SeekBar TextView
+     * @param drawTextFunc Auxiliary function for drawing the parameter on the screen
+     * @param onProgressUpdate Variable that stores the current value
+     * @receiver
+     * @receiver
+     */
     private fun setupSeekBar(
         seekBar: SeekBar,
         action: String,
@@ -255,10 +272,17 @@ class EqualizerActivity : AppCompatActivity() {
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                // Updates the current value of the corresponding seekbar position
                 onProgressUpdate(progress)
+                // Draw the SeekBar value on the screen with the appropriate formatting
                 drawTextFunc(textView, progress)
-                sendEqualizerCommand(action, band,progress)
 
+                /* Sends a change to the audio service that is responsible
+                for changing the value in the equalizer */
+                sendEqualizerCommand(action, band, progress)
+
+                /* Before activating the save and reset buttons, check
+                if they are already activated. This check occurs when a seekbar is changed */
                 if (!saveButton.isEnabled) saveButton.isEnabled = true
                 if (!resetButton.isEnabled) resetButton.isEnabled = true
             }
@@ -269,26 +293,43 @@ class EqualizerActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Send equalizer command
+     *
+     * @param action Action command that will be sent to the audio service
+     * @param band Frequency band [0 - 4]
+     * @param level Gain
+     */
     private fun sendEqualizerCommand(action: String, band: Int, level: Int) {
         val intent = Intent(this, AudioService::class.java).apply {
             this.action = action
-            putExtra(MusicConstants.EXTRA_BAND, band)
-            putExtra(MusicConstants.EXTRA_LEVEL, level)
+            putExtra(MusicConstants.EXTRA_BAND, band) // Band ID
+            putExtra(MusicConstants.EXTRA_LEVEL, level)// Gain in dB
         }
+        // Send action to service
         ContextCompat.startForegroundService(this, intent)
     }
 
+    /**
+     * Save new change profile
+     *
+     * @param profile Profile to be saved
+     */
     private fun saveNewChangeProfile(profile: EqualizerProfile) {
         val currentDate = Date()
         val format = SimpleDateFormat(Define.DATETIME_FORMAT, Locale.getDefault())
         val dateTime = format.format(currentDate)
 
+        // Creates default name with date and time
         val newProfileHint = String.format(
             Locale.getDefault(),
             "%s %s",
             getString(R.string.new_profile_button),
             dateTime
         )
+
+        /* Creates a dialog box for the user to enter a name for the profile;
+        otherwise, uses the default name. */
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.dialogue_title))
 
@@ -312,6 +353,11 @@ class EqualizerActivity : AppCompatActivity() {
         builder.show()
     }
 
+    /**
+     * Save change profile
+     *
+     * @param profile Profile to be saved
+     */
     private fun saveChangeProfile(profile: EqualizerProfile) {
         profile.name = profileName
         profile.band0 = band0Value
@@ -328,6 +374,12 @@ class EqualizerActivity : AppCompatActivity() {
         finish()
     }
 
+    /**
+     * Draw text on the bars
+     *
+     * @param textView Corresponding TextView
+     * @param value Gain value
+     */
     private fun drawTextOnTheBars(textView: TextView, value: Int) {
 
         textView.text = when {
@@ -336,10 +388,21 @@ class EqualizerActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Draw text on the vol bar
+     *
+     * @param textView Corresponding TextView
+     * @param value Volume value
+     */
     private fun drawTextOnTheVolBar(textView: TextView, value: Int) {
         textView.text = getString(R.string.percentage_value, value)
     }
 
+    /**
+     * Set controls enabled
+     *
+     * @param enabled Command to activate or deactivate
+     */
     private fun setControlsEnabled(enabled: Boolean) {
         seekBarsBand0.isEnabled = enabled
         seekBarsBand2.isEnabled = enabled
@@ -349,14 +412,22 @@ class EqualizerActivity : AppCompatActivity() {
         volumeSeekBar.isEnabled = enabled
         newProfileButton.isEnabled = enabled
 
-        /**
-         * Enabling or disabling the equalizer only disables these buttons;
-         * the only thing that is enabled is user input.
-         */
-        saveButton.isEnabled = if(!enabled) false else saveButton.isEnabled
-        resetButton.isEnabled = if(!enabled) false else resetButton.isEnabled
+        /* Enabling or disabling the equalizer only disables these buttons;
+        the only thing that is enabled is user input */
+        saveButton.isEnabled = if (!enabled) false else saveButton.isEnabled
+        resetButton.isEnabled = if (!enabled) false else resetButton.isEnabled
     }
 
+    /**
+     * Reset band
+     *  Restores the gain values to the profile value before editing
+     *  in each frequency band of the equalizer
+     *
+     * @param bandIndex Frequency band ID: [0 - 4]
+     * @param savedValue Amount before editing
+     * @param seekBar Corresponding SeekBar
+     * @param gainTextView Corresponding TextView
+     */
     private fun resetBand(
         bandIndex: Int,
         savedValue: Int,
@@ -373,7 +444,13 @@ class EqualizerActivity : AppCompatActivity() {
         const val INTENT_INT_POSITION = Define.INTENT_INT_POSITION
 
         /**
+         * New intent
          * Creates an Intent to launch EqualizerActivity, encapsulating the extras.
+         *
+         * @param context Current context
+         * @param profile Equalization profile
+         * @param position Position of the profile ID in the list
+         * @return Returns a new intent
          */
         fun newIntent(context: Context, profile: EqualizerProfile, position: Int): Intent {
             return Intent(context, EqualizerActivity::class.java).apply {
@@ -383,14 +460,22 @@ class EqualizerActivity : AppCompatActivity() {
         }
 
         /**
+         * Get result profile
          * Extracts the result Intent profile used by the calling Activity
+         *
+         * @param intent Intention to extract the profile
+         * @return Return extracted profile
          */
         fun getResultProfile(intent: Intent): EqualizerProfile? {
             return intent.getParcelableExtra(INTENT_PARCELABLE_NAME, EqualizerProfile::class.java)
         }
 
         /**
+         * Get result position
          * Extracts the position of the result Intent used by the calling Activity
+         *
+         * @param intent Intention to extract the ID
+         * @return Returns the extracted ID
          */
         fun getResultPosition(intent: Intent): Int {
             return intent.getIntExtra(INTENT_INT_POSITION, Define.INTENT_INT_POSITION_DEFAULT)

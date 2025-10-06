@@ -32,6 +32,16 @@ class NotificationModule(private val context: Context) : NotificationInterface {
         notificationManager.createNotificationChannel(channel)
     }
 
+    private fun getPendingIntent(action: String): PendingIntent {
+        val intent = Intent(context, AudioService::class.java).apply { this.action = action }
+        return PendingIntent.getService(
+            context,
+            action.hashCode(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
+
     override fun buildNotification(playbackState: String, trackTitle: String): Notification {
         createNotificationChannel()
 
@@ -74,16 +84,6 @@ class NotificationModule(private val context: Context) : NotificationInterface {
             .setOnlyAlertOnce(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
-    }
-
-    private fun getPendingIntent(action: String): PendingIntent {
-        val intent = Intent(context, AudioService::class.java).apply { this.action = action }
-        return PendingIntent.getService(
-            context,
-            action.hashCode(),
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
     }
 
     override fun showNotification(playbackState: String, trackTitle: String) {
