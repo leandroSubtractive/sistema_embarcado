@@ -156,6 +156,11 @@ class AudioService : Service() {
                 ensureEqualizerInitialized()
                 val enabled = intent.getBooleanExtra(MusicConstants.EXTRA_ENABLED, true)
                 equalizerModule?.setEnable(enabled)
+
+                // If enabled, reapply the profile
+                if(enabled){
+                    applyLastProfile(lastProfile)
+                }
             }
 
             MusicConstants.ACTION_SET_BAND_LEVEL -> {
