@@ -6,11 +6,11 @@ Repositório dedicado a todas as atividades do curso de formação em sistemas e
 
 <div style="display: flex; justify-content: space-around;">
   <div style="width: 45%; text-align: center;">
-    <img src=readme_files/imgs/tela_de_perfis.png alt style="width: 100%; height: auto;"/>
+    <img src=readme_files/imgs/tela_de_perfis.png alt style="width: 40%; height: auto;"/>
     <p><strong>Figura 1:</strong> Tela de Perfis</p>
   </div>
   <div style="width: 45%; text-align: center;">
-    <img src=readme_files/imgs/tela_de_edição.png alt style="width: 100%; height: auto;"/>
+    <img src=readme_files/imgs/tela_de_edição.png alt style="width: 40%; height: auto;"/>
     <p><strong>Figura 2:</strong> Tela de Edição do Equalizador</p>
   </div>
 </div>
