@@ -8,18 +8,37 @@
     android:foregroundTint="#0A0A0C"
     tools:context=".ui.EqualizerActivity">
 
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_round_button"
+        android:contentDescription="@string/back"
+        android:padding="8dp"
+        android:src="@android:drawable/ic_menu_revert"
+        app:layout_constraintBottom_toTopOf="@+id/containerBand5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.546"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.194"
+        app:tint="?attr/colorControlNormal" />
+
     <!-- Application Name -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="8dp"
         android:text="@string/app_name"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/profileSelected"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,9 +47,10 @@
         android:id="@+id/profileSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="18dp"
         android:text="@string/default_profile"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/switchEqualizer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,12 +62,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:checked="true"
         android:text="@string/active_equalizer"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/containerBand1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintHorizontal_bias="0.063"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileSelected" />
 
@@ -251,23 +273,23 @@
         android:id="@+id/containerBand5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintStart_toEndOf="@id/containerBand4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_weight="1">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/containerBand4"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/GainBand5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@string/_0_db"
-            android:textSize="16sp"
-            android:textStyle="bold"
             android:textColor="@color/material_dynamic_neutral50"
-            android:layout_gravity="center"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
             android:layout_width="wrap_content"
@@ -282,41 +304,39 @@
                 android:min="-15"
                 android:progress="0"
                 android:splitTrack="false"
-                app:seekBarRotation="CW270"/>
+                app:seekBarRotation="CW270" />
         </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
 
         <TextView
             android:id="@+id/labelFreqBand5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@string/frequencyFifthBand"
-            android:textSize="16sp"
-            android:layout_gravity="center"/>
+            android:textSize="16sp" />
     </LinearLayout>
-
 
     <!-- Volume Control -->
     <SeekBar
         android:id="@+id/seekBarVolume"
-        style="@android:style/Widget.DeviceDefault.SeekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="22dp"
         android:max="100"
         android:progress="70"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textViewVolumeName"
-        app:layout_constraintTop_toBottomOf="@+id/switchEqualizer"
-        app:layout_constraintVertical_bias="0.792" />
-
-    <!-- Volume Label -->
+        app:layout_constraintTop_toBottomOf="@+id/containerBand3"
+        app:layout_constraintVertical_bias="0.36" />
+    <!-- Volume Percent -->
     <TextView
         android:id="@+id/textViewVolume"
         android:layout_width="59dp"
         android:layout_height="24dp"
-        android:layout_marginTop="456dp"
+        android:layout_marginTop="32dp"
         android:text="@string/default_volume_value"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -324,46 +344,49 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.943"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileSelected"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@+id/containerBand5"
         tools:ignore="TextSizeCheck" />
-
+    <!-- Volume Label -->
     <TextView
         android:id="@+id/textViewVolumeName"
         android:layout_width="81dp"
-        android:layout_height="29dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="32dp"
         android:text="@string/volume_name"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/seekBarVolume"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/containerBand1"
+        app:layout_constraintVertical_bias="0.277"
         tools:ignore="TextSizeCheck" />
 
     <!-- Section with all buttons -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/save"
         android:layout_width="104dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="32dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="25dp"
         android:enabled="false"
         android:text="@string/save_button"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/reset"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarVolume"
+        app:layout_constraintVertical_bias="1.0" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/newProfile"
         android:layout_width="100dp"
         android:layout_height="48dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="25dp"
         android:enabled="true"
         android:text="@string/new_profile_button"
         android:textSize="20sp"
@@ -377,14 +400,18 @@
         android:id="@+id/reset"
         android:layout_width="100dp"
         android:layout_height="48dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="25dp"
         android:enabled="false"
         android:text="@string/reset_button"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarVolume" />
+        app:layout_constraintEnd_toStartOf="@+id/newProfile"
+        app:layout_constraintStart_toEndOf="@+id/save"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarVolume"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

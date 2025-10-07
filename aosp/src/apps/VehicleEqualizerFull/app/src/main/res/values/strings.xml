@@ -58,5 +58,6 @@
     <string name="frequencyFourthBand">3.6kHz</string>
     <string name="_0_db">0 dB</string>
     <string name="percentage_value">%d%%</string>
+    <string name="back">Back</string>
 
 </resources>
