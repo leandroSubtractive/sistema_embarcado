@@ -470,9 +470,12 @@ Permissões necessarias:
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-
-
 ```
+
+<p style="text-align:center">
+    <img src=imgs/Screenshot_20251008_005625.png alt style="width:32%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 5:</strong> Tela de Permissão</figcaption>
+</p>
 
 Cadastro do serviço
 
