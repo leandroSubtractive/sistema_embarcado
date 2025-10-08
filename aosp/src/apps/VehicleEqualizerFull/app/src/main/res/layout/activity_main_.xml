@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="@string/app_name"
-        android:textSize="24sp"
+        android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:text="@string/track_title_default"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/seekBar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/time_default"
-        android:textSize="14sp"
+        android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@+id/controlLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -82,7 +82,7 @@
             android:contentDescription="@string/previous"
             android:focusable="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_skip_previous"
+            android:src="@drawable/ic_skip_previous_"
             app:tint="@color/black" />
 
         <ImageButton
@@ -96,7 +96,7 @@
             android:contentDescription="@string/play_pause"
             android:focusable="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_play_arrow"
+            android:src="@drawable/ic_play_arrow_"
             app:tint="@color/black" />
 
         <ImageButton
@@ -108,7 +108,7 @@
             android:contentDescription="@string/next"
             android:focusable="true"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_skip_next"
+            android:src="@drawable/ic_skip_next_"
             app:tint="@color/black" />
 
     </LinearLayout>

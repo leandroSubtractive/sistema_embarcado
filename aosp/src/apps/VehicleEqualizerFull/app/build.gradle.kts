@@ -62,4 +62,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     ksp(libs.androidx.room.compiler)
 
+    implementation(libs.androidx.media3.session)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media)
+    implementation(libs.androidx.appcompat.v130)
+    implementation(libs.androidx.core.ktx.v1170)
+
+    implementation(libs.verticalseekbar)
+
 }

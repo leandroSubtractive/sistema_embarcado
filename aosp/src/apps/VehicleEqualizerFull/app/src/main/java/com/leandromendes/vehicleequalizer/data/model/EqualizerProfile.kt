@@ -12,12 +12,13 @@ data class EqualizerProfile(
     // Sets the ID as the primary key and auto-generated
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0, // New ID field for Room
-    var name: String = Constants.define.PROFILE_DEFAULT_NAME,
-    var bassEqValue: Int = Constants.define.BASS_VALUE_DEFAULT,
-    var midEqValue: Int = Constants.define.MIDDLE_VALUE_DEFAULT,
-    var hiEqValue: Int = Constants.define.TREBLE_VALUE_DEFAULT,
-    var balanceEqValue: Int = Constants.define.PAN_VALUE_DEFAULT,
-    var masterVolValue: Int = Constants.define.VOLUME_VALUE_DEFAULT,
-    var isSelected: Boolean = true
+    var name: String = Constants.Define.PROFILE_DEFAULT_NAME,
+    var band0: Int = Constants.Define.GAIN_VALUE_DEFAULT,
+    var band1: Int = Constants.Define.GAIN_VALUE_DEFAULT,
+    var band2: Int = Constants.Define.GAIN_VALUE_DEFAULT,
+    var band3: Int = Constants.Define.GAIN_VALUE_DEFAULT,
+    var band4: Int = Constants.Define.GAIN_VALUE_DEFAULT,
+    var masterVolValue: Int = Constants.Define.VOLUME_VALUE_DEFAULT,
+    var isSelected: Boolean = false
 ) : Parcelable
 

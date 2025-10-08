@@ -125,14 +125,14 @@ class UserRepositoryTest {
     private lateinit var fakeProfileDao: FakeProfileDao
     private val testDispatcher = StandardTestDispatcher()
 
-    private val defaultProfileName = Constants.define.PROFILE_DEFAULT_NAME
+    private val defaultProfileName = Constants.Define.PROFILE_DEFAULT_NAME
     private val newProfile1 = EqualizerProfile(
         name = "Profile_1",
-        bassEqValue = Constants.define.BASS_VALUE_DEFAULT,
-        midEqValue = Constants.define.MIDDLE_VALUE_DEFAULT,
-        hiEqValue = Constants.define.TREBLE_VALUE_DEFAULT,
-        balanceEqValue = Constants.define.PAN_VALUE_DEFAULT,
-        masterVolValue = Constants.define.VOLUME_VALUE_DEFAULT,
+        bassEqValue = Constants.Define.BASS_VALUE_DEFAULT,
+        midEqValue = Constants.Define.MIDDLE_VALUE_DEFAULT,
+        hiEqValue = Constants.Define.TREBLE_VALUE_DEFAULT,
+        balanceEqValue = Constants.Define.PAN_VALUE_DEFAULT,
+        masterVolValue = Constants.Define.VOLUME_VALUE_DEFAULT,
         isSelected = false
     )
 
