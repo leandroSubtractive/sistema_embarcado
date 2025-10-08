@@ -6,6 +6,7 @@ import android.media.audiofx.Equalizer
 import android.util.Log
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 
+
 class EqualizerModule(
     private val context: Context,
     audioSessionId: Int
@@ -13,6 +14,7 @@ class EqualizerModule(
 
     private var logTAG = "EqualizerModule"
     private var enabled = true
+
 
     private var equalizer: Equalizer? = try {
         if (audioSessionId > 0) {
@@ -47,6 +49,7 @@ class EqualizerModule(
             val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
             val newVolume = ((level.toFloat() / 100f) * maxVolume).toInt()
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
+            setVolumeFromNative(newVolume)
             Log.d(logTAG, "Volume adjusted to $level (stream=$newVolume/$maxVolume)")
         } catch (e: Exception) {
             Log.e(logTAG, "Error adjusting volume: ${e.message}")
@@ -66,6 +69,7 @@ class EqualizerModule(
             val safeLevel = level.coerceIn(min.toInt(), max.toInt()).toShort()
 
             eq.setBandLevel(band.toShort(), ((safeLevel * 100).toShort()))
+            setBandLevelNative(band, safeLevel.toInt())
             Log.d(logTAG, "Band $band Adjusted for ${(safeLevel * 100)} (range: $min .. $max)")
         } catch (e: Exception) {
             Log.e(logTAG, "Error when adjusting band $band: ${e.message}")
@@ -75,6 +79,7 @@ class EqualizerModule(
     override fun setEnable(enabled: Boolean) {
         this.enabled = enabled
         equalizer?.enabled = enabled
+        setEqualizerEnabledNative(enabled)
         Log.d(logTAG, "Equalizer ${if (enabled) "Enabled" else "Disabled"}")
     }
 
@@ -108,6 +113,21 @@ class EqualizerModule(
         for (i in 0 until bands) {
             val centerFreq = equalizer?.getCenterFreq(i.toShort()) ?: 0
             Log.d(logTAG, "Band $i → Freq: ${centerFreq / 1000} Hz")
+        }
+    }
+    /**
+     * A native method that is implemented by the 'vehicleequalizer' native library,
+     * which is packaged with this application.
+     */
+    external fun setEqualizerEnabledNative( enabled: Boolean)
+    external fun setBandLevelNative(band: Int, level: Int)
+    external fun setVolumeFromNative(volume: Int)
+
+
+    companion object {
+        // Used to load the 'vehicleequalizer' library on application startup.
+        init {
+            System.loadLibrary("vehicleequalizer")
         }
     }
 }
