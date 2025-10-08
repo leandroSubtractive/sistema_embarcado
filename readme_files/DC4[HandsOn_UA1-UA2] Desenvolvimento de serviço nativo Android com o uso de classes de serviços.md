@@ -1,10 +1,14 @@
 # Desenvolvimento de serviço nativo Android com o uso de classes de serviços
 
+---
+
 ## CURSO
 
 FORMAÇÃO EM SISTEMAS EMBARCADOS
 
 LEANDRO MENDES DOS SANTOS
+
+---
 
 ## Links
 
@@ -14,15 +18,21 @@ Link da Aplicação: [VehicleEqualizerApp](https://github.com/leandroSubtractive
 
 Link do Vídeo: [Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QFO18Kk7mN_jLk9DK0C)
 
+---
+
 ## OBJETIVOS DE APRENDIZAGEM
 
 - Implementar métodos do ciclo de vida dos serviços de áudio no Android;
 - Elaborar um serviço de reprodução de áudio no Android;
 - Implementar a chamada do serviço de reprodução de áudio no Android.
 
+---
+
 ## Introdução
 
 Esté documento descreve a implementação e as funcionalidades do aplicativo de equalização. Sua integração com o AudioService e os modulos de Notificação, PlayBack e Equalização.
+
+---
 
 1. [Arquitetura](#1-arquitetura)
     - 1.1. [Estrutura de Pastas](#11-estrutura-de-pastas)
@@ -31,11 +41,16 @@ Esté documento descreve a implementação e as funcionalidades do aplicativo de
       - 1.2.2. [Módulo de Equalização (EqualizationModule)](#122-módulo-de-equalização-equalizationmodule)
       - 1.2.3. [Módulo de Notificação (NotificationModule)](#123-módulo-de-notificação-notificationmodule)
     - 1.3. [Serviço](#13-serviço)
+    - 1.4. [Permissões](#14-permissões)
 2. [Definição dos Requisitos Funcionais](#2-definição-dos-requisitos-funcionais)
     - 2.1. [Reprodução](#21-reprodução)
     - 2.2. [Equalização](#22-equalização)
     - 2.3. [Notificação](#23-notificação)
 3. [Referências](#3-referências)
+
+---
+
+---
 
 ## 1. Arquitetura
 
@@ -440,6 +455,38 @@ override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
     ...
     return START_STICKY
 }
+```
+
+### 1.4 Permissões
+
+Permissões necessarias:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+
+```
+
+Cadastro do serviço
+
+```xml
+<service
+    android:name=".service.AudioService"
+    android:foregroundServiceType="mediaPlayback"
+    android:enabled="true"
+    android:exported="false">
+    <intent-filter>
+        <action android:name="androidx.media3.session.MediaSessionService"/>
+        <action android:name="android.media.browse.MediaBrowserService"/>
+    </intent-filter>
+</service>
 ```
 
 ## 2. Definição dos Requisitos Funcionais
