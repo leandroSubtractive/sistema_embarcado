@@ -39,6 +39,7 @@ Esté documento descreve a implementação e as funcionalidades do aplicativo de
     - 1.2. [Módulos](#12-módulos)
       - 1.2.1. [Módulo de Reprodução (PlaybackModule)](#121-módulo-de-reprodução-playbackmodule)
       - 1.2.2. [Módulo de Equalização (EqualizationModule)](#122-módulo-de-equalização-equalizationmodule)
+        - 1.2.2.1. [Módulo de Equalização Com JNI](#1221-módulo-de-equalização-com-jni)
       - 1.2.3. [Módulo de Notificação (NotificationModule)](#123-módulo-de-notificação-notificationmodule)
     - 1.3. [Serviço](#13-serviço)
     - 1.4. [Permissões](#14-permissões)
@@ -298,6 +299,217 @@ override fun printBandsInfo() {
 // Band 2 → Freq: 910 Hz
 // Band 3 → Freq: 3600 Hz
 // Band 4 → Freq: 14000 Hz
+```
+
+##### 1.2.2.1. Módulo de Equalização Com JNI
+
+O primeiro passo para a implementação do JNI junto do projeto que estou desenvolvendo é configurar o projeto para ser capaz de compilar código-fonte em C++ .
+
+Arquivos criados e adicionados ao projeto:
+
+- `app/src/main/cpp/native-lib.cpp`: Este é o arquivo C++ onde é implementado o código nativo.
+
+```c++
+#include <jni.h>
+#include <string>
+#include <android/log.h>
+
+// Setting TAGs for Logcat
+#define TAG_NATIVE_AUDIO "NativeAudioProcessor"
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, TAG_NATIVE_AUDIO, __VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,  TAG_NATIVE_AUDIO, __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG_NATIVE_AUDIO, __VA_ARGS__)
+
+
+static bool s_equalizerEnabled = false;
+static int s_volumeLevel = 50;
+static int s_bandLevel = 0;
+static int s_bandId = 0;
+static char s_bandFrequency[5][10] = {"60Hz", "230Hz", "910Hz", "3.6kHz", "14kHz"};
+
+// JNI function to enable/disable the equalizer (Emulated)
+extern "C" JNIEXPORT void JNICALL
+Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setEqualizerEnabledNative(
+        JNIEnv *env,
+        jobject thiz,
+        jboolean enabled) {
+
+    // Get the class of the object that called it (thiz)
+    jclass cls = env->GetObjectClass(thiz);
+
+    // Get the name of the Java class
+    jclass classClass = env->FindClass("java/lang/Class");
+    jmethodID getName = env->GetMethodID(classClass, "getName", "()Ljava/lang/String;");
+    jstring name = (jstring) env->CallObjectMethod(cls, getName);
+
+    const char *className = env->GetStringUTFChars(name, nullptr);
+    LOGD("Calling class: %s", className);
+    env->ReleaseStringUTFChars(name, className);
+
+    // Update equalizer status
+    s_equalizerEnabled = (enabled == JNI_TRUE);
+    LOGI("Native equalizer %s", s_equalizerEnabled ? "activated" : "deactivated");
+}
+
+// JNI function to set the gain for each frequency band
+extern "C" JNIEXPORT void JNICALL
+Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setBandLevelNative(
+        JNIEnv *env, jobject /* this */, jint Band, jint level) {
+    s_bandLevel = level;
+    s_bandId = Band;
+    if (s_bandId < 0 || s_bandId > 4) {
+        LOGE("Frequency band %d does not exist", s_bandId);
+    } else {
+        LOGD("Band ID:[%d]", s_bandId);
+        LOGI("Band %s gain %ddB", s_bandFrequency[s_bandId], s_bandLevel);
+    }
+
+}
+
+// JNI function to set the volume level
+extern "C" JNIEXPORT void JNICALL
+Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setVolumeFromNative(
+        JNIEnv *env, jobject /* this */, jint volume) {
+    s_volumeLevel = volume;
+    LOGI("Volume: %d", s_volumeLevel);
+}
+```
+
+- `app/CMakeLists.txt:` Este arquivo é usado pelo CMake para gerenciar a compilação do código C++.
+
+```c++
+# For more information about using CMake with Android Studio, read the
+# documentation: https://d.android.com/studio/projects/add-native-code.html.
+# For more examples on how to use CMake, see https://github.com/android/ndk-samples.
+
+# Sets the minimum CMake version required for this project.
+cmake_minimum_required(VERSION 3.22.1)
+
+# Declares the project name. The project name can be accessed via ${ PROJECT_NAME},
+# Since this is the top level CMakeLists.txt, the project name is also accessible
+# with ${CMAKE_PROJECT_NAME} (both CMake variables are in-sync within the top level
+# build script scope).
+project("vehicleequalizer")
+
+# Creates and names a library, sets it as either STATIC
+# or SHARED, and provides the relative paths to its source code.
+# You can define multiple libraries, and CMake builds them for you.
+# Gradle automatically packages shared libraries with your APK.
+#
+# In this top level CMakeLists.txt, ${CMAKE_PROJECT_NAME} is used to define
+# the target library name; in the sub-module's CMakeLists.txt, ${PROJECT_NAME}
+# is preferred for the same purpose.
+#
+# In order to load a library into your app from Java/Kotlin, you must call
+# System.loadLibrary() and pass the name of the library defined here;
+# for GameActivity/NativeActivity derived applications, the same library name must be
+# used in the AndroidManifest.xml file.
+add_library(${CMAKE_PROJECT_NAME} SHARED
+        # List C/C++ source files with relative paths to this CMakeLists.txt.
+        native-lib.cpp)
+
+# Specifies libraries CMake should link to your target library. You
+# can link libraries from various origins, such as libraries defined in this
+# build script, prebuilt third-party libraries, or Android system libraries.
+target_link_libraries(${CMAKE_PROJECT_NAME}
+        # List libraries link to the target library
+        android
+        log)
+```
+
+- `app/build.gradle (Module: app):` Adequação do arquivo para incluir o NDK e o CMake.
+
+```kotlin
+android {
+    ...
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
+}
+```
+
+Após realizar o sync e compilar o projeto, o arquivo de biblioteca é gerado:
+
+- `app/build/intermediates/merged_native_libs/debug/mergeDebugNativeLibs/out/lib/x86_64/libvehicleequalizer.so`
+
+O código nativo atuaria como uma ponte com o VHALL do Android, no meu caso, ela apenas loga os valores dos comandos para fins de demonstração.
+
+Log output
+
+```sh
+Band ID:[0]
+Band 60Hz gain 0dB
+Band ID:[1]
+Band 230Hz gain 0dB
+Band ID:[2]
+Band 910Hz gain 0dB
+Band ID:[3]
+Band 3.6kHz gain 0dB
+Band ID:[4]
+Band 14kHz gain 0dB
+Volume: 11
+```
+
+```sh
+Calling class: com.leandromendes.vehicleequalizer.modules.equalizer.EqualizerModule
+Native equalizer deactivated
+Calling class: com.leandromendes.vehicleequalizer.modules.equalizer.EqualizerModule
+Native equalizer activated
+```
+
+As chamadas e a inicialização feitas dentro do módulo de equalização.
+
+- `EqualizerModule.kt`
+
+```kotlin
+    override fun setVolume(level: Int) {
+...
+
+...
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
+            setVolumeFromNative(newVolume)
+...
+
+...
+    override fun setBandLevelSafe(band: Int, level: Int) {
+        val eq = equalizer ?: return
+        if (!enabled) return
+...
+
+...
+            eq.setBandLevel(band.toShort(), ((safeLevel * 100).toShort()))
+            setBandLevelNative(band, safeLevel.toInt())
+...
+
+...
+    override fun setEnable(enabled: Boolean) {
+        this.enabled = enabled
+        equalizer?.enabled = enabled
+        setEqualizerEnabledNative(enabled) // Native Call
+...
+...
+    /**
+     * A native method that is implemented by the 'vehicleequalizer' native library,
+     * which is packaged with this application.
+     */
+    external fun setEqualizerEnabledNative( enabled: Boolean)
+    external fun setBandLevelNative(band: Int, level: Int)
+    external fun setVolumeFromNative(volume: Int)
+
+
+    companion object {
+        // Used to load the 'vehicleequalizer' library on application startup.
+        init {
+            System.loadLibrary("vehicleequalizer")
+        }
+    }
+}
 ```
 
 #### 1.2.3 Módulo de Notificação (NotificationModule)
