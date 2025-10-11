@@ -68,6 +68,7 @@ Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setBan
 
 }
 
+
 extern "C" JNIEXPORT jint JNICALL
 Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_getBandLevelNative(
         JNIEnv *env, jobject /* this */, jint band) {

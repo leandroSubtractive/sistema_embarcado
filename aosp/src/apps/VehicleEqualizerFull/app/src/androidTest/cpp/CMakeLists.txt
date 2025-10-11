@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(vehicleequalizer_native_lib_tests LANGUAGES CXX)
 
-# Diretório do código nativo principal
-set(NATIVE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../main/cpp)
-
-# Inclui o GTest (já presente no Android NDK)
+# ----------------------
+# Inclui o GTest (usando FetchContent)
+# ----------------------
 include(FetchContent)
 FetchContent_Declare(
         googletest
@@ -12,20 +11,29 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# Adiciona o executável de teste
-add_executable(vehicleequalizer_native_lib_tests
-        native_integration_test.cpp
-        ${NATIVE_SRC_DIR}/native-lib.cpp
+# ----------------------
+# Arquivos fonte do teste
+# ----------------------
+set(TEST_SRC
+        EqualizerNativeTest.cpp
 )
 
-# Inclui diretórios
+# ----------------------
+# Adiciona executável do teste
+# ----------------------
+add_executable(vehicleequalizer_native_lib_tests ${TEST_SRC})
+
+# ----------------------
+# Diretórios de include
+# ----------------------
 target_include_directories(vehicleequalizer_native_lib_tests PRIVATE
-        ${NATIVE_SRC_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}   # Para encontrar FakeJNIEnv.h
         ${gtest_SOURCE_DIR}/include
 )
 
-# Vincula bibliotecas necessárias
+# ----------------------
+# Bibliotecas necessárias
+# ----------------------
 target_link_libraries(vehicleequalizer_native_lib_tests
         gtest
         gtest_main
@@ -33,7 +41,9 @@ target_link_libraries(vehicleequalizer_native_lib_tests
         android
 )
 
-# Define compilação C++17
+# ----------------------
+# Define C++17
+# ----------------------
 set_target_properties(vehicleequalizer_native_lib_tests PROPERTIES
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED YES
