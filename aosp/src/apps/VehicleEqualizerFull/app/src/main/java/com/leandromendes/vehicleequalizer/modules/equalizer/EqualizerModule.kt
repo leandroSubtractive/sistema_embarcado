@@ -18,6 +18,7 @@ class EqualizerModule(
 
     private var equalizer: Equalizer? = try {
         if (audioSessionId > 0) {
+            initialization(audioSessionId) // Native Call
             Equalizer(0, audioSessionId).apply { enabled = true }
         } else {
             Log.e(logTAG, "Invalid audioSessionId ($audioSessionId)")
@@ -49,7 +50,8 @@ class EqualizerModule(
             val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
             val newVolume = ((level.toFloat() / 100f) * maxVolume).toInt()
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0)
-            setVolumeFromNative(newVolume)
+            setVolumeFromNative(newVolume) // Native Call
+
             Log.d(logTAG, "Volume adjusted to $level (stream=$newVolume/$maxVolume)")
         } catch (e: Exception) {
             Log.e(logTAG, "Error adjusting volume: ${e.message}")
@@ -69,17 +71,31 @@ class EqualizerModule(
             val safeLevel = level.coerceIn(min.toInt(), max.toInt()).toShort()
 
             eq.setBandLevel(band.toShort(), ((safeLevel * 100).toShort()))
-            setBandLevelNative(band, safeLevel.toInt())
+            setBandLevelNative(band, safeLevel.toInt()) // Native Call
+
             Log.d(logTAG, "Band $band Adjusted for ${(safeLevel * 100)} (range: $min .. $max)")
         } catch (e: Exception) {
             Log.e(logTAG, "Error when adjusting band $band: ${e.message}")
         }
     }
 
+    override fun getBandLevel(band: Int): Short {
+        val eq = equalizer ?: return 0
+        if (!enabled) return 0
+        try {
+            (getBandLevelNative(band) / 100)
+            return (eq.getBandLevel(band.toShort()) / 100).toShort()
+        } catch (e: Exception) {
+            Log.e(logTAG, "Error when get band level $band: ${e.message}")
+        }
+        return 0
+    }
+
     override fun setEnable(enabled: Boolean) {
         this.enabled = enabled
         equalizer?.enabled = enabled
-        setEqualizerEnabledNative(enabled)
+        setEqualizerEnabledNative(enabled) // Native Call
+
         Log.d(logTAG, "Equalizer ${if (enabled) "Enabled" else "Disabled"}")
     }
 
@@ -119,8 +135,10 @@ class EqualizerModule(
      * A native method that is implemented by the 'vehicleequalizer' native library,
      * which is packaged with this application.
      */
-    external fun setEqualizerEnabledNative( enabled: Boolean)
+    external fun initialization(audioSessionId: Int)
+    external fun setEqualizerEnabledNative(enabled: Boolean)
     external fun setBandLevelNative(band: Int, level: Int)
+    external fun getBandLevelNative(band: Int): Int
     external fun setVolumeFromNative(volume: Int)
 
 

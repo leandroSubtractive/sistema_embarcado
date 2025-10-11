@@ -1,6 +1,6 @@
 #include <jni.h>
-#include <string>
 #include <android/log.h>
+#include <string>
 
 // Setting TAGs for Logcat
 #define TAG_NATIVE_AUDIO "NativeAudioProcessor"
@@ -8,19 +8,23 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,  TAG_NATIVE_AUDIO, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, TAG_NATIVE_AUDIO, __VA_ARGS__)
 
+#define NUM_BANDS 5
+
+typedef struct {
+    int audioSessionId;
+    int dB;
+    char frequency[10];
+} band;
 
 static bool s_equalizerEnabled = false;
 static int s_volumeLevel = 50;
-static int s_bandLevel = 0;
 static int s_bandId = 0;
-static char s_bandFrequency[5][10] = {"60Hz", "230Hz", "910Hz", "3.6kHz", "14kHz"};
+static band s_bandFrequency[NUM_BANDS];
+static char bandNames[NUM_BANDS][10] = {"60Hz", "230Hz", "910Hz", "3.6kHz", "14kHz"};
 
-// JNI function to enable/disable the equalizer (Emulated)
 extern "C" JNIEXPORT void JNICALL
-Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setEqualizerEnabledNative(
-        JNIEnv *env,
-        jobject thiz,
-        jboolean enabled) {
+Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_initialization(
+        JNIEnv *env, jobject thiz, jint audioSessionId) {
 
     // Get the class of the object that called it (thiz)
     jclass cls = env->GetObjectClass(thiz);
@@ -28,30 +32,18 @@ Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setEqu
     // Get the name of the Java class
     jclass classClass = env->FindClass("java/lang/Class");
     jmethodID getName = env->GetMethodID(classClass, "getName", "()Ljava/lang/String;");
-    jstring name = (jstring) env->CallObjectMethod(cls, getName);
+    auto name = (jstring) env->CallObjectMethod(cls, getName);
 
     const char *className = env->GetStringUTFChars(name, nullptr);
     LOGD("Calling class: %s", className);
     env->ReleaseStringUTFChars(name, className);
 
-    // Update equalizer status
-    s_equalizerEnabled = (enabled == JNI_TRUE);
-    LOGI("Native equalizer %s", s_equalizerEnabled ? "activated" : "deactivated");
-}
-
-// JNI function to set the gain for each frequency band
-extern "C" JNIEXPORT void JNICALL
-Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setBandLevelNative(
-        JNIEnv *env, jobject /* this */, jint Band, jint level) {
-    s_bandLevel = level;
-    s_bandId = Band;
-    if (s_bandId < 0 || s_bandId > 4) {
-        LOGE("Frequency band %d does not exist", s_bandId);
-    } else {
-        LOGD("Band ID:[%d]", s_bandId);
-        LOGI("Band %s gain %ddB", s_bandFrequency[s_bandId], s_bandLevel);
+    for (int i = 0; i < NUM_BANDS; i++) {
+        s_bandFrequency[i].dB = 0;
+        strncpy(s_bandFrequency[i].frequency, bandNames[i], sizeof(bandNames[i]));
+        s_bandFrequency[i].audioSessionId = audioSessionId;
     }
-
+    LOGI("audioSessionId: %d", audioSessionId);
 }
 
 // JNI function to set the volume level
@@ -60,4 +52,52 @@ Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setVol
         JNIEnv *env, jobject /* this */, jint volume) {
     s_volumeLevel = volume;
     LOGI("Volume: %d", s_volumeLevel);
+}
+
+// JNI function to set the gain for each frequency band
+extern "C" JNIEXPORT void JNICALL
+Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setBandLevelNative(
+        JNIEnv *env, jobject /* this */, jint band, jint level) {
+    if (band < 0 || band > 4) {
+        LOGE("Frequency band %d does not exist", band);
+    } else {
+        LOGD("Band ID:[%d]", band);
+
+        s_bandFrequency[band].dB = level;
+        LOGI("Band %s gain %ddB", s_bandFrequency[band].frequency, s_bandFrequency[band].dB);
+    }
+
+}
+
+extern "C" JNIEXPORT jint JNICALL
+Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_getBandLevelNative(
+        JNIEnv *env, jobject /* this */, jint band) {
+
+    if (band < 0 || band > 4) {
+        LOGE("Frequency band %d does not exist", band);
+    } else {
+        LOGD("Band ID:[%d]", band);
+        LOGI("Band %s gain %ddB", s_bandFrequency[s_bandId].frequency, s_bandFrequency[s_bandId].dB);
+        return s_bandFrequency[s_bandId].dB;
+    }
+    return 0;
+}
+
+// JNI function to enable/disable the equalizer (Emulated)
+extern "C" JNIEXPORT void JNICALL
+Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setEqualizerEnabledNative(
+        JNIEnv *env, jobject /* this */, jboolean enabled) {
+
+    // Update equalizer status
+    s_equalizerEnabled = (enabled == JNI_TRUE);
+    LOGI("Native equalizer %s", s_equalizerEnabled ? "activated" : "deactivated");
+}
+
+// Função auxiliar para consulta de estado — usada pelos testes de integração
+extern "C" JNIEXPORT jstring JNICALL
+Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_getNativeStatus(
+        JNIEnv *env, jobject thiz) {
+    std::string status = "enabled=" + std::string(s_equalizerEnabled ? "true" : "false") +
+                         ", volume=" + std::to_string(s_volumeLevel);
+    return env->NewStringUTF(status.c_str());
 }

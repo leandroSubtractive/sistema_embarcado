@@ -35,3 +35,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
         android
         log)
+
+# --- Adiciona o diretório de testes ---
+enable_testing()
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../test/cpp ${CMAKE_CURRENT_BINARY_DIR}/test)

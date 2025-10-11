@@ -30,3 +30,6 @@ Link do Vídeo: [Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QF
 ---
 
 ## Introdução
+adb push ./vehicleequalizer_tests /data/local/tmp/
+adb shell /data/local/tmp/vehicleequalizer_tests
+adb shell "LD_LIBRARY_PATH=/data/local/tmp /data/local/tmp/vehicleequalizer_tests"

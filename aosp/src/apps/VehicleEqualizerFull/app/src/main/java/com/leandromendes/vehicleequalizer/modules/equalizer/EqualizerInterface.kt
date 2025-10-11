@@ -27,6 +27,14 @@ interface EqualizerInterface {
     fun setBandLevelSafe(band: Int, level: Int)
 
     /**
+     * Get band level
+     *
+     * @param band Band ID
+     * @return Level in dB
+     */
+    fun getBandLevel(band: Int): Short
+
+    /**
      * Set enable
      *
      * @param enabled Equalizer Status

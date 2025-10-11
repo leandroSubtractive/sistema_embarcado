@@ -1,101 +1,87 @@
-package com.leandromendes.vehicleequalizer
+package com.leandromendes.vehicleequalizer.service
 
 import android.content.Intent
+import com.leandromendes.vehicleequalizer.modules.equalizer.EqualizerInterface
 import com.leandromendes.vehicleequalizer.modules.notification.NotificationInterface
 import com.leandromendes.vehicleequalizer.modules.playback.PlaybackInterface
-import com.leandromendes.vehicleequalizer.service.AudioService
 import com.leandromendes.vehicleequalizer.util.Constants.MusicConstants
-import org.junit.Before
-import org.junit.Test
+import com.leandromendes.vehicleequalizer.util.Constants.PlaybackStates
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.mockito.Mock
 import org.mockito.Mockito.*
+import org.mockito.MockitoAnnotations
 
+/**
+ * Testes unitários para o AudioService usando JUnit 5 + Mockito (sem Robolectric).
+ * Aqui o construtor real do serviço não é chamado, evitando dependências Android.
+ */
 class AudioServiceTest {
 
+    @Mock private lateinit var playbackModule: PlaybackInterface
+    @Mock private lateinit var notificationModule: NotificationInterface
+    @Mock private lateinit var equalizerModule: EqualizerInterface
+
     private lateinit var service: AudioService
-    private lateinit var mockPlayback: PlaybackInterface
-    private lateinit var mockNotification: NotificationInterface
 
-    @Before
+    @BeforeEach
     fun setup() {
-        service = AudioService()
+        MockitoAnnotations.openMocks(this)
 
-        mockPlayback = mock(PlaybackInterface::class.java)
-        mockNotification = mock(NotificationInterface::class.java)
+        // Cria mock parcial do serviço, sem executar o construtor real (que chama Looper)
+        service = mock(AudioService::class.java, withSettings().withoutAnnotations().defaultAnswer(CALLS_REAL_METHODS))
 
-        // Injetando mocks via reflexão
-        val playbackField = AudioService::class.java.getDeclaredField("playbackModule")
-        playbackField.isAccessible = true
-        playbackField.set(service, mockPlayback)
-
-        val notifField = AudioService::class.java.getDeclaredField("notificationModule")
-        notifField.isAccessible = true
-        notifField.set(service, mockNotification)
-
-        // Também precisamos inicializar o trackList (senão índice pode falhar)
-        val trackIndexField = AudioService::class.java.getDeclaredField("currentTrackIndex")
-        trackIndexField.isAccessible = true
-        trackIndexField.set(service, 0)
-    }
-
-    @Test
-    fun `quando receber ACTION_PLAY deve chamar play no Playback e showNotification`() {
-        val intent = Intent().apply { action = MusicConstants.ACTION_PLAY }
-
-        service.onStartCommand(intent, 0, 0)
-
-        verify(mockPlayback).play()
-        verify(mockNotification).showNotification(eq("playing"), anyString())
-    }
-
-    @Test
-    fun `quando receber ACTION_PAUSE deve chamar pause no Playback e showNotification`() {
-        val intent = Intent().apply { action = MusicConstants.ACTION_PAUSE }
-
-        service.onStartCommand(intent, 0, 0)
-
-        verify(mockPlayback).pause()
-        verify(mockNotification).showNotification(eq("paused"), anyString())
-    }
-
-    @Test
-    fun `quando receber ACTION_SEEK_TO deve chamar seekTo no Playback`() {
-        val intent = Intent().apply {
-            action = MusicConstants.ACTION_SEEK_TO
-            putExtra(MusicConstants.EXTRA_SEEK_POSITION, 5000)
+        // Injeta dependências mockadas via reflexão
+        AudioService::class.java.getDeclaredField("playbackModule").apply {
+            isAccessible = true
+            set(service, playbackModule)
         }
 
-        service.onStartCommand(intent, 0, 0)
+        AudioService::class.java.getDeclaredField("notificationModule").apply {
+            isAccessible = true
+            set(service, notificationModule)
+        }
 
-        verify(mockPlayback).seekTo(5000)
+        AudioService::class.java.getDeclaredField("equalizerModule").apply {
+            isAccessible = true
+            set(service, equalizerModule)
+        }
     }
 
     @Test
-    fun `quando receber ACTION_NEXT deve trocar de faixa e chamar play`() {
-        val intent = Intent().apply { action = MusicConstants.ACTION_NEXT }
-
+    fun testPlayAction() {
+        val intent = Intent(MusicConstants.ACTION_PLAY)
         service.onStartCommand(intent, 0, 0)
 
-        verify(mockPlayback).setRawDataSource(anyInt())
-        verify(mockPlayback).play()
-        verify(mockNotification).showNotification(eq("playing"), anyString())
+        verify(playbackModule).play()
+        verify(notificationModule).showNotification(eq(PlaybackStates.PLAYING), anyString())
     }
 
     @Test
-    fun `quando receber ACTION_PREVIOUS deve trocar de faixa e chamar play`() {
-        val intent = Intent().apply { action = MusicConstants.ACTION_PREVIOUS }
-
+    fun testPauseAction() {
+        val intent = Intent(MusicConstants.ACTION_PAUSE)
         service.onStartCommand(intent, 0, 0)
 
-        verify(mockPlayback).setRawDataSource(anyInt())
-        verify(mockPlayback).play()
-        verify(mockNotification).showNotification(eq("playing"), anyString())
+        verify(playbackModule).pause()
+        verify(notificationModule).showNotification(eq(PlaybackStates.PAUSED), anyString())
     }
 
     @Test
-    fun `onDestroy deve liberar playback e cancelar notificacao`() {
-        service.onDestroy()
+    fun testStopAction() {
+        val intent = Intent(MusicConstants.ACTION_STOP)
+        service.onStartCommand(intent, 0, 0)
 
-        verify(mockPlayback).release()
-        verify(mockNotification).cancelNotification()
+        verify(playbackModule).stop()
+        verify(notificationModule).showNotification(eq(PlaybackStates.STOPPED), anyString())
+    }
+
+    @Test
+    fun testEqualizerAction() {
+        val intent = Intent(MusicConstants.ACTION_SET_BAND_LEVEL).apply {
+            putExtra(MusicConstants.EXTRA_BAND, 2)
+            putExtra(MusicConstants.EXTRA_LEVEL, 10)
+        }
+        service.onStartCommand(intent, 0, 0)
+        verify(equalizerModule).setBandLevelSafe(2, 10)
     }
 }

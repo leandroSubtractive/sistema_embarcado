@@ -17,6 +17,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                // Ative testes
+                arguments += listOf("-DANDROID_STL=c++_shared")
+            }
+        }
     }
 
     buildTypes {
@@ -50,6 +57,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.junit)
     testImplementation(libs.junit.jupiter)
@@ -76,4 +84,13 @@ dependencies {
 
     implementation(libs.verticalseekbar)
 
+    testImplementation(libs.mockito.mockito.core)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.mockito.android)
+
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
