@@ -83,7 +83,7 @@ class EqualizerModule(
         val eq = equalizer ?: return 0
         if (!enabled) return 0
         try {
-            (getBandLevelNative(band) / 100)
+            getBandLevelNative(band)
             return (eq.getBandLevel(band.toShort()) / 100).toShort()
         } catch (e: Exception) {
             Log.e(logTAG, "Error when get band level $band: ${e.message}")
@@ -140,6 +140,7 @@ class EqualizerModule(
     external fun setBandLevelNative(band: Int, level: Int)
     external fun getBandLevelNative(band: Int): Int
     external fun setVolumeFromNative(volume: Int)
+    external fun getNativeStatus(): String
 
 
     companion object {

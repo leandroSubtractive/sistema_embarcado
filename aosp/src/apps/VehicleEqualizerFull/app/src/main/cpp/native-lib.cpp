@@ -18,7 +18,6 @@ typedef struct {
 
 static bool s_equalizerEnabled = false;
 static int s_volumeLevel = 50;
-static int s_bandId = 0;
 static band s_bandFrequency[NUM_BANDS];
 static char bandNames[NUM_BANDS][10] = {"60Hz", "230Hz", "910Hz", "3.6kHz", "14kHz"};
 
@@ -77,8 +76,8 @@ Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_getBan
         LOGE("Frequency band %d does not exist", band);
     } else {
         LOGD("Band ID:[%d]", band);
-        LOGI("Band %s gain %ddB", s_bandFrequency[s_bandId].frequency, s_bandFrequency[s_bandId].dB);
-        return s_bandFrequency[s_bandId].dB;
+        LOGI("Band %s gain %ddB", s_bandFrequency[band].frequency, s_bandFrequency[band].dB);
+        return s_bandFrequency[band].dB;
     }
     return 0;
 }

@@ -1,40 +1,40 @@
 cmake_minimum_required(VERSION 3.22.1)
-project(VehicleEqualizerTests LANGUAGES CXX)
+project(vehicleequalizer_native_lib_tests LANGUAGES CXX)
 
-# Habilita C++17
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
+# Diretório do código nativo principal
+set(NATIVE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../main/cpp)
 
-# Adiciona o GoogleTest com FetchContent (método moderno e confiável)
+# Inclui o GTest (já presente no Android NDK)
 include(FetchContent)
-
 FetchContent_Declare(
         googletest
-        URL https://github.com/google/googletest/archive/refs/tags/release-1.12.1.zip
+        URL https://github.com/google/googletest/archive/release-1.12.1.zip
 )
-
-# Evita warnings no Android
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# Inclui o diretório com os arquivos fontes nativos
-include_directories(${CMAKE_SOURCE_DIR})
-
-# Adiciona o executável de testes
-add_executable(vehicleequalizer_tests
-        test_native_lib.cpp
+# Adiciona o executável de teste
+add_executable(vehicleequalizer_native_lib_tests
+        native_integration_test.cpp
+        ${NATIVE_SRC_DIR}/native-lib.cpp
 )
 
-# Linka com o GTest e a lib nativa principal
-target_link_libraries(vehicleequalizer_tests
-        GTest::gtest
-        GTest::gtest_main
+# Inclui diretórios
+target_include_directories(vehicleequalizer_native_lib_tests PRIVATE
+        ${NATIVE_SRC_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${gtest_SOURCE_DIR}/include
+)
+
+# Vincula bibliotecas necessárias
+target_link_libraries(vehicleequalizer_native_lib_tests
+        gtest
+        gtest_main
         log
+        android
 )
 
-# Registra o teste para o CTest
-enable_testing()
-add_test(NAME vehicleequalizer_tests COMMAND vehicleequalizer_tests)
-
-
+# Define compilação C++17
+set_target_properties(vehicleequalizer_native_lib_tests PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED YES
+)

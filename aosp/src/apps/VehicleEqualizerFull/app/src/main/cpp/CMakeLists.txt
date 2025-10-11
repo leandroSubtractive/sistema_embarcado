@@ -38,4 +38,19 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
 # --- Adiciona o diretório de testes ---
 enable_testing()
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../test/cpp ${CMAKE_CURRENT_BINARY_DIR}/test)
+#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../test/cpp ${CMAKE_CURRENT_BINARY_DIR}/test)
+
+# -------------------------------------------------------
+# Adiciona os testes de integração nativos (AndroidTest)
+# -------------------------------------------------------
+#if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../../androidTest/cpp/native_integration_test.cpp")
+#    message(STATUS "Including native integration tests")
+#    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../androidTest/cpp)
+#endif()
+
+set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../androidTest/cpp")
+if(EXISTS "${TEST_DIR}/native_integration_test.cpp")
+    message(STATUS "Including native integration tests from ${TEST_DIR}")
+    add_subdirectory(${TEST_DIR} ${CMAKE_CURRENT_BINARY_DIR}/androidTest)
+endif()
+
