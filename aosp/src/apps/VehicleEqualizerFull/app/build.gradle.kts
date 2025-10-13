@@ -57,7 +57,7 @@ android {
     }
 }
 
-dependencies {
+val junitBOM = "5.10.0" // Define BOM version (use the same version)
 
     // App Modules
     implementation(libs.androidx.core.ktx)
