@@ -8,7 +8,13 @@ import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.data.repository.UserRepository
 import kotlinx.coroutines.launch
 
-// MainViewModel now receives the Repository in the constructor
+/**
+ * Main view model
+ * now receives the Repository in the constructor
+ *
+ * @property userRepository
+ * @constructor Create empty Main view model
+ */
 class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     // LiveData that MainActivity will OBSERVE

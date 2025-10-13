@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
+import android.os.Binder
 import android.os.Looper
 import android.util.Log
 import com.leandromendes.vehicleequalizer.R
@@ -29,6 +30,8 @@ class AudioService : Service() {
     private lateinit var updateRunnable : Runnable
     private var currentTrackIndex = 0
     private lateinit var trackList : List<Track>
+    // Helper class for the non-binding binder
+    private val binder = LocalBinder()
 
     override fun onCreate() {
         super.onCreate()
@@ -284,10 +287,19 @@ class AudioService : Service() {
     }
 
     /**
+     * Helper class for binding the service.
+     * Note: 'inner' allows it to access outer class members (like 'this@AudioService')
+     */
+    inner class LocalBinder : Binder() {
+        // Method to return the service instance itself
+        fun getService(): AudioService = this@AudioService
+    }
+
+    /**
      * On bind
      *
      */
-    override fun onBind(intent: Intent?): IBinder? = null
+    override fun onBind(intent: Intent?): IBinder? = binder
 
     /**
      * Track
@@ -297,4 +309,15 @@ class AudioService : Service() {
      * @constructor Create empty Track
      */
     data class Track(val resId: Int, val title: String)
+
+    // Add this public function inside the AudioService class
+    fun getCurrentTrackTitle(): String {
+        // Note: You might need to make 'currentTrackIndex' internal/public
+        // or pass it to this function if you want to verify specific tracks.
+        if (::trackList.isInitialized) {
+            return trackList[currentTrackIndex].title
+        }
+        return "Unknown"
+    }
+
 }

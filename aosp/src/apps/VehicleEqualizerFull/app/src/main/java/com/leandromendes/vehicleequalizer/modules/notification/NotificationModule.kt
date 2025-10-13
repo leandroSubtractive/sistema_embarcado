@@ -12,6 +12,7 @@ import com.leandromendes.vehicleequalizer.R
 import com.leandromendes.vehicleequalizer.service.AudioService
 import com.leandromendes.vehicleequalizer.util.Constants.PlaybackStates
 import com.leandromendes.vehicleequalizer.util.Constants.MusicConstants
+import com.leandromendes.vehicleequalizer.ui.MainActivity
 
 class NotificationModule(private val context: Context) : NotificationInterface {
 
@@ -68,7 +69,7 @@ class NotificationModule(private val context: Context) : NotificationInterface {
         val contentIntent = PendingIntent.getActivity(
             context,
             0,
-            Intent(context, Class.forName("com.leandromendes.vehicleequalizer.ui.MainActivity")),
+            Intent(context, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 

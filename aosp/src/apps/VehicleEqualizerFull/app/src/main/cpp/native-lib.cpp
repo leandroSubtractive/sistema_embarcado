@@ -93,7 +93,7 @@ Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_setEqu
     LOGI("Native equalizer %s", s_equalizerEnabled ? "activated" : "deactivated");
 }
 
-// Função auxiliar para consulta de estado — usada pelos testes de integração
+// Auxiliary function for status query — used by integration tests
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_leandromendes_vehicleequalizer_modules_equalizer_EqualizerModule_getNativeStatus(
         JNIEnv *env, jobject thiz) {

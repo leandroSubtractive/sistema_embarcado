@@ -132,7 +132,7 @@ class EqualizerModule(
         }
     }
     /**
-     * A native method that is implemented by the 'vehicleequalizer' native library,
+     * A native method that is implemented by the 'vehicle equalizer' native library,
      * which is packaged with this application.
      */
     external fun initialization(audioSessionId: Int)

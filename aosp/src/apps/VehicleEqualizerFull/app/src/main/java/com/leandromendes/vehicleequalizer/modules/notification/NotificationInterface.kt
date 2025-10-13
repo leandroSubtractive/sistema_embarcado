@@ -36,7 +36,6 @@ interface NotificationInterface {
 
     /**
      * Cancel notification
-     *
      */
     fun cancelNotification()
 }

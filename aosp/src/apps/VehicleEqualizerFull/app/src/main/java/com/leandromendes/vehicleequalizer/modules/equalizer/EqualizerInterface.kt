@@ -2,6 +2,11 @@ package com.leandromendes.vehicleequalizer.modules.equalizer
 
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 
+/**
+ * Equalizer interface
+ *
+ * @constructor Create empty Equalizer interface
+ */
 interface EqualizerInterface {
 
     /**

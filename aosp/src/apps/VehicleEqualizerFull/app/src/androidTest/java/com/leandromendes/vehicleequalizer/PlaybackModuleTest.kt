@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.leandromendes.vehicleequalizer.modules.playback.PlaybackModule
 import org.junit.Assert
 import org.junit.Before
+import org.junit.After
 import org.junit.Test
 
 /**
@@ -23,6 +24,11 @@ class PlaybackModuleTest {
         playbackModule = PlaybackModule(context)
     }
 
+    @After
+    fun tearDown() {
+        playbackModule.stop()
+    }
+
     /**
      * Testa a execução de áudio.
      */
@@ -31,6 +37,7 @@ class PlaybackModuleTest {
         playbackModule.setRawDataSource(R.raw.toto_africa)
         playbackModule.play()
         Assert.assertTrue("O áudio deveria estar tocando após play()", playbackModule.isPlaying())
+        playbackModule.stop()
     }
 
     /**
