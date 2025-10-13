@@ -2,6 +2,11 @@ package com.leandromendes.vehicleequalizer.modules.equalizer
 
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 
+/**
+ * Equalizer interface
+ *
+ * @constructor Create empty Equalizer interface
+ */
 interface EqualizerInterface {
 
     /**
@@ -25,6 +30,14 @@ interface EqualizerInterface {
      * @param level Gain in dB [-15 - 15]
      */
     fun setBandLevelSafe(band: Int, level: Int)
+
+    /**
+     * Get band level
+     *
+     * @param band Band ID
+     * @return Level in dB
+     */
+    fun getBandLevel(band: Int): Short
 
     /**
      * Set enable

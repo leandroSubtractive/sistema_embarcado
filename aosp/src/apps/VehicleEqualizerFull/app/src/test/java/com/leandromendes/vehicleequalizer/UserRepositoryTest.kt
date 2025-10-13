@@ -1,11 +1,11 @@
 package com.leandromendes.vehicleequalizer
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import com.leandromendes.vehicleequalizer.data.dao.ProfileDao
+import androidx.arch.core.executor.ArchTaskExecutor
+import androidx.arch.core.executor.TaskExecutor
 import com.leandromendes.vehicleequalizer.data.model.EqualizerProfile
 import com.leandromendes.vehicleequalizer.data.repository.UserRepository
+import com.leandromendes.vehicleequalizer.stubs.FakeProfileDao
+import com.leandromendes.vehicleequalizer.stubs.getOrAwaitValue
 import com.leandromendes.vehicleequalizer.util.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -13,113 +13,13 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-
-// --- LiveData Utility for Tests ---
-
-/**
- * LiveData extension that blocks the test execution until a value is emitted.
- */
-fun <T> LiveData<T>.getOrAwaitValue(
-    time: Long = 2,
-    timeUnit: TimeUnit = TimeUnit.SECONDS,
-    afterObserve: () -> Unit = {}
-): T {
-    var data: T? = null
-    val latch = CountDownLatch(1)
-    val observer = object : Observer<T> {
-        override fun onChanged(value: T) {
-            data = value
-            latch.countDown()
-            this@getOrAwaitValue.removeObserver(this)
-        }
-    }
-    this.observeForever(observer)
-
-    try {
-        afterObserve.invoke()
-
-        // Don't wait indefinitely if the LiveData is not set.
-        if (!latch.await(time, timeUnit)) {
-            throw TimeoutException("LiveData value was never set.")
-        }
-
-    } finally {
-        this.removeObserver(observer)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    return data as T
-}
-
-// --- Fake DAO (Simulates Room) ---
-
-/**
- * Fake/Mock implementation of ProfileDao for use in unit tests.
- */
-class FakeProfileDao : ProfileDao {
-
-    // Simulates the database table
-    private val data = mutableListOf<EqualizerProfile>()
-    // The MutableLiveData that notifies observers. Initializes with the default profile.
-    private val profilesLiveData = MutableLiveData<List<EqualizerProfile>>()
-    private var nextId = 1
-
-    init {
-        // Initializes with the default profile
-        val defaultProfile = EqualizerProfile(id = nextId++)
-        data.add(defaultProfile)
-        profilesLiveData.postValue(data.toList())
-    }
-
-    override fun getAllProfiles(): LiveData<List<EqualizerProfile>> {
-        return profilesLiveData
-    }
-
-    override suspend fun insert(profile: EqualizerProfile): Long {
-        // Copies the profile to ensure insertion uses a new ID
-        val newProfile = profile.copy(id = nextId++)
-        data.add(newProfile)
-        profilesLiveData.postValue(data.toList())
-        return newProfile.id.toLong()
-    }
-
-    override suspend fun update(profile: EqualizerProfile) {
-        val index = data.indexOfFirst { it.id == profile.id }
-        if (index != -1) {
-            data[index] = profile
-            profilesLiveData.postValue(data.toList())
-        }
-    }
-
-    override suspend fun delete(profile: EqualizerProfile) {
-        if (data.removeIf { it.id == profile.id }) {
-            profilesLiveData.postValue(data.toList())
-        }
-    }
-
-    // Implementation required if it exists in ProfileDao, even if not used in tests
-    override suspend fun deleteById(profileId: Int) {
-        if (data.removeIf { it.id == profileId }) {
-            profilesLiveData.postValue(data.toList())
-        }
-    }
-}
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserRepositoryTest {
-
-    // Rule for LiveData to function correctly in the test
-    @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var userRepository: UserRepository
     private lateinit var fakeProfileDao: FakeProfileDao
@@ -128,28 +28,36 @@ class UserRepositoryTest {
     private val defaultProfileName = Constants.Define.PROFILE_DEFAULT_NAME
     private val newProfile1 = EqualizerProfile(
         name = "Profile_1",
-        bassEqValue = Constants.Define.BASS_VALUE_DEFAULT,
-        midEqValue = Constants.Define.MIDDLE_VALUE_DEFAULT,
-        hiEqValue = Constants.Define.TREBLE_VALUE_DEFAULT,
-        balanceEqValue = Constants.Define.PAN_VALUE_DEFAULT,
-        masterVolValue = Constants.Define.VOLUME_VALUE_DEFAULT,
+        band0 = 0,
+        band1 = 0,
+        band2 = 0,
+        band3 = 0,
+        band4 = 0,
+        masterVolValue = 0,
         isSelected = false
     )
 
-    @Before
+    @BeforeEach
     fun setUp() {
         // Sets up the Main dispatcher for coroutines
         Dispatchers.setMain(testDispatcher)
 
-        // Initializes the Fake DAO and the Repository with the DAO (now works)
+        // Force LiveData to run inline, without relying on Looper
+        ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
+            override fun executeOnDiskIO(runnable: Runnable) = runnable.run()
+            override fun postToMainThread(runnable: Runnable) = runnable.run()
+            override fun isMainThread(): Boolean = true
+        })
+
         fakeProfileDao = FakeProfileDao()
         userRepository = UserRepository(fakeProfileDao)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         // Resets the Main dispatcher
         Dispatchers.resetMain()
+        ArchTaskExecutor.getInstance().setDelegate(null)
     }
 
     // --- Initialization Tests ---
@@ -201,18 +109,15 @@ class UserRepositoryTest {
         val profileToUpdate = profiles.first()
         val originalId = profileToUpdate.id
 
-        val newName = "Updated Profile"
         // Creates a new object with the same ID as the original
-        val updatedProfile = profileToUpdate.copy(name = newName)
-
+        val updatedProfile = profileToUpdate.copy(name = "Updated Profile")
         // WHEN: Updates the profile
         userRepository.updateProfile(updatedProfile)
 
         // THEN: The profile name should be the new name and the size should remain 1
         profiles = userRepository.allEqualizerProfiles.getOrAwaitValue()
         val updatedInList = profiles.first()
-
-        assertEquals(newName, updatedInList.name)
+        assertEquals("Updated Profile", updatedInList.name)
         assertEquals(originalId, updatedInList.id)
         assertEquals(1, profiles.size)
     }

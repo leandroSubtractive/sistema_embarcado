@@ -461,7 +461,7 @@ Essas foram as principais mudanças implementadas no código para atender à bi
 
 ## 4. Atualização dos Testes Unitários
 
-O arquivo de teste unitário foi atualizado para atender as novas implementações feitas na classe X.
+O arquivo de teste unitário foi atualizado para atender as novas implementações feitas na classe UserRepository.
 
 ```kotlin
 
