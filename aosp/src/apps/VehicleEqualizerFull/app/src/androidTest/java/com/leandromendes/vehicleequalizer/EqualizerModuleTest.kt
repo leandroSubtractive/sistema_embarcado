@@ -9,8 +9,9 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Testes instrumentados do módulo EqualizerModule.
- * Verifica inicialização e controle das bandas de frequência.
+ * Instrumented tests of the EqualizerModule module
+ *
+ * Checks initialization and control of frequency bands
  */
 class EqualizerModuleTest {
 
@@ -21,14 +22,14 @@ class EqualizerModuleTest {
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
 
-        // Inicializa o MediaPlayer e obtém o audioSessionId real
+        // Initializes MediaPlayer and obtains the actual audioSessionId
         val playbackModule = PlaybackModule(context)
         playbackModule.setRawDataSource(R.raw.toto_africa)
         playbackModule.play()
 
         val sessionId = playbackModule.getAudioSessionId()
 
-        // Inicializa o equalizador com a sessão de áudio ativa
+        // Initializes the equalizer with the active audio session
         equalizerModule = EqualizerModule(context, sessionId)
     }
 
@@ -37,6 +38,6 @@ class EqualizerModuleTest {
         val band = 0
         val level = -15
         equalizerModule.setBandLevelSafe(band, level)
-        assertEquals("Nível da banda incorreto", level.toShort(), equalizerModule.getBandLevel(band))
+        assertEquals("Incorrect band level", level.toShort(), equalizerModule.getBandLevel(band))
     }
 }

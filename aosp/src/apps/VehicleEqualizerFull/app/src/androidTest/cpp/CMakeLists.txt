@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project(vehicleequalizer_native_lib_tests LANGUAGES CXX)
 
 # ----------------------
-# Inclui o GTest (usando FetchContent)
+# Includes GTest (using FetchContent)
 # ----------------------
 include(FetchContent)
 FetchContent_Declare(
@@ -12,27 +12,27 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # ----------------------
-# Arquivos fonte do teste
+# Test source files
 # ----------------------
 set(TEST_SRC
         EqualizerNativeTest.cpp
 )
 
 # ----------------------
-# Adiciona executável do teste
+# Add test executable
 # ----------------------
 add_executable(vehicleequalizer_native_lib_tests ${TEST_SRC})
 
 # ----------------------
-# Diretórios de include
+#  Include directories
 # ----------------------
 target_include_directories(vehicleequalizer_native_lib_tests PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}   # Para encontrar FakeJNIEnv.h
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${gtest_SOURCE_DIR}/include
 )
 
 # ----------------------
-# Bibliotecas necessárias
+# Required libraries
 # ----------------------
 target_link_libraries(vehicleequalizer_native_lib_tests
         gtest

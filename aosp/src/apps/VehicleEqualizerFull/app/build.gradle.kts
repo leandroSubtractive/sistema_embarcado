@@ -6,8 +6,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp")
-    //id("com.google.devtools.ksp") version "2.0.21-1.0.27" apply false
+    id("com.google.devtools.ksp") version "2.0.21-1.0.27"
 }
 
 android {
@@ -24,7 +23,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                // Garante que a STL será compartilhada
+                // Ensures that the STL will be shared
                 arguments += listOf("-DANDROID_STL=c++_shared")
             }
         }
@@ -58,12 +57,9 @@ android {
     }
 }
 
-val junitBOM = "5.10.0" // Define BOM version (use the same version)
-
 dependencies {
-    // ----------------------------------------
-    // Módulos de Aplicação (App Modules)
-    // ----------------------------------------
+
+    // App Modules
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -84,50 +80,39 @@ dependencies {
     // Utility
     implementation(libs.verticalseekbar)
 
+
+    // Local Unit Tests (src/test) - JUnit 5
     // ----------------------------------------
-    // Testes Unitários Locais (src/test) - JUnit 5 + Mockito/MockK
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.junit.jupiter.params)
+    testImplementation(libs.junit.jupiter.engine)
+
+    // Architecture and Coroutines
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Mocking Tools
+    testImplementation(libs.mockito.core)
+
+
+    // Instrumented Testing (src/androidTest)
     // ----------------------------------------
-
-    // Simplifica a configuração do JUnit 5 usando apenas o BOM para gerenciar versões
-    testImplementation(platform("org.junit:junit-bom:$junitBOM"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
-    // O bundle jupiter-junit-jupiter é redundante se você usa os módulos acima. Removido.
-    // jupiter.junit.jupiter removido.
-
-    // Usamos 'testImplementation' para o engine, que o BOM deve resolver.
-    testImplementation("org.junit.jupiter:junit-jupiter-engine")
-
-    // Arquitetura e Coroutines
-    // Consolida múltiplas adições de core-testing para a última versão
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
-
-    // Ferramentas de Mocking: Foco no Mockito para AndroidX/JUnit 5.
-    // É recomendado remover io.mockk:mockk:1.14.5 para evitar conflito de libs.
-    testImplementation("org.mockito:mockito-core:5.11.0") // Versão estável mais recente (ajustada para ser mais recente que a sua anterior)
-
-    // ----------------------------------------
-    // Testes Instrumentados (src/androidTest) - AndroidX + Mockito-Kotlin
-    // ----------------------------------------
-
-    // AndroidX Test Core (para ServiceScenario e outras APIs)
-    // Core and Core-Ktx consolidados para a versão mais recente
-    androidTestImplementation("androidx.test:core:1.5.0")
-    androidTestImplementation("androidx.test:core-ktx:1.5.0")
-    androidTestImplementation("androidx.test:runner:1.5.2")
-    androidTestImplementation("androidx.test:rules:1.5.0") // Você tinha libs.androidx.rules (implementation), mas aqui é o lugar certo para o teste
+    androidTestImplementation(libs.androidx.core)
+    androidTestImplementation(libs.core.ktx)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.rules)
 
     // JUnit e Espresso
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
-    // Mockito para testes instrumentados
-    // O mockito-android e mockito-kotlin são necessários para instrumented tests
-    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
-    androidTestImplementation("org.mockito:mockito-android:5.11.0") // Mantendo a versão coerente com mockito-core
+    // Mockito for instrumented testing
+    androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.android)
 }
 
+// Ensures that all unit tests are run using the JUnit 5 testing framework
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }

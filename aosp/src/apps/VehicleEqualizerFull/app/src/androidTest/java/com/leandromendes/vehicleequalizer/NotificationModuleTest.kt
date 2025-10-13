@@ -9,8 +9,9 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Testes unitários para o módulo de notificações.
- * Verifica a criação e exibição das notificações de áudio.
+ * Unit tests for the notifications module
+ *
+ * Verifies the creation and display of audio notifications
  */
 class NotificationModuleTest {
 
@@ -23,24 +24,21 @@ class NotificationModuleTest {
         notificationModule = NotificationModule(context)
     }
 
-    /**
-     * Testa a criação do canal de notificação.
-     */
+
+     // Test the creation of the notification channel
     @Test
     fun testCreateNotificationChannel() {
         val notification: Notification = notificationModule.buildNotification(
             playbackState = "PLAYING",
-            trackTitle = "Música de Teste"
+            trackTitle = "Test Music"
         )
-        assertNotNull("A notificação não deve ser nula", notification)
+        assertNotNull("The notification shall not be void.", notification)
     }
 
-    /**
-     * Testa a exibição de uma notificação.
-     */
+    // Tests the display of a notification
     @Test
     fun testCreateNotification() {
-        notificationModule.showNotification("PAUSED", "Som de Teste")
-        assertTrue("Notificação exibida com sucesso", true)
+        notificationModule.showNotification("PAUSED", "Test Music")
+        assertTrue("Notification successfully displayed", true)
     }
 }

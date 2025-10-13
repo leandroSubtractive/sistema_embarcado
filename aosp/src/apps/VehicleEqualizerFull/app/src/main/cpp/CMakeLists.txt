@@ -39,7 +39,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 enable_testing()
 
 # -------------------------------------------------------
-# Adiciona os testes de integração nativos (AndroidTest)
+# Adds native integration tests (AndroidTest)
 set(TEST_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../androidTest/cpp")
 if(EXISTS "${TEST_DIR}/EqualizerNativeTest.cpp")
     message(STATUS "Including native integration tests from ${TEST_DIR}")

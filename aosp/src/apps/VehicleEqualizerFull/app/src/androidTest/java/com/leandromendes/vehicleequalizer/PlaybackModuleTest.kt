@@ -9,8 +9,9 @@ import org.junit.After
 import org.junit.Test
 
 /**
- * Testes unitários para o módulo de reprodução de áudio.
- * Valida os métodos de controle: play, pause e stop.
+ * Unit tests for the audio playback module
+ *
+ * Validates the control methods: play, pause, and stop
  */
 class PlaybackModuleTest {
 
@@ -19,7 +20,7 @@ class PlaybackModuleTest {
 
     @Before
     fun setup() {
-        // Obtém o contexto da aplicação e inicializa o módulo de reprodução
+        // Gets the application context and initializes the playback module
         context = ApplicationProvider.getApplicationContext()
         playbackModule = PlaybackModule(context)
     }
@@ -29,36 +30,30 @@ class PlaybackModuleTest {
         playbackModule.stop()
     }
 
-    /**
-     * Testa a execução de áudio.
-     */
+    // Test audio playback
     @Test
     fun testPlayAudio() {
         playbackModule.setRawDataSource(R.raw.toto_africa)
         playbackModule.play()
-        Assert.assertTrue("O áudio deveria estar tocando após play()", playbackModule.isPlaying())
+        Assert.assertTrue("The audio should be playing after play()", playbackModule.isPlaying())
         playbackModule.stop()
     }
 
-    /**
-     * Testa a pausa do áudio.
-     */
+    // Test the audio pause
     @Test
     fun testPauseAudio() {
         playbackModule.setRawDataSource(R.raw.toto_africa)
         playbackModule.play()
         playbackModule.pause()
-        Assert.assertFalse("O áudio deveria estar pausado após pause()", playbackModule.isPlaying())
+        Assert.assertFalse("The audio should be paused after pause().", playbackModule.isPlaying())
     }
 
-    /**
-     * Testa a parada da reprodução.
-     */
+    // Tests playback pause
     @Test
     fun testStopAudio() {
         playbackModule.setRawDataSource(R.raw.toto_africa)
         playbackModule.play()
         playbackModule.stop()
-        Assert.assertFalse("O áudio deveria estar parado após stop()", playbackModule.isPlaying())
+        Assert.assertFalse("The audio should be paused after stop()", playbackModule.isPlaying())
     }
 }
