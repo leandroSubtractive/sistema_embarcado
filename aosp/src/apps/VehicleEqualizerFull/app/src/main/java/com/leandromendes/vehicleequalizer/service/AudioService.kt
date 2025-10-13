@@ -287,17 +287,10 @@ class AudioService : Service() {
     }
 
     /**
-     * Helper class for binding the service.
-     * Note: 'inner' allows it to access outer class members (like 'this@AudioService')
-     */
-    inner class LocalBinder : Binder() {
-        // Method to return the service instance itself
-        fun getService(): AudioService = this@AudioService
-    }
-
-    /**
      * On bind
      *
+     * @param intent Intent
+     * @return Binder instance
      */
     override fun onBind(intent: Intent?): IBinder? = binder
 
@@ -310,14 +303,26 @@ class AudioService : Service() {
      */
     data class Track(val resId: Int, val title: String)
 
-    // Add this public function inside the AudioService class
+    /**
+     * Get current track title
+     * Add this public function inside the AudioService class
+     *
+     * @return Track title
+     */
     fun getCurrentTrackTitle(): String {
-        // Note: You might need to make 'currentTrackIndex' internal/public
-        // or pass it to this function if you want to verify specific tracks.
         if (::trackList.isInitialized) {
             return trackList[currentTrackIndex].title
         }
         return "Unknown"
+    }
+
+    /**
+     * Helper class for binding the service.
+     * Note: 'inner' allows it to access outer class members (like 'this@AudioService')
+     */
+    inner class LocalBinder : Binder() {
+        // Method to return the service instance itself
+        fun getService(): AudioService = this@AudioService
     }
 
 }
