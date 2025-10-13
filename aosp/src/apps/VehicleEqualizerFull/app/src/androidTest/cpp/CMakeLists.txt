@@ -27,7 +27,7 @@ add_executable(vehicleequalizer_native_lib_tests ${TEST_SRC})
 #  Include directories
 # ----------------------
 target_include_directories(vehicleequalizer_native_lib_tests PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}   # Para encontrar FakeJNIEnv.h
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${gtest_SOURCE_DIR}/include
 )
 

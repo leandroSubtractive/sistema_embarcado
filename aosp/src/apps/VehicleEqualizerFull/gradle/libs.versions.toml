@@ -22,8 +22,6 @@ roomCompiler = "2.8.2"
 roomKtx = "2.8.2"
 roomRuntime = "2.8.2"
 verticalseekbar = "1.0.0"
-androidxCoreKtx = "1.7.0"
-uiTest = "1.9.3"
 
 
 [libraries]
@@ -55,10 +53,7 @@ mockito-android = { module = "org.mockito:mockito-android", version.ref = "mocki
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 verticalseekbar = { module = "com.h6ah4i.android.widget.verticalseekbar:verticalseekbar", version.ref = "verticalseekbar" }
-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidxCoreKtx" }
-androidx-ui-test = { group = "androidx.compose.ui", name = "ui-test", version.ref = "uiTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-

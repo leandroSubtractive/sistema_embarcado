@@ -287,15 +287,6 @@ class AudioService : Service() {
     }
 
     /**
-     * Helper class for binding the service.
-     * Note: 'inner' allows it to access outer class members (like 'this@AudioService')
-     */
-    inner class LocalBinder : Binder() {
-        // Method to return the service instance itself
-        fun getService(): AudioService = this@AudioService
-    }
-
-    /**
      * On bind
      *
      * @param intent Intent
