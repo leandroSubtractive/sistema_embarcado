@@ -933,3 +933,164 @@ Captura de tela:
 </p>
 
 ### 1.5. Laboratório 11
+
+---
+***Basic Scripting***
+
+> 11.2.1 Step 1 -> 11.2.60 Step 60
+
+As seções a seguir descrevem o uso do editor `vi`, para resumir, escrever um texto que resume e exemplifica os principais comandos utilizados.
+
+O editor vi tem dois modos: inserção e comando. No modo de inserção, você adiciona texto a um documento. No modo de comando, operações como navegação, pesquisa, salvamento e saída do editor podem ser realizadas.
+
+Aqui está um resumo dos comandos mais essenciais:
+
+### 1. Mudança de Modos
+
+| Comando | Descrição | Modo de Saída |
+| :---: | :--- | :---: |
+| **`i`** | Entra no modo de **Inserção** (antes do cursor). | Normal |
+| **`a`** | Entra no modo de **Inserção** (depois do cursor). | Normal |
+| **`o`** | Abre uma nova linha **abaixo** e entra em Inserção. | Normal |
+| **`O`** | Abre uma nova linha **acima** e entra em Inserção. | Normal |
+| **`ESC`** | Sai do modo de Inserção/Visual e volta para o **Modo Normal/Comando**. | Inserção/Visual |
+| **`v`** | Entra no **Modo Visual** (seleção por caractere). | Normal |
+
+### 2. Salvar e Sair (Modo de Linha de Comando)
+
+Para usar estes comandos, devemos estar no Modo Normal e digitar **`:`** (dois pontos) seguido do comando e, depois, **`Enter`**.
+
+| Comando | Ação |
+| :---: | :--- |
+| **`:w`** | Salva as alterações no arquivo. |
+| **`:q`** | Sai do Vi (se não houver alterações não salvas). |
+| **`:wq`** ou **`ZZ`** | Salva o arquivo e sai do Vi. |
+| **`:q!`** | Sai do Vi, **descartando** todas as alterações não salvas (forçar saída). |
+| **`:wqa`** | Salva todos os arquivos abertos e sai. |
+
+### 3. Movimentação (Modo Normal/Comando)
+
+| Comando | Ação |
+| :---: | :--- |
+| **`h`**, **`j`**, **`k`**, **`l`** | Move o cursor: **E**squerda, **B**aixo, **C**ima, **D**ireita. |
+| **`w`** | Move para o início da **próxima palavra**. |
+| **`b`** | Move para o início da **palavra anterior**. |
+| **`0`** ou **`^`** | Move para o **início** da linha. |
+| **`$`** | Move para o **fim** da linha. |
+| **`gg`** | Vai para a **primeira** linha do arquivo. |
+| **`G`** | Vai para a **última** linha do arquivo. |
+| **`nG`** ou **`:n`** | Vai para a **linha número "n"**. |
+
+### 4. Edição e Manipulação (Modo Normal/Comando)
+
+| Comando | Ação |
+| :---: | :--- |
+| **`x`** | Deleta o caractere sob o cursor. |
+| **`dd`** | Deleta a **linha inteira** atual e a copia (recorta). |
+| **`dw`** | Deleta da posição do cursor até o final da palavra. |
+| **`D`** | Deleta da posição do cursor até o **fim da linha**. |
+| **`yy`** | Copia a **linha inteira** atual. |
+| **`p`** | Cola o texto copiado/deletado **após** o cursor/linha. |
+| **`P`** | Cola o texto copiado/deletado **antes** do cursor/linha. |
+| **`u`** | **Desfaz** (undo) a última alteração. |
+| **`Ctrl + r`** | **Refaz** (redo) a última alteração desfeita. |
+
+### 5. Busca e Substituição (Modo de Linha de Comando)
+
+| Comando | Ação |
+| :--- | :--- |
+| **`/texto`** | Procura por "texto" **para frente**. |
+| **`?texto`** | Procura por "texto" **para trás**. |
+| **`n`** | Repete a última busca na **mesma direção**. |
+| **`N`** | Repete a última busca na **direção oposta**. |
+| **`:%s/antigo/novo/g`** | Substitui todas as ocorrências de `antigo` por `novo` **em todo o arquivo** (`%` = todo o arquivo, `g` = global). |
+
+No final, como resultado temos o seguinte texto:
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.2.60-Step-60.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 60:</strong> Texto escrito no Vi</figcaption>
+</p>
+
+---
+***Basic Shell Scripting***
+
+> 11.3.1 Step 1 --> 11.3.3 Step 3
+
+Criando e executando um script simples no bash, utilei o editor `nano` por ter mais afinidade, embora o `vi`seja uma excelente ferramenta.
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.3.1-Step-1.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 61:</strong> Script escrito no nano</figcaption>
+</p>
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.3.2-Step-2.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 61:</strong> Adicionando o "shbang"</figcaption>
+</p>
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.3.3-Step-3.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 62:</strong> Executando</figcaption>
+</p>
+
+> 11.3.4 Step 4
+
+Tornando o arquivo executável.
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.3.4-Step-4.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 63:</strong> Alterando permissão</figcaption>
+</p>
+
+> 11.3.8 Step 8
+
+Adicionando o scritp ao PATH, o que permite ser executado de qualquer diretorio dentro do terminal.
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.3.8-Step-8.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 63:</strong> Movendo o script para o PATH</figcaption>
+</p>
+
+---
+***Conditional and Repetitive Execution***
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.4.1-Step-1.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 64:</strong> drive.sh</figcaption>
+</p>
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.4.2-Step-2.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 65:</strong> drive.sh</figcaption>
+</p>
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.4.3-Step-3.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 66:</strong> check.sh</figcaption>
+</p>
+
+Captura de tela:
+
+<p style="text-align:center">
+    <img src=imgs/11.4.4-Step-4.png alt style="width:100%; height:auto;">
+    <figcaption style="text-align:center"><strong>Figura 67:</strong> num.sh</figcaption>
+</p>
