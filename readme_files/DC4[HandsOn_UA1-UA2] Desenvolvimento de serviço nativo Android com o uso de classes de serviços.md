@@ -34,6 +34,8 @@ Esté documento descreve a implementação e as funcionalidades do aplicativo de
 
 ---
 
+## Sumário
+
 1. [Arquitetura](#1-arquitetura)
     - 1.1. [Estrutura de Pastas](#11-estrutura-de-pastas)
     - 1.2. [Módulos](#12-módulos)
