@@ -33,6 +33,10 @@ Link do Vídeo: [Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QF
 
 O foco deste relatório é apresentar a implementação dos testes das classes devolvidas no relatório [anterior](https://github.com/leandroSubtractive/sistema_embarcado/blob/devel/readme_files/DC4%5BHandsOn_UA1-UA2%5D%20Desenvolvimento%20de%20servi%C3%A7o%20nativo%20Android%20com%20o%20uso%20de%20classes%20de%20servi%C3%A7os.md#desenvolvimento-de-servi%C3%A7o-nativo-android-com-o-uso-de-classes-de-servi%C3%A7os). Nas seções a seguir descreverei todos os testes e suas respectivas configurações.
 
+---
+
+## Sumário
+
 1. [Configurações e Dependências](#1-configurações-e-dependências)
     - 1.1. [Estrutura de Pastas](#11-estrutura-de-pastas)
 2. [Testes Implementados](#2-testes-implementados)
@@ -454,7 +458,7 @@ A imagem abaixo exibe o resultado da execução de todos os testes citados anter
 
 ### 2.7. EqualizerNativeTest
 
-Agora, irei falar dos testes feitos para o código nativo em c++, também escritos em C++. A seguir descreverei todas as alterações e o resultado da execução.
+Agora, irei falar dos testes feitos para o código [nativo em c++](https://github.com/leandroSubtractive/sistema_embarcado/blob/devel/readme_files/DC4%5BHandsOn_UA1-UA2%5D%20Desenvolvimento%20de%20servi%C3%A7o%20nativo%20Android%20com%20o%20uso%20de%20classes%20de%20servi%C3%A7os.md#1221-m%C3%B3dulo-de-equaliza%C3%A7%C3%A3o-com-jni), também escritos em C++. A seguir descreverei todas as alterações e o resultado da execução.
 
 - Alterações no CMakeList da native-lib.cpp
 

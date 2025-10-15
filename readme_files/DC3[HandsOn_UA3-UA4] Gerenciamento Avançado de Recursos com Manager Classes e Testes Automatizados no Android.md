@@ -14,7 +14,6 @@ Link do Reposítorio: [gitHub](https://github.com/leandroSubtractive/sistema_emb
 
 Link da Aplicação: [Resource Management](https://github.com/leandroSubtractive/sistema_embarcado/tree/devel/aosp/src/apps/resource_management)
 
-
 ## Sumário
 
 1. [Ambiente de desenvolvimento](#1-ambiente-de-desenvolvimento)
