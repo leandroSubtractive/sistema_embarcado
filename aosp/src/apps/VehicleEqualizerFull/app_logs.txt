@@ -1,0 +1,65 @@
+10-17 16:29:10.687 D/PlaybackModule(19610): Playback started.
+10-17 16:29:10.698 D/PlaybackModule(19610): Current position: 27684 ms
+10-17 16:29:11.700 D/PlaybackModule(19610): Current position: 29638 ms
+10-17 16:29:12.702 D/PlaybackModule(19610): Current position: 29627 ms
+10-17 16:29:13.704 D/PlaybackModule(19610): Current position: 30557 ms
+10-17 16:29:14.264 D/PlaybackModule(19610): Paused playback.
+10-17 16:29:14.706 D/PlaybackModule(19610): Current position: 31117 ms
+10-17 16:30:57.760 D/VehicleEqualizerApp(19815): All components of the main screen have been initialized
+10-17 16:30:57.899 D/AudioService(19815): Service created
+10-17 16:30:57.901 D/PlaybackModule(19815): MediaPlayer released
+10-17 16:30:57.946 D/VehicleEqualizerApp(19815): Live Data profiles updated. Count: 0
+10-17 16:30:57.957 D/PlaybackModule(19815): MediaPlayer prepared
+10-17 16:30:57.957 D/PlaybackModule(19815): AudioSessionId requested: 3369
+10-17 16:30:57.972 D/AudioService(19815): Equalizer initialized with sessionId=3369
+10-17 16:30:57.975 D/VehicleEqualizerApp(19815): Live Data profiles updated. Count: 1
+10-17 16:31:15.066 D/VehicleEqualizerApp(19938): All components of the main screen have been initialized
+10-17 16:31:15.191 D/AudioService(19938): Service created
+10-17 16:31:15.193 D/PlaybackModule(19938): MediaPlayer released
+10-17 16:31:15.236 D/VehicleEqualizerApp(19938): Live Data profiles updated. Count: 0
+10-17 16:31:15.241 D/PlaybackModule(19938): MediaPlayer prepared
+10-17 16:31:15.241 D/PlaybackModule(19938): AudioSessionId requested: 3385
+10-17 16:31:15.255 D/AudioService(19938): Equalizer initialized with sessionId=3385
+10-17 16:31:15.257 D/VehicleEqualizerApp(19938): Live Data profiles updated. Count: 1
+10-17 16:31:19.803 D/PlaybackModule(19938): MediaPlayer released
+10-17 16:31:19.823 D/PlaybackModule(19938): Playback started.
+10-17 16:31:19.839 D/PlaybackModule(19938): MediaPlayer prepared
+10-17 16:31:19.839 D/PlaybackModule(19938): AudioSessionId requested: 3401
+10-17 16:31:19.844 D/AudioService(19938): Equalizer initialized with sessionId=3401
+10-17 16:31:19.845 D/PlaybackModule(19938): Current position: 0 ms
+10-17 16:31:20.846 D/PlaybackModule(19938): Current position: 40 ms
+10-17 16:31:21.848 D/PlaybackModule(19938): Current position: 986 ms
+10-17 16:31:22.853 D/PlaybackModule(19938): Current position: 1144 ms
+10-17 16:31:23.856 D/PlaybackModule(19938): Current position: 2148 ms
+10-17 16:31:24.858 D/PlaybackModule(19938): Current position: 3150 ms
+10-17 16:31:25.860 D/PlaybackModule(19938): Current position: 4151 ms
+10-17 16:31:26.862 D/PlaybackModule(19938): Current position: 5154 ms
+10-17 16:31:27.864 D/PlaybackModule(19938): Current position: 6156 ms
+10-17 16:31:28.867 D/PlaybackModule(19938): Current position: 7158 ms
+10-17 16:31:29.869 D/PlaybackModule(19938): Current position: 8161 ms
+10-17 16:31:30.872 D/PlaybackModule(19938): Current position: 9163 ms
+10-17 16:31:31.874 D/PlaybackModule(19938): Current position: 10165 ms
+10-17 16:31:32.876 D/PlaybackModule(19938): Current position: 11168 ms
+10-17 16:31:33.197 D/PlaybackModule(19938): Paused playback.
+10-17 16:31:33.878 D/PlaybackModule(19938): Current position: 11489 ms
+10-17 16:33:33.234 D/VehicleEqualizerApp(20111): All components of the main screen have been initialized
+10-17 16:33:33.362 D/AudioService(20111): Service created
+10-17 16:33:33.364 D/PlaybackModule(20111): MediaPlayer released
+10-17 16:33:33.406 D/VehicleEqualizerApp(20111): Live Data profiles updated. Count: 0
+10-17 16:33:33.410 D/PlaybackModule(20111): MediaPlayer prepared
+10-17 16:33:33.410 D/PlaybackModule(20111): AudioSessionId requested: 3417
+10-17 16:33:33.425 D/AudioService(20111): Equalizer initialized with sessionId=3417
+10-17 16:33:33.427 D/VehicleEqualizerApp(20111): Live Data profiles updated. Count: 1
+10-17 16:33:37.962 D/PlaybackModule(20111): MediaPlayer released
+10-17 16:33:37.978 D/PlaybackModule(20111): Playback started.
+10-17 16:33:37.994 D/PlaybackModule(20111): MediaPlayer prepared
+10-17 16:33:37.994 D/PlaybackModule(20111): AudioSessionId requested: 3433
+10-17 16:33:38.002 D/AudioService(20111): Equalizer initialized with sessionId=3433
+10-17 16:33:38.005 D/PlaybackModule(20111): Current position: 0 ms
+10-17 16:33:39.007 D/PlaybackModule(20111): Current position: 40 ms
+10-17 16:33:40.011 D/PlaybackModule(20111): Current position: 1000 ms
+10-17 16:33:41.014 D/PlaybackModule(20111): Current position: 1096 ms
+10-17 16:33:42.016 D/PlaybackModule(20111): Current position: 2099 ms
+10-17 16:33:42.996 D/PlaybackModule(20111): Stop playback.
+10-17 16:33:43.000 D/PlaybackModule(20111): MediaPlayer released
+10-17 16:33:43.018 D/PlaybackModule(20111): Current position: 0 ms
