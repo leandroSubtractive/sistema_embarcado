@@ -25,6 +25,7 @@ Link do Vídeo: [Vídeo](https://drive.google.com/drive/folders/1xURd7VnulzM-5QF
     - 1.5. [Emulador Android](#15-emulador-android)
 2. [Aplicativos Desenvolvidos Durante o Curso](#2-aplicativos-desenvolvidos-durante-o-curso)
 3. [Execução de scripts de automação e configuração do ambiente Android](#3-execução-de-scripts-de-automação-e-configuração-do-ambiente-android)
+4. [Explicação e configuração do kernel Linux para habilitar o suporte à rede CAN](#4-explicação-e-configuração-do-kernel-linux-para-habilitar-o-suporte-à-rede-can)
 
 ## 1. Ambiente de Desenvolvimento
 
@@ -214,7 +215,7 @@ echo "============================================================"
 
 Arquivo de saída resulmido: `app_logs.txt`
 
-´´´txt
+```txt
  D/PlaybackModule(19938): MediaPlayer released
  D/PlaybackModule(19938): Playback started.
  D/PlaybackModule(19938): MediaPlayer prepared
@@ -236,8 +237,83 @@ Arquivo de saída resulmido: `app_logs.txt`
  D/PlaybackModule(19938): Current position: 11168 ms
  D/PlaybackModule(19938): Paused playback.
  D/PlaybackModule(19938): Current position: 11489 ms
-´´´
+``´´´``
 
-## 4. Explicar a configuração do kernel Linux para habilitar o suporte à rede CAN
+## 4. Explicação e configuração do kernel Linux para habilitar o suporte à rede CAN
 
 ### 4.1. Descrição da configuração de parâmetros do kernel e dos módulos de suporte ao CAN, incluindo o processo de compilação e carregamento
+
+- Para evitar que a compilação quebre, instalei essas dependencias:
+
+```bash
+sudo apt update
+sudo apt install git repo curl bc build-essential flex bison libssl-dev libncurses5-dev libncursesw5-dev u-boot-tools device-tree-compiler
+```
+
+- A primeira etapa é baixar o kernel do Android. Para baixar, eu seguir os passos abaixo, estou utilizando a versão 13.
+
+```bash
+# Criei uma pasta no meu diretório local
+mkdir -p ~/android-kernel
+cd ~/android-kernel
+
+# Inicializando o Repo
+repo init -u https://android.googlesource.com/kernel/manifest -b android13-5.15
+
+# Sincronizando o repositório
+repo sync -c -j$(nproc)
+```
+
+- A segunda etapa é habilitar os módulos de kernel CAN.
+
+```bash
+cd common-android13-5.15/common
+
+# Abrindo o menuconfig do kernel
+make ARCH=x86_64 menuconfig
+# Essas são as configurações para habilitar os modulos CAN
+# Estou habilitando os modulos e criando os .ko não embutidos no kernel, caso queira, basta carregar apenas os modulos no dispositivo alvo
+# 
+# Networking support  --->
+#   Networking options  --->
+#     CAN bus subsystem support  --->
+#       CAN bus subsystem
+#         [M] CAN bus subsystem
+#         <*> CAN RAW protocol
+#         [M] Virtual CAN interface (vcan)
+
+# depois de habilitado, fiz o build
+make ARCH=x86_64 CROSS_COMPILE= modules -j$(nproc)
+
+# E esses foram os modulos gerados
+╰─❯ find -name "*c*.ko"     
+./net/can/can-bcm.ko     # CAN Broadcast Manager: gerencia mensagens CAN de broadcast, filtrando e enviando mensagens de forma eficiente.
+./net/can/can.ko         # Módulo principal CAN core: fornece a infraestrutura básica para suporte a CAN no kernel.
+./net/can/can-gw.ko      # CAN Gateway: permite rotear mensagens entre diferentes redes CAN.
+./net/can/can-raw.ko     # CAN Raw Sockets: fornece interface de baixo nível para enviar e receber frames CAN diretamente do espaço do usuário.
+./drivers/net/can/dev/can-dev.ko  # Driver genérico de dispositivos CAN: abstrai hardware específico, fornecendo interface unificada para dispositivos CAN.
+./drivers/net/can/vcan.ko         # Virtual CAN (vcan): simula uma rede CAN no kernel para testes e desenvolvimento sem hardware físico.
+```
+
+- Para carregar esses modulos em um dispositivo real sem mudar o kernel completo, basta executar os comandos abaixo:
+
+```bash
+adb root
+# copia arquivos para o dispositivo
+adb push commom/net/can/can-bcm.ko      /data/local/tmp/ 
+adb push commom/net/can/can.ko          /data/local/tmp/ 
+adb push commom/net/can/can-gw.ko       /data/local/tmp/ 
+adb push commom/net/can/can-raw.ko      /data/local/tmp/ 
+adb push commom/drivers/net/can/dev/can-gw.ko /data/local/tmp/ 
+adb push commom/drivers/net/can/vcan.ko /data/local/tmp/
+
+adb shell
+su
+# Carrega os modulos no kernel
+insmod /data/local/tmp/vcan.ko
+insmod /data/local/tmp/can-raw.ko
+insmod /data/local/tmp/can-bcm.ko
+insmod /data/local/tmp/can.ko
+insmod /data/local/tmp/can-gw.ko
+insmod /data/local/tmp/can-gw.ko
+```
